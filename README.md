@@ -19,30 +19,31 @@ Por tanto se trata de un juego de pelea satírica de partidas cortas y entreteni
 
 # Índice
 
-1. Descripción general
-2. Especificaciones básicas
-3. Temática
-4. Jugabilidad
-	- Objetivo
-	- Controles
-	- Mecánicas
-	- Físicas
-	- Escenario
-5. Imagen y diseño visual
-	- Logotipo
-	- Uso de colores
-	- Aspectos técnicos
-	- Estilo visual
-	- Inspiración
-6. Narrativa
-	- Historia
-	- Desarrollo de personajes
-7. Sonido
-	- Música
-	- Efectos sonoros
-8. Comunicación y marketing
-9. Diagrama de flujo del juego
-10. Referencias
+1. [Descripción general](#1-descripción-general)  
+2. [Especificaciones básicas](#2-especificaciones-básicas)  
+3. [Temática](#3-temática)  
+4. [Jugabilidad](#4-jugabilidad)  
+   - [Objetivo](#objetivo-del-juego)  
+   - [Controles](#controles)  
+   - [Mecánicas](#mecánicas)  
+   - [Físicas](#físicas)  
+   - [Escenario](#escenario)  
+5. [Imagen y diseño visual](#5-imagen-y-diseño-visual)  
+   - [Logotipo](#logotipo)  
+   - [Uso de colores](#uso-de-colores)  
+   - [Aspectos técnicos](#aspectos-técnicos)  
+   - [Estilo visual](#estilo-visual)  
+   - [Inspiración](#inspiración)  
+6. [Narrativa](#6-narrativa)  
+   - [Historia](#historia)  
+   - [Desarrollo de personajes](#desarrollo-de-personajes)  
+7. [Sonido](#7-sonido)  
+   - [Música](#música)  
+   - [Efectos sonoros](#efectos-sonoros)  
+8. [Comunicación y marketing](#8-comunicación-y-marketing)  
+9. [Diagrama de flujo del juego](#9-diagrama-de-flujo-del-juego)  
+10. [Referencias](#10-referencias)
+
 
 # **1. Descripción general**
 **PvP (Pigeon vs Pigeon)** es un videojuego de plataformas 2D competitivo (PvP, de ahí la analogía con el título del juego) en el que dos jugadores controlan palomas que compiten por recoger churros en un entorno urbano cerca de unos contenedores de basura.  
@@ -80,7 +81,7 @@ Durante la partida, los jugadores deberán entorpecer a su rival, utilizando ata
 	- Atacar: L
 
 ## **Mecánicas**
-Cada 10 segundos aparece en un lugar aleatorio, dentro de unos lugares determinados, un churro el cual deben recoger los jugadores.
+Cada 10 segundos aparece en un lugar aleatorio, dentro de unos lugares determinados, un churro el cual deben recoger los jugadores (siempre y cuando no haya un churro ya en el escenario de juego).
 Los jugadores pueden hacer un ataque básico que, si golpea al contrincante, aturdirá al oponente unos segundos.
 También se podrán obtener distintos potenciadores temporales, los cuales aparecerán de manera aleatoria por el escenario de vez en cuando.
 
@@ -133,7 +134,7 @@ Aunque no hay héroes ni villanos, cada una cree firmemente que ese churro le pe
 ## **Desarrollo de personajes**
  -Palomón Johnson: Una paloma muy dura con un pasado oscuro. Formó parte de la mafia aviar y está habituado a los peligros de las calles y las peleas de bandas.
  
- -Dovenando Taubez: Un ave pícara y escurridiza, maestra del sigilo. Lleva toda su vida en las calles, haciendo tratos turbios y trabajos poco deseables. Su filosofía es: *"Todo churro tiene dueño, y ese dueñoñ soy yo".*
+ -Dovenando Taubez: Un ave pícara y escurridiza, maestra del sigilo. Lleva toda su vida en las calles, haciendo tratos turbios y trabajos poco deseables. Su filosofía es: *"Todo churro tiene dueño, y ese dueño soy yo".*
 
 Ambos personajes tienen los mismos controles y realizan las mismas acciones, pero se diferencian por su aspecto visual.
 # **7. Sonido**
@@ -155,18 +156,26 @@ Eslogan tentativo: *"Dos palamas. Un churro. Ninguna moral ni piedad."*
 # **9. Diagrama de flujo del juego**
 El diagrama de flujo del juego es el siguiente:
 
-<div style="text-align: center;">
+<p align="center">
   <img src="./Images/GDD/Diagrama_de_flujo_PvP.png" alt="Diagrama de flujo del juego" width="500">
-</div>
+</p>
 
-1. El juego comienza en el nodo de "Inicio", que lleva directamente a la pantalla de título. En esta pantalla, el jugador puede elegir tres opciones:
-- Jugar en local
-- Jugar en red
-- Controles
+
+**1.** El juego comienza en el nodo de "Inicio", que lleva directamente a la pantalla de título. En esta pantalla, el jugador puede elegir tres opciones:
+  - Jugar en local
+  - Jugar en red
+  - Controles
 Al seleccionar "Controles" se mostrará la información de los botones u acciones del juego, habiendo una opción de volver a la pantalla de título. 
 Cualquiera de las otras opciones conduce al inicio de la partida. 
-2. 
+**2.** Una vez comenzada la partida, los jugadores podrán moverse, atacar y recoger churros o potenciadores.
+Durante el transcurso del juego, se ejecutan tres procesos paralelos:
+  - Aparición de churros: Si no hay un churro activo en el mapa, se genera uno automáticamente a los 10 segundos.
+  - Aparición de potenciadores: Si np hay potenciadores activos en el mapa, aparecerá uno tras un tiempo aleatorio.
+  - Acciones de los jugadores y efectos de los potenciadores: Los elementos anteriormente mencionadas serán interactuables y provocarán un efecto en el flujo de la partida o en los jugadores, como se describió en el apartado de mecánicas.
 
+**3.** Condición de victoria o derrota y fin de juego: El flujo de juego comprueba que ninguno de los dos jugadores ha alcanzado los 10 churros. Si es así, se activa el nodo "Fin del juego", mostrando una pantalla con los resltados y la posibilidad de volver al menú principal del juego o salir de él.
 
 # **10. Referencias**
-[Vídeo original del que se parodia](https://youtu.be/EhVB22S1Zqk?si=W59jPvH9SiqjDxNN)
+[Vídeo original que parodia el juego](https://youtu.be/EhVB22S1Zqk?si=W59jPvH9SiqjDxNN)
+[Modo Mario vs Luigi - New Super Mario Bros](https://www.guiasnintendo.com/0_NINTENDO_DS/new_super_mario_bros_DS/new_super_mario_bros_DS_sp/multijugador.html)
+
