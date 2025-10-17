@@ -5,9 +5,13 @@ PvP (Pigeon vs Pigeon)
 ## Nombre del equipo de desarrollo
 GB3D
 ## Descripción de la temática del juego
-**PvP (Pigeon vs Pigeon) es un videojuego** 2D multijugador competitivo tanto local como en red en el que dos palomas callejeras luchan por hacerse con la mayor cantidad de churros posible hasta que uno de las dos consiga un número específico para ganar.
+**PvP (Pigeon vs Pigeon) es un videojuego** 2D multijugador competitivo tanto local como en red en el que dos palomas callejeras luchan por hacerse con la mayor cantidad de churros posible hasta que una de las dos consiga un número específico para ganar.
 
 Por tanto se trata de un juego de pelea satírica de partidas cortas y entretenidas. La idea del mismo se basa en el popular video *“Dos ratas peleando por un churro con música de fondo de Linkin Park”* facilitado en el siguiente enlace: https://www.youtube.com/watch?v=EhVB22S1Zqk 
+
+<p align="center">
+  <img src="./Images/GDD/Rats_fighting_videoImage.jpg" alt="Imagen del vídeo original: Dos ratas peleando por un churro" width="500">
+</p>
 
 ## Integrantes del equipo
 - Alejandro Marín Sánchez - a.marins.2023@alumnos.urjc.es - Warriorlink
@@ -51,6 +55,12 @@ Se trata de un título ligero y divertido, pensado para partidas rápidas en las
 Es un juego dirigido a todos los públicos, ya que no hay contenido ofensivo ni violencia explícita. El proyecto se desarrollará para poder ser jugado en un navegador web, tanto en modo local (dos jugadores en un mismo ordenador) como a través de una red privada.  
 En su fase final de desarrollo se publicará en plataformas web populares como **Newgrounds o Itch.io**.
 
+A continuación, se presenta un boceto de la pantalla de inicio del juego:
+
+<p align="center">
+  <img src="./Images/GDD/Boceto_pantalla_principal.jpeg" alt="Imagen del boceto de la pantalla de inicio del juego" width="300">
+</p>
+
 # **2. Especificaciones básicas**
 - **Género:** Plataformas, acción PvP
 - **Modo de juego:** Multijugador competitivo (local y en red)
@@ -69,6 +79,11 @@ El tono general será sarcástico y caricaturesco, buscando que la rivalidad ent
 ## **Objetivo del juego**
 El objetivo principal del juego es **conseguir más churros que el oponente** antes de que uno de los jugadores alcance la cantidad necesaria (10 churros) para la victoria.  
 Durante la partida, los jugadores deberán entorpecer a su rival, utilizando ataques, trampas y potenciadores que cambien el curso de la partida. 
+A continuación, se muestra una imagen del boceto del churro a recoger:
+
+<p align="center">
+  <img src="./Images/GDD/Churro.jpeg" alt="Imagen del churro" width="200">
+</p>
 
 ## **Controles**
 **Jugador 1:**
@@ -89,23 +104,46 @@ También se podrán obtener distintos potenciadores temporales, los cuales apare
 
 *Alpiste:* Al tocarlo, la paloma sufrirá una digestión acelerada, haciendo que el jugador deje una hez en el suelo. Si esta trampa vuelve a ser tocada, aturdirá a quién la active durante unos segundos.
 
+<p align="center">
+  <img src="./Images/GDD/Alpiste.jpeg" alt="Imagen del alpiste" width="200">
+</p>
+
 *Pluma dorada:* Cuando un jugador la agarre, incrementará la velocidad de este un 50% durante unos 10 segundos.
 
-*Basura:* cada cierto tiempo (unos 10-15 segundos) aparecerá basura en el entorno de juego que en el momento en el que un jugador interaccione con ella, lo ralentizará a la mitad de su velocidad base durante unos 5 segundos. En caso de que la pluma dorada está activa, la basura desaparece al contacto sin ralentizar al jugador).
+<p align="center">
+  <img src="./Images/GDD/Pluma_dorada.jpeg" alt="Imagen de la pluma dorada" width="200">
+</p>
+
+*Basura:* cada cierto tiempo (unos 10-15 segundos) aparecerá basura en el entorno de juego que en el momento en el que un jugador interaccione con ella, lo ralentizará a la mitad de su velocidad base durante unos 5 segundos. En caso de que la pluma dorada esté activa, la basura desaparece al contacto sin ralentizar al jugador).
+
+<p align="center">
+  <img src="./Images/GDD/Basura.jpeg" alt="Imagen de la basura" width="200">
+</p>
+
 
 ## **Físicas**
-Las físicas implementadas en el videojuego se basarán en los principios tradicionales utilizados en los juegos de plataformas en 2D. El sistema de movimiento permitirá al jugador desplazarse hacia la derecha e izquierda, además de saltar y caer por la fuerza de la gravedad. 
+Las físicas implementadas en el videojuego se basarán en los principios tradicionales utilizados en los juegos de plataformas en 2D. El sistema de movimiento permitirá al jugador desplazarse hacia la derecha e izquierda, además de saltar y caer por la fuerza de la gravedad.
 La velocidad de movimiento será constante, al igual que la fuerza de salto y la de la gravedad, a no ser que uno de los jugadores haya recibido un efecto (positivo o negativo) mencionado anteriormente en el apartado de mecánicas.
 Por su parte, las plataformas del escenario tendrán su propia caja de colisiones para evitar que los jugadores las traspasen y puedan estar sobre ellas.
 
 ## **Escenario**
 El escenario principal será un callejón urbano repleto de contenedores, ventanas, cables, postes y basura acumulada, con un tamaño medio para no hacerlo ni demasiado complejo ni demasiado repetitivo.  
-Se busca un diseño que combine verticalidad y horizontalidad, con múltiples niveles de plataformas que fomenten la movilidad y el enfrentamiento constante.  
+Se busca un diseño que combine verticalidad y horizontalidad, con múltiples niveles de plataformas que fomenten la movilidad y el enfrentamiento constante.
+
+<p align="center">
+  <img src="./Images/GDD/Escenario.jpeg" alt="Imagen del escenario de juego" width="300">
+</p>
+
 
 # **5. Imágen y diseño visual**
 
 ## **Logotipo**
 Se optó por crear un diseño simple y reconocible para los jugadores
+
+<p align="center">
+  <img src="./Images/GDD/Logo.jpeg" alt="Imagen del logotipo" width="300">
+</p>
+
 
 ## **Uso de colores**
 Se empleará una paleta de colores oscura y con poca saturación, basada en tonos grises, marrones y verdes sucios, para representar el ambiente decadente de un callejón urbano.  
@@ -124,34 +162,49 @@ El proyecto se inspira directamente en el vídeo: *“Dos ratas peleando por un 
 De este último toma la estructura competitiva y la simplicidad de controles, aunque se diferencia por su temática, estética y ritmo de juego más caótico.  
 También se busca capturar el humor absurdo del vídeo viral y trasladarlo a una experiencia jugable y entretenida.
 
+<p align="center">
+  <img src="./Images/GDD/MariovsLuigi.jpg" alt="Imagen de minijuego Mario vs Luigi" width="500">
+</p>
+
 # **6. Narrativa**
 
 ## **Historia**
 En una ciudad cualquiera, durante una noche húmeda y oscura, dos palomas merodean por los callejones en busca de comida.  
+
 El irresistible aroma de unos churros olvidados despierta en ellas un instinto de supervivencia y codicia, y pronto la situación se convierte en una batalla sin cuartel.  
 Aunque no hay héroes ni villanos, cada una cree firmemente que ese churro le pertenece por derecho propio. No hay moral, tampoco amistad... solo churros.
 
 ## **Desarrollo de personajes**
  -Palomón Johnson: Una paloma muy dura con un pasado oscuro. Formó parte de la mafia aviar y está habituado a los peligros de las calles y las peleas de bandas.
  
+<p align="center">
+  <img src="./Images/GDD/1_Palomon_Johnson.jpeg" alt="Imagen del primer personaje de juego" width="400">
+</p>
+
  -Dovenando Taubez: Un ave pícara y escurridiza, maestra del sigilo. Lleva toda su vida en las calles, haciendo tratos turbios y trabajos poco deseables. Su filosofía es: *"Todo churro tiene dueño, y ese dueño soy yo".*
+
+<p align="center">
+  <img src="./Images/GDD/2_Dovenando_Taubez.jpeg" alt="Imagen del segundo personaje de juego" width="400">
+</p>
 
 Ambos personajes tienen los mismos controles y realizan las mismas acciones, pero se diferencian por su aspecto visual.
 # **7. Sonido**
 
 ## **Música**
 La versión original del videojuego poseerá como tema principal la canción “Numb” del grupo de música “Linkin Park”, ya que es la melodía que se escuchaba en el vídeo original que parodia este juego. 
+
 Sin embargo, para la versión pública del juego se utilizará una canción sin derechos de autor que acompañe al tono urbano, para evitar problemas de derechos y posibles problemas legales.
 
 ## **Efectos sonoros**
 Se utilizarán sonidos de palomas ululando, agitando las alas y sonidos de comida para los churros. También se usarán efectos de sonido adecuados para cada potenciador.
+
 Al ganar o perder se escuchará un tono diferente en función del resultado de la partida.
 
 # **8. Comunicación y marketing**
 La estrategia de comunicación y marketing de **PvP (Pigeon vs Pigeon)** se centrará en resaltar el tono humorístico y competitivo del juego, aprovechando su carácter paródico y su estética llamativa para atraer la atención del público en redes sociales y plataformas de videojuegos independientes.
 Como ya se ha mencionado, el juego se publicará en **Newgrounds y en Itch.io** como plataformas principales de distribución del juego.
 
-Eslogan tentativo: *"Dos palamas. Un churro. Ninguna moral ni piedad."*
+Eslogan tentativo: *"Dos palomas. Un churro. Ninguna moral ni piedad."*
 
 # **9. Diagrama de flujo del juego**
 El diagrama de flujo del juego es el siguiente:
@@ -162,20 +215,22 @@ El diagrama de flujo del juego es el siguiente:
 
 
 **1.** El juego comienza en el nodo de "Inicio", que lleva directamente a la pantalla de título. En esta pantalla, el jugador puede elegir tres opciones:
+
   - Jugar en local
   - Jugar en red
   - Controles
 Al seleccionar "Controles" se mostrará la información de los botones u acciones del juego, habiendo una opción de volver a la pantalla de título. 
-Cualquiera de las otras opciones conduce al inicio de la partida. 
+Cualquiera de las otras opciones conduce al inicio de la partida.
+
 **2.** Una vez comenzada la partida, los jugadores podrán moverse, atacar y recoger churros o potenciadores.
 Durante el transcurso del juego, se ejecutan tres procesos paralelos:
-  - Aparición de churros: Si no hay un churro activo en el mapa, se genera uno automáticamente a los 10 segundos.
-  - Aparición de potenciadores: Si np hay potenciadores activos en el mapa, aparecerá uno tras un tiempo aleatorio.
-  - Acciones de los jugadores y efectos de los potenciadores: Los elementos anteriormente mencionadas serán interactuables y provocarán un efecto en el flujo de la partida o en los jugadores, como se describió en el apartado de mecánicas.
 
-**3.** Condición de victoria o derrota y fin de juego: El flujo de juego comprueba que ninguno de los dos jugadores ha alcanzado los 10 churros. Si es así, se activa el nodo "Fin del juego", mostrando una pantalla con los resltados y la posibilidad de volver al menú principal del juego o salir de él.
+  - Aparición de churros: Si no hay un churro activo en el mapa, se genera uno automáticamente a los 10 segundos.
+  - Aparición de potenciadores: Si no hay potenciadores activos en el mapa, aparecerá uno tras un tiempo aleatorio.
+  - Acciones de los jugadores y efectos de los potenciadores: Los elementos anteriormente mencionados serán interactuables y provocarán un efecto en el flujo de la partida o en los jugadores, como se describió en el apartado de mecánicas.
+
+**3.** Condición de victoria o derrota y fin de juego: El flujo de juego comprueba que ninguno de los dos jugadores ha alcanzado los 10 churros. Si es así, se activa el nodo "Fin del juego", mostrando una pantalla con los resultados y la posibilidad de volver al menú principal del juego o salir de él.
 
 # **10. Referencias**
 [Vídeo original que parodia el juego](https://youtu.be/EhVB22S1Zqk?si=W59jPvH9SiqjDxNN)
 [Modo Mario vs Luigi - New Super Mario Bros](https://www.guiasnintendo.com/0_NINTENDO_DS/new_super_mario_bros_DS/new_super_mario_bros_DS_sp/multijugador.html)
-
