@@ -19,6 +19,10 @@ Por tanto se trata de un juego de pelea satírica de partidas cortas y entreteni
 - Hugo Checa Villanueva - h.checa.2023@alumnos.urjc.es - HugoCh05
 - Lucas Lorente Herranz - l.lorente.2023@alumnos.urjc.es - Lumi151
 
+<p align="center">
+	<img src="./Images/GDD/Logo.png" alt="Imagen del logotipo" width="300">
+</p>
+
 # **GDD PvP (Pigeon vs Pigeon)**
 
 # Índice
@@ -141,7 +145,7 @@ Se busca un diseño que combine verticalidad y horizontalidad, con múltiples ni
 Se optó por crear un diseño simple y reconocible para los jugadores
 
 <p align="center">
-  <img src="./Images/GDD/Logo.jpeg" alt="Imagen del logotipo" width="300">
+  <img src="./Images/GDD/Logo PvP.png" alt="Imagen del logotipo" width="300">
 </p>
 
 
@@ -233,4 +237,5 @@ Durante el transcurso del juego, se ejecutan tres procesos paralelos:
 
 # **10. Referencias**
 [Vídeo original que parodia el juego](https://youtu.be/EhVB22S1Zqk?si=W59jPvH9SiqjDxNN)
+
 [Modo Mario vs Luigi - New Super Mario Bros](https://www.guiasnintendo.com/0_NINTENDO_DS/new_super_mario_bros_DS/new_super_mario_bros_DS_sp/multijugador.html)
