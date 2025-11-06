@@ -27,7 +27,7 @@ export class MenuScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .on('pointerover', () => onlineBtn.setStyle({ fill: '#e001a8ff' }))
         .on('pointerout', () => onlineBtn.setStyle({ fill: '#7a2eacff' }))
-        .on('pointerdown', () => { this.scene.start('GameScene') });
+        .on('pointerdown', () => { this.scene.start() });
         }
 
     }
