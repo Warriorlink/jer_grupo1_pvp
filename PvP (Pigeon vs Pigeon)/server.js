@@ -1,10 +1,24 @@
-const express = require('express');
-const path = require('path');
-
+import express from 'express';
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'dist')));
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const messages = [];
+
+// Endpoint POST para crear un mensaje
+app.post('/messages', (req, res) => {
+  const { text, author } = req.body;
+  const newMessage = {
+    id: Date.now(), text, author,
+    timestamp: new Date().toISOString()
+  };
+  messages.push(newMessage);
+  res.status(201).json(newMessage);
+});
+
+app.get('/messages', (req, res) => {
+    res.json(messages);
+});
+
+app.listen(8080, () => {
+  console.log('Servidor en http://localhost:8080');
 });
