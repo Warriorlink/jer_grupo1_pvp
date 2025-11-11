@@ -7,14 +7,14 @@ import { ControlsScene } from './scenes/ControlsScene.js';
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 960,
+  height: 540,
   parent: 'game-container',
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },
-      debug: true
+      debug: false
     }
   },
   scene: [MenuScene, GameScene, PauseScene, CreditsScene, ControlsScene],

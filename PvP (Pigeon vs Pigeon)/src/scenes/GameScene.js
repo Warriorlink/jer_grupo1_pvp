@@ -20,8 +20,13 @@ export class GameScene extends Phaser.Scene {
         this.processor = new CommandProcessor();
     }
 
+    preload() {
+        this.load.image('background', 'sprites/background.png');
+    }
+
     create() {
-        this.add.rectangle(400, 300, 800, 600, 0x1a1a2e);
+
+        this.add.image(480, 270, 'background');
 
         //center line
         for (let i = 0; i < 12; i++) {

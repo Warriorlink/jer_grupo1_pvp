@@ -6,12 +6,12 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(400, 100, 'PvP', { 
+        this.add.text(480, 100, 'PvP', { 
             fontSize: '64px', 
             color: '#ffffffff'
         }).setOrigin(0.5);
 
-        const localBtn = this.add.text(200, 320, 'Local 2 Players', {
+        const localBtn = this.add.text(300, 320, 'Local 2 Players', {
             fontSize: '24px',
             color: '#00ff00'
         }).setOrigin(0.5)
@@ -20,7 +20,7 @@ export class MenuScene extends Phaser.Scene {
         .on('pointerout', () => localBtn.setStyle({ fill: '#00ff00' }))
         .on('pointerdown', () => { this.scene.start('GameScene') });
 
-        const creditsBtn = this.add.text(200, 400, 'Credits', {
+        const creditsBtn = this.add.text(300, 400, 'Credits', {
             fontSize: '24px',
             color: '#0000ff'
         }).setOrigin(0.5)
@@ -29,7 +29,7 @@ export class MenuScene extends Phaser.Scene {
         .on('pointerout', () => creditsBtn.setStyle({ fill: '#0000ff' }))
         .on('pointerdown', () => { this.scene.start('CreditsScene') });
 
-        const controlsBtn = this.add.text(500, 400, 'Controls', {
+        const controlsBtn = this.add.text(650, 400, 'Controls', {
             fontSize: '24px',
             color: '#ff0000'
         }).setOrigin(0.5)
@@ -38,7 +38,7 @@ export class MenuScene extends Phaser.Scene {
         .on('pointerout', () => controlsBtn.setStyle({ fill: '#ff0000' }))
         .on('pointerdown', () => { this.scene.start('ControlsScene') });
 
-        const onlineBtn = this.add.text(500, 320, 'Online (Not available)', {
+        const onlineBtn = this.add.text(650, 320, 'Online (Not available)', {
         fontSize: '24px',
         color: '#7a2eacff'
         }).setOrigin(0.5)

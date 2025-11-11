@@ -6,14 +6,14 @@ export class PauseScene extends Phaser.Scene {
     }
 
     create(data) {
-        this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7);
+        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
 
-        this.add.text(400, 200, 'Game Paused', { 
+        this.add.text(480, 200, 'Game Paused', { 
             fontSize: '64px', 
             color: '#ffffff' 
         }).setOrigin(0.5);
 
-        const resumeBtn = this.add.text(400, 300, 'Resume', {
+        const resumeBtn = this.add.text(480, 300, 'Resume', {
             fontSize: '32px',
             color: '#00ff00'
         }).setOrigin(0.5).setInteractive()
@@ -25,7 +25,7 @@ export class PauseScene extends Phaser.Scene {
         .on('pointerover', () => resumeBtn.setStyle({ fill: '#00ff88' }))
         .on('pointerout', () => resumeBtn.setStyle({ fill: '#00ff00' }));
 
-        const menuBtn = this.add.text(400, 400, 'Return to Menu', {
+        const menuBtn = this.add.text(480, 400, 'Return to Menu', {
             fontSize: '32px',
             color: '#ffffff'
         }).setOrigin(0.5).setInteractive()
