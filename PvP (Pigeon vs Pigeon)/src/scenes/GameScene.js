@@ -20,7 +20,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'sprites/background.png');
+        this.load.image('background', 'assets/sprites/background.png');
     }
 
     create() {
