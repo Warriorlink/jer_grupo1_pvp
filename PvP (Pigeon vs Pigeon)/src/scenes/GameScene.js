@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import { Paddle } from '../entities/Paddle.js';
+import { Pigeon } from '../entities/Pigeon.js';
 import { CommandProcessor } from '../commands/CommandProcessor';
-import { MovePaddleCommand } from '../commands/MovePaddleCommand.js';
+import { MovePigeonCommand } from '../commands/MovePigeonCommand.js';
 import { PauseCommand } from '../commands/PauseCommand.js';
 
 export class GameScene extends Phaser.Scene {
@@ -29,24 +29,20 @@ export class GameScene extends Phaser.Scene {
 
         this.createBounds();
 
-
-        //this.physics.add.overlap(this.ball, this.leftGoal, this.scoreRightGoal, null, this);
-        //this.physics.add.overlap(this.ball, this.rightGoal, this.scoreLeftGoal, null, this);
-
         this.setUpPlayers();
-        this.players.forEach(paddle => {
-            //this.physics.add.collider(this.ball, paddle.sprite);
+        this.players.forEach(pigeon => {
+            //this.physics.add.collider(this.ball, pigeon.sprite);
         });
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     setUpPlayers() {
-        const leftPaddle = new Paddle(this, 'player1', 50, 300);
-        const rightPaddle = new Paddle(this, 'player2', 750, 300);
+        const leftPigeon = new Pigeon(this, 'player1', 50, 300);
+        const rightPigeon = new Pigeon(this, 'player2', 750, 300);
 
-        this.players.set('player1', leftPaddle);
-        this.players.set('player2', rightPaddle);
+        this.players.set('player1', leftPigeon);
+        this.players.set('player2', rightPigeon);
 
         const InputConfig = [
             {
@@ -70,12 +66,10 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    
-
     endGame(winnerId) {
         this.gameEnded = true;
-        this.players.forEach(paddle => {
-            paddle.sprite.setVelocity(0, 0);
+        this.players.forEach(pigeon => {
+            pigeon.sprite.setVelocity(0, 0);
         });
         this.physics.pause();
 
@@ -93,11 +87,7 @@ export class GameScene extends Phaser.Scene {
         .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
         .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
     }
-        
 
-  
-
-   
     createBounds() {
         this.leftGoal = this.physics.add.sprite(0, 300, null);
         this.leftGoal.setDisplaySize(10, 600);
@@ -140,7 +130,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         this.inputMappings.forEach(mapping => {
-            const paddle = this.players.get(mapping.playerId);
+            const pigeon = this.players.get(mapping.playerId);
             let direction = null;
             if (mapping.upKeyObj.isDown) {
                 direction = 'up';
@@ -149,7 +139,7 @@ export class GameScene extends Phaser.Scene {
             } else {
                 direction = 'stop';
             }
-            let moveCommand = new MovePaddleCommand(paddle, direction);
+            let moveCommand = new MovePigeonCommand(pigeon, direction);
             this.processor.process(moveCommand);
         });
     }
