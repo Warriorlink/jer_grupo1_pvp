@@ -14,7 +14,7 @@ export class MovePigeonCommand extends Command {
         } else if (this.direction === 'down') {
             this.pigeon.sprite.setVelocityY(this.pigeon.baseSpeed);
             } else {
-                this.pigeon.sprite.setVelocityY(0);
+                this.pigeon.sprite.setVelocityX(0);
             }
         }
     

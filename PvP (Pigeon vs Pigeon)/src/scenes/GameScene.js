@@ -28,7 +28,6 @@ export class GameScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'background');
 
-        this.createBounds();
         this.createPlatforms();
 
         this.setUpPlayers();
@@ -82,7 +81,7 @@ export class GameScene extends Phaser.Scene {
         this.platforms.create(126, 316, null).setDisplaySize(130, 22).refreshBody();
 
         this.platforms.children.entries.forEach(platform => {
-            platform.setVisible(true);
+            platform.setVisible(false);
         });
     }
 
@@ -135,20 +134,6 @@ export class GameScene extends Phaser.Scene {
             .on('pointerdown', () => { this.scene.start('MenuScene') })
             .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
             .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
-    }
-
-    createBounds() {
-        this.leftGoal = this.physics.add.sprite(0, 300, null);
-        this.leftGoal.setDisplaySize(10, 600);
-        this.leftGoal.body.setSize(10, 600);
-        this.leftGoal.setImmovable(true);
-        this.leftGoal.setVisible(false);
-
-        this.rightGoal = this.physics.add.sprite(800, 300, null);
-        this.rightGoal.setDisplaySize(10, 600);
-        this.rightGoal.body.setSize(10, 600);
-        this.rightGoal.setImmovable(true);
-        this.rightGoal.setVisible(false);
     }
 
     setPauseState(isPaused) {

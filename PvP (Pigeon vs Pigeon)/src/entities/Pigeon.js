@@ -10,8 +10,7 @@ export class Pigeon {
         this.baseSpeed = 300;
 
         this.sprite = this.scene.physics.add.sprite(x, y, 'palomon');
-        this.sprite.setImmovable(true);
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.allowGravity = false;
+        this.sprite.body.allowGravity = true;
     }
 }
