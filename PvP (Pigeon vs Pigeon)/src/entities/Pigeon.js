@@ -7,7 +7,8 @@ export class Pigeon {
 
         this.baseWidth = 20;
         this.baseHeight = 100;
-        this.baseSpeed = 300;
+        this.baseSpeed = 300; 
+        this.baseJumpSpeed = 470;
 
         this.sprite = this.scene.physics.add.sprite(x, y, 'palomon');
         this.sprite.body.setCollideWorldBounds(true);

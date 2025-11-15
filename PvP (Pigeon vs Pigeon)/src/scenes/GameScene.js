@@ -56,6 +56,9 @@ export class GameScene extends Phaser.Scene {
         //Suelo
         this.platforms.create(480, 513, null).setDisplaySize(960, 60).refreshBody();
 
+        //Techo
+        this.platforms.create(480, 0, null).setDisplaySize(960, 5).refreshBody();
+
         //Límite izquierdo
         this.platforms.create(33, 430, null).setDisplaySize(70, 860).refreshBody();
 
@@ -80,9 +83,8 @@ export class GameScene extends Phaser.Scene {
         //Plataforma izquierda inferior
         this.platforms.create(126, 316, null).setDisplaySize(130, 22).refreshBody();
 
-        this.platforms.children.entries.forEach(platform => {
-            platform.setVisible(false);
-        });
+        this.platforms.setVisible(false);
+
     }
 
     setUpPlayers() {
@@ -96,12 +98,14 @@ export class GameScene extends Phaser.Scene {
             {
                 playerId: 'player1',
                 upKey: 'W',
-                downKey: 'S',
+                rightKey: 'D',
+                leftKey: 'A',
             },
             {
                 playerId: 'player2',
                 upKey: 'UP',
-                downKey: 'DOWN',
+                rightKey: 'RIGHT',
+                leftKey: 'LEFT',
             }
         ];
 
@@ -109,7 +113,8 @@ export class GameScene extends Phaser.Scene {
             return {
                 playerId: config.playerId,
                 upKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.upKey]),
-                downKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.downKey]),
+                rightKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.rightKey]),
+                leftKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.leftKey]),
             };
         });
     }
@@ -165,15 +170,17 @@ export class GameScene extends Phaser.Scene {
 
         this.inputMappings.forEach(mapping => {
             const pigeon = this.players.get(mapping.playerId);
-            let direction = null;
-            if (mapping.upKeyObj.isDown) {
-                direction = 'up';
-            } else if (mapping.downKeyObj.isDown) {
-                direction = 'down';
-            } else {
-                direction = 'stop';
-            }
-            let moveCommand = new MovePigeonCommand(pigeon, direction);
+
+            // calcular movimiento horizontal (-1,0,1)
+            let moveX = 0;
+            if (mapping.leftKeyObj.isDown) moveX = -1;
+            else if (mapping.rightKeyObj.isDown) moveX = 1;
+
+            // salto (true si se pulsa)
+            const jump = mapping.upKeyObj.isDown;
+
+            // enviar comando con movimiento horizontal y salto
+            let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
             this.processor.process(moveCommand);
         });
     }
