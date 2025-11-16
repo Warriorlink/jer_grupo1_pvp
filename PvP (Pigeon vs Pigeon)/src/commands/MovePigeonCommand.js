@@ -13,6 +13,16 @@ export class MovePigeonCommand extends Command {
     execute() {
         const sprite = this.pigeon.sprite;
 
+        // si está stunado no permite moverse ni saltar
+        if (this.pigeon.stunned) {
+            sprite.setVelocityX(0);
+            return;
+        }
+
+        // actualizar facing según movimiento horizontal
+        if (this.moveX > 0) this.pigeon.facing = 'right';
+        else if (this.moveX < 0) this.pigeon.facing = 'left';
+
         // Aplicar velocidad lateral según moveX
         sprite.setVelocityX(this.moveX * this.pigeon.baseSpeed);
 

@@ -3,6 +3,7 @@ import { Pigeon } from '../entities/Pigeon.js';
 import { CommandProcessor } from '../commands/CommandProcessor';
 import { MovePigeonCommand } from '../commands/MovePigeonCommand.js';
 import { PauseCommand } from '../commands/PauseCommand.js';
+import { AttackPigeonCommand } from '../commands/AttackPigeonCommand.js';
 
 export class GameScene extends Phaser.Scene {
 
@@ -95,18 +96,20 @@ export class GameScene extends Phaser.Scene {
         this.players.set('player2', rightPigeon);
 
         const InputConfig = [
-            {
-                playerId: 'player1',
-                upKey: 'W',
-                rightKey: 'D',
-                leftKey: 'A',
-            },
-            {
-                playerId: 'player2',
-                upKey: 'UP',
-                rightKey: 'RIGHT',
-                leftKey: 'LEFT',
-            }
+          {
+            playerId: 'player1',
+            upKey: 'W',
+            leftKey: 'A',
+            rightKey: 'D',
+            attackKey: 'F'
+          },
+          {
+            playerId: 'player2',
+            upKey: 'UP',
+            leftKey: 'LEFT',
+            rightKey: 'RIGHT',
+            attackKey: 'SHIFT'
+          }
         ];
 
         this.inputMappings = InputConfig.map(config => {
@@ -115,6 +118,7 @@ export class GameScene extends Phaser.Scene {
                 upKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.upKey]),
                 rightKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.rightKey]),
                 leftKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.leftKey]),
+                attackKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.attackKey]),
             };
         });
     }
@@ -170,6 +174,13 @@ export class GameScene extends Phaser.Scene {
 
         this.inputMappings.forEach(mapping => {
             const pigeon = this.players.get(mapping.playerId);
+            if (!pigeon) return;
+
+            // Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+            if (pigeon.stunned) {
+                pigeon.sprite.setVelocityX(0);
+                return;
+            }
 
             // calcular movimiento horizontal (-1,0,1)
             let moveX = 0;
@@ -182,6 +193,12 @@ export class GameScene extends Phaser.Scene {
             // enviar comando con movimiento horizontal y salto
             let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
             this.processor.process(moveCommand);
+
+            // ataque (si se ha configurado la tecla)
+            if (mapping.attackKeyObj && mapping.attackKeyObj.isDown) {
+                const attackCmd = new AttackPigeonCommand(pigeon);
+                this.processor.process(attackCmd);
+            }
         });
     }
 }
