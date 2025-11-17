@@ -39,6 +39,9 @@ export class GameScene extends Phaser.Scene {
         this.load.image('palomon', 'assets/sprites/palomon.png');
         this.load.image('dovenando', 'assets/sprites/dovenando.png');
         this.load.image('churro', 'assets/sprites/Churro JER.png');
+        this.load.image('avena', 'assets/sprites/Avena.png');
+        this.load.image('pluma', 'assets/sprites/Pluma.png');
+        this.load.image('basura', 'assets/sprites/Basura.png');
     }
 
     create() {
