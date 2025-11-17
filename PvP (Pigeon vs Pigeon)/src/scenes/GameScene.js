@@ -20,7 +20,8 @@ export class GameScene extends Phaser.Scene {
     this.escWasDown = false;
     this.gameEnded = false;
     this.processor = new CommandProcessor();
-    this.churros = [];
+    this.churro = null;
+    this.powerUp = null;
 
     this.churroSpawnPositions = [
         { x: 560, y: 45 },   // Repiso superior
@@ -55,10 +56,7 @@ export class GameScene extends Phaser.Scene {
         // Crear churros
         //this.createChurros();
 
-        // Overlap para recoger churros
-        this.players.forEach(pigeon => {
-            this.physics.add.overlap(pigeon.sprite, this.churros.map(c => c.sprite), this.onChurroPickup, null, this);
-        });
+   
 
         this.playerSprites = this.physics.add.group();
         this.players.forEach(pigeon => {
@@ -69,10 +67,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.playerSprites, this.platforms);
         this.physics.add.collider(this.playerSprites, this.playerSprites);
 
-        //Colisiones entre churros y palomas
-        this.players.forEach(pigeon => {
-        this.physics.add.overlap(pigeon.sprite, this.churros.map(c => c.sprite), this.onChurroPickup, null, this);
-        });
+ 
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         
@@ -81,7 +76,7 @@ export class GameScene extends Phaser.Scene {
         delay: 10000,
         loop: true,
         callback: () => {
-         if (this.churros.length === 0) {
+         if (this.churro === null) {
              this.spawnChurro();
          }
         }
@@ -187,21 +182,21 @@ export class GameScene extends Phaser.Scene {
     const pos = Phaser.Utils.Array.GetRandom(this.churroSpawnPositions);
 
     const newChurro = new Churro(this, pos.x, pos.y);
-    this.churros.push(newChurro);
+    this.churro = (newChurro);
 
     // Activar overlap con ambos jugadores
     this.players.forEach(pigeon => {
         this.physics.add.overlap(
             pigeon.sprite,
             newChurro.sprite,
-            this.onChurroPickup,
+            this.onItemPickup,
             null,
             this);
     });
     }
 
 
-    onChurroPickup(pigeonSprite, churroSprite) {
+    onItemPickup(pigeonSprite, itemSprite) {
 
     let playerId = null;
 
@@ -211,22 +206,34 @@ export class GameScene extends Phaser.Scene {
         }
     });
 
-    if (playerId) {
-        const pigeon = this.players.get(playerId);
-        pigeon.score++;
-        console.log(`${playerId} recogió un churro! Puntuación: ${pigeon.score}`);
+    if (!playerId) return;
+
+    const pigeon = this.players.get(playerId);
+    const item = this.getItemBySprite(itemSprite);
+    
+    item.applyEffect(pigeon);
+    this.deleteItem(item);
     }
 
-    // Eliminar el churro del array
-    this.churros = this.churros.filter(churro => {
-        if (churro.sprite === churroSprite) {
-            churro.destroy();
-            return false;
-        }
-        return true;
-    });
+    //Devuelve el objeto al que pertenece un sprite
+    getItemBySprite(sprite) {
+        if (this.churro && this.churro.sprite === sprite) return this.churro;
+        if (this.powerUp && this.powerUp.sprite === sprite) return this.powerUp;
+        return null;
     }
 
+    //Elimina de la escena un objeto dado
+    deleteItem(item) {
+    if (item === this.churro) {
+        this.churro.destroy();
+        this.churro = null;
+    }
+
+    if (item === this.powerUp) {
+        this.powerUp.destroy();
+        this.powerUp = null;
+    }
+}
 
 
     endGame(winnerId) {

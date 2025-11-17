@@ -1,14 +1,13 @@
-export class Churro {
+import {Item} from './Item.js'
+
+export class Churro extends Item {
     
     constructor(scene, x, y) {
-        this.scene = scene;
-        this.sprite = scene.physics.add.sprite(x, y, 'churro');
-        this.sprite.setDisplaySize(40, 40);
-        this.sprite.setImmovable(true);
-        this.sprite.body.allowGravity = false;
+        super(scene, x, y,'churro');
     }
 
-    destroy() {
-        this.sprite.destroy();
+    applyEffect(pigeon){
+        pigeon.score++;
+        console.log(`${pigeon.id} recogió un Churro → score: ${pigeon.score}`);
     }
 }
