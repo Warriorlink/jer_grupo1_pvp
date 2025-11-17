@@ -139,8 +139,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     setUpPlayers() {
-        const leftPigeon = new Pigeon(this, 'player1', 150, 435);
-        const rightPigeon = new Pigeon(this, 'player2', 800, 435);
+        const leftPigeon = new Pigeon(this, 'player1', 150, 435, 'dovenando');
+        const rightPigeon = new Pigeon(this, 'player2', 800, 435, 'palomon');
 
         this.players.set('player1', leftPigeon);
         this.players.set('player2', rightPigeon);

@@ -1,6 +1,6 @@
 export class Pigeon {
 
-    constructor(scene, id, x, y) {
+    constructor(scene, id, x, y, sprite) {
         this.scene = scene;
         this.id = id;
         this.score = 0;
@@ -25,7 +25,7 @@ export class Pigeon {
         this.stunTimeout = null;
         this.defaultStunDuration = 3000;
 
-        this.sprite = this.scene.physics.add.sprite(x, y, 'palomon');
+        this.sprite = this.scene.physics.add.sprite(x, y, sprite);
         this.sprite.body.setCollideWorldBounds(true);
         this.sprite.body.allowGravity = true;
 
