@@ -5,6 +5,9 @@ import { MovePigeonCommand } from '../commands/MovePigeonCommand.js';
 import { PauseCommand } from '../commands/PauseCommand.js';
 import { AttackPigeonCommand } from '../commands/AttackPigeonCommand.js';
 import { Churro } from '../entities/Churro.js';
+import { Avena } from '../entities/Avena.js';
+import { Pluma } from '../entities/Pluma.js';
+import { Basura } from '../entities/Basura.js';
 
 export class GameScene extends Phaser.Scene {
 
@@ -23,7 +26,7 @@ export class GameScene extends Phaser.Scene {
     this.churro = null;
     this.powerUp = null;
 
-    this.churroSpawnPositions = [
+    this.itemSpawnPositions = [
         { x: 560, y: 45 },   // Repiso superior
         { x: 415, y: 200 },  // Repiso en medio
         { x: 790, y: 115 },  // Derecha superior
@@ -77,7 +80,7 @@ export class GameScene extends Phaser.Scene {
         loop: true,
         callback: () => {
          if (this.churro === null) {
-             this.spawnChurro();
+             this.spawnItem("churro");
          }
         }
     });
@@ -176,19 +179,49 @@ export class GameScene extends Phaser.Scene {
         this.churros.push(new Churro(this, 480, 200));
     }*/
 
-    spawnChurro() {
+    spawnItem(type) {
+
+        let refName = null;
+    let ItemClass = null;
+
+    // decidir qué clase instanciar y qué referencia usar
+    switch (type) {
+        case "churro":
+            refName = "churro";
+            ItemClass = Churro;
+            break;
+
+        case "avena":
+            refName = "powerUp";
+            ItemClass = Avena;
+            break;
+
+        case "pluma":
+            refName = "powerUp";
+            ItemClass = Pluma;
+            break;
+
+        case "basura":
+            refName = "powerUp";
+            ItemClass = Basura;
+            break;
+
+        default:
+            console.warn("Tipo desconocido:", type);
+            return;
+    }
 
     // Elegir una posición al azar
-    const pos = Phaser.Utils.Array.GetRandom(this.churroSpawnPositions);
+    const pos = Phaser.Utils.Array.GetRandom(this.itemSpawnPositions);
 
-    const newChurro = new Churro(this, pos.x, pos.y);
-    this.churro = (newChurro);
+    const item = new ItemClass(this, pos.x, pos.y);
+    this[refName] = (item);
 
     // Activar overlap con ambos jugadores
     this.players.forEach(pigeon => {
         this.physics.add.overlap(
             pigeon.sprite,
-            newChurro.sprite,
+            item.sprite,
             this.onItemPickup,
             null,
             this);
