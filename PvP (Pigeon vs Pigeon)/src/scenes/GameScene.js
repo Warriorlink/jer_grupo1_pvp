@@ -4,6 +4,7 @@ import { CommandProcessor } from '../commands/CommandProcessor';
 import { MovePigeonCommand } from '../commands/MovePigeonCommand.js';
 import { PauseCommand } from '../commands/PauseCommand.js';
 import { AttackPigeonCommand } from '../commands/AttackPigeonCommand.js';
+import { Churro } from '../entities/Churro.js';
 
 export class GameScene extends Phaser.Scene {
 
@@ -18,11 +19,14 @@ export class GameScene extends Phaser.Scene {
         this.escWasDown = false;
         this.gameEnded = false;
         this.processor = new CommandProcessor();
+        this.churros = [];
     }
 
     preload() {
         this.load.image('background', 'assets/sprites/background.png');
         this.load.image('palomon', 'assets/sprites/palomon.png');
+        this.load.image('dovenando', 'assets/sprites/dovenando.png');
+        this.load.image('churro', 'assets/sprites/Churro JER.png');
     }
 
     create() {
@@ -33,6 +37,14 @@ export class GameScene extends Phaser.Scene {
 
         this.setUpPlayers();
 
+        // Crear churros
+        this.createChurros();
+
+        // Overlap para recoger churros
+        this.players.forEach(pigeon => {
+            this.physics.add.overlap(pigeon.sprite, this.churros.map(c => c.sprite), this.onChurroPickup, null, this);
+        });
+
         this.playerSprites = this.physics.add.group();
         this.players.forEach(pigeon => {
             this.playerSprites.add(pigeon.sprite);
@@ -41,6 +53,11 @@ export class GameScene extends Phaser.Scene {
         //Colisiones entre palomas y plataformas
         this.physics.add.collider(this.playerSprites, this.platforms);
         this.physics.add.collider(this.playerSprites, this.playerSprites);
+
+        //Colisiones entre churros y palomas
+        this.players.forEach(pigeon => {
+        this.physics.add.overlap(pigeon.sprite, this.churros.map(c => c.sprite), this.onChurroPickup, null, this);
+        });
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
@@ -129,6 +146,37 @@ export class GameScene extends Phaser.Scene {
                 leftKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.leftKey]),
                 attackKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.attackKey]),
             };
+        });
+    }
+
+    createChurros() {
+        // Crear un churro en el centro para pruebas
+        this.churros.push(new Churro(this, 480, 200));
+    }
+
+    onChurroPickup(pigeonSprite, churroSprite) {
+        // Encontrar qué jugador recogió el churro
+        let playerId = null;
+        this.players.forEach((pigeon, id) => {
+            if (pigeon.sprite === pigeonSprite) {
+                playerId = id;
+            }
+        });
+
+        if (playerId) {
+            const pigeon = this.players.get(playerId);
+            pigeon.score++;
+            console.log(`${playerId} recogió un churro! Puntuación: ${pigeon.score}`);
+            console.log(`Puntuaciones - Player 1: ${this.players.get('player1').score} | Player 2: ${this.players.get('player2').score}`);
+        }
+
+        // Eliminar el churro del array y destruir sprite
+        this.churros = this.churros.filter(churro => {
+            if (churro.sprite === churroSprite) {
+                churro.destroy();
+                return false;
+            }
+            return true;
         });
     }
 
