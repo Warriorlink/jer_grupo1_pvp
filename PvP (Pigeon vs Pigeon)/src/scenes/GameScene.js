@@ -48,23 +48,32 @@ export class GameScene extends Phaser.Scene {
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
 
-        //Repiso de arriba (o como se llame la escalera de incendios)
+        //Repiso de arriba
         this.platforms.create(540, 80, null).setDisplaySize(220, 20).refreshBody();
+
+        //Repiso de arriba pequeño
+        this.platforms.create(310, 80, null).setDisplaySize(10, 20).refreshBody();
 
         //Repiso de en medio
         this.platforms.create(415, 237, null).setDisplaySize(220, 20).refreshBody();
 
+        //Repiso de en medio pequeño
+        this.platforms.create(650, 237, null).setDisplaySize(10, 20).refreshBody();
+
         //Suelo
         this.platforms.create(480, 513, null).setDisplaySize(960, 60).refreshBody();
 
-        //Techo
-        this.platforms.create(480, 0, null).setDisplaySize(960, 5).refreshBody();
+        //Camiseta
+        this.platforms.create(640, 360, null).setDisplaySize(90, 5).refreshBody();
+
+        //Pantalones
+        this.platforms.create(345, 365, null).setDisplaySize(100, 5).refreshBody();
 
         //Límite izquierdo
-        this.platforms.create(33, 430, null).setDisplaySize(70, 860).refreshBody();
+        this.platforms.create(33, 430, null).setDisplaySize(70, 1200).refreshBody();
 
         //Límite derecho
-        this.platforms.create(927, 430, null).setDisplaySize(70, 860).refreshBody();
+        this.platforms.create(927, 430, null).setDisplaySize(70, 1200).refreshBody();
 
         //Acera izquierda
         this.platforms.create(89, 475, null).setDisplaySize(200, 15).refreshBody();
@@ -73,16 +82,16 @@ export class GameScene extends Phaser.Scene {
         this.platforms.create(870, 475, null).setDisplaySize(200, 15).refreshBody();
 
         //Plataforma derecha superior
-        this.platforms.create(832, 148, null).setDisplaySize(130, 22).refreshBody();
+        this.platforms.create(832, 145, null).setDisplaySize(130, 15).refreshBody();
 
         //Plataforma derecha inferior
-        this.platforms.create(832, 316, null).setDisplaySize(130, 22).refreshBody();
+        this.platforms.create(832, 313, null).setDisplaySize(130, 15).refreshBody();
 
         //Plataforma izquierda superior
-        this.platforms.create(126, 148, null).setDisplaySize(130, 22).refreshBody();
+        this.platforms.create(126, 145, null).setDisplaySize(130, 15).refreshBody();
 
         //Plataforma izquierda inferior
-        this.platforms.create(126, 316, null).setDisplaySize(130, 22).refreshBody();
+        this.platforms.create(126, 313, null).setDisplaySize(130, 15).refreshBody();
 
         this.platforms.setVisible(false);
 

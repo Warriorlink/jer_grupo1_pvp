@@ -9,7 +9,7 @@ export class Pigeon {
         this.baseHeight = 100;
         
         this.baseSpeed = 300; 
-        this.baseJumpSpeed = 470;
+        this.baseJumpSpeed = 400;
 
         //Ataque de las palomas
         this.attackCooldown = 500; // ms
