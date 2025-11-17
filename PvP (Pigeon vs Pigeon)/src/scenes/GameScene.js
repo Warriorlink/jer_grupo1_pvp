@@ -13,14 +13,26 @@ export class GameScene extends Phaser.Scene {
     }
 
     init() {
-        this.players = new Map();
-        this.inputMappings = [];
-        this.isPaused = false;
-        this.escWasDown = false;
-        this.gameEnded = false;
-        this.processor = new CommandProcessor();
-        this.churros = [];
-    }
+
+    this.players = new Map();
+    this.inputMappings = [];
+    this.isPaused = false;
+    this.escWasDown = false;
+    this.gameEnded = false;
+    this.processor = new CommandProcessor();
+    this.churros = [];
+
+    this.churroSpawnPositions = [
+        { x: 560, y: 45 },   // Repiso superior
+        { x: 415, y: 200 },  // Repiso en medio
+        { x: 790, y: 115 },  // Derecha superior
+        { x: 790, y: 280 },  // Derecha inferior
+        { x: 126, y: 115 },  // Izquierda superior
+        { x: 126, y: 280 },  // Izquierda inferior
+        { x: 560, y: 455 }   // Suelo
+    ];
+}
+
 
     preload() {
         this.load.image('background', 'assets/sprites/background.png');
@@ -38,7 +50,7 @@ export class GameScene extends Phaser.Scene {
         this.setUpPlayers();
 
         // Crear churros
-        this.createChurros();
+        //this.createChurros();
 
         // Overlap para recoger churros
         this.players.forEach(pigeon => {
@@ -60,6 +72,18 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        
+        // Cada 10 segundos intentar generar un churro
+        this.time.addEvent({
+        delay: 10000,
+        loop: true,
+        callback: () => {
+         if (this.churros.length === 0) {
+             this.spawnChurro();
+         }
+        }
+    });
+
     }
 
     createPlatforms() {
@@ -149,36 +173,58 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    createChurros() {
+    /*createChurros() {
         // Crear un churro en el centro para pruebas
         this.churros.push(new Churro(this, 480, 200));
+    }*/
+
+    spawnChurro() {
+
+    // Elegir una posición al azar
+    const pos = Phaser.Utils.Array.GetRandom(this.churroSpawnPositions);
+
+    const newChurro = new Churro(this, pos.x, pos.y);
+    this.churros.push(newChurro);
+
+    // Activar overlap con ambos jugadores
+    this.players.forEach(pigeon => {
+        this.physics.add.overlap(
+            pigeon.sprite,
+            newChurro.sprite,
+            this.onChurroPickup,
+            null,
+            this);
+    });
     }
+
 
     onChurroPickup(pigeonSprite, churroSprite) {
-        // Encontrar qué jugador recogió el churro
-        let playerId = null;
-        this.players.forEach((pigeon, id) => {
-            if (pigeon.sprite === pigeonSprite) {
-                playerId = id;
-            }
-        });
 
-        if (playerId) {
-            const pigeon = this.players.get(playerId);
-            pigeon.score++;
-            console.log(`${playerId} recogió un churro! Puntuación: ${pigeon.score}`);
-            console.log(`Puntuaciones - Player 1: ${this.players.get('player1').score} | Player 2: ${this.players.get('player2').score}`);
+    let playerId = null;
+
+    this.players.forEach((pigeon, id) => {
+        if (pigeon.sprite === pigeonSprite) {
+            playerId = id;
         }
+    });
 
-        // Eliminar el churro del array y destruir sprite
-        this.churros = this.churros.filter(churro => {
-            if (churro.sprite === churroSprite) {
-                churro.destroy();
-                return false;
-            }
-            return true;
-        });
+    if (playerId) {
+        const pigeon = this.players.get(playerId);
+        pigeon.score++;
+        console.log(`${playerId} recogió un churro! Puntuación: ${pigeon.score}`);
     }
+
+    // Eliminar el churro del array
+    this.churros = this.churros.filter(churro => {
+        if (churro.sprite === churroSprite) {
+            churro.destroy();
+            return false;
+        }
+        return true;
+    });
+    }
+
+
 
     endGame(winnerId) {
         this.gameEnded = true;
