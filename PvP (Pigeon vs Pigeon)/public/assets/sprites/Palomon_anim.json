@@ -1,43 +1,43 @@
 { "frames": {
    "Palomas JER 0.ase": {
-    "frame": { "x": 0, "y": 0, "w": 30, "h": 20 },
+    "frame": { "x": 0, "y": 0, "w": 90, "h": 60 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 30, "h": 20 },
-    "sourceSize": { "w": 30, "h": 20 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 90, "h": 60 },
+    "sourceSize": { "w": 90, "h": 60 },
     "duration": 150
    },
    "Palomas JER 1.ase": {
-    "frame": { "x": 30, "y": 0, "w": 30, "h": 20 },
+    "frame": { "x": 90, "y": 0, "w": 90, "h": 60 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 30, "h": 20 },
-    "sourceSize": { "w": 30, "h": 20 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 90, "h": 60 },
+    "sourceSize": { "w": 90, "h": 60 },
     "duration": 150
    },
    "Palomas JER 2.ase": {
-    "frame": { "x": 60, "y": 0, "w": 30, "h": 20 },
+    "frame": { "x": 180, "y": 0, "w": 90, "h": 60 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 30, "h": 20 },
-    "sourceSize": { "w": 30, "h": 20 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 90, "h": 60 },
+    "sourceSize": { "w": 90, "h": 60 },
     "duration": 150
    },
    "Palomas JER 3.ase": {
-    "frame": { "x": 90, "y": 0, "w": 30, "h": 20 },
+    "frame": { "x": 270, "y": 0, "w": 90, "h": 60 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 30, "h": 20 },
-    "sourceSize": { "w": 30, "h": 20 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 90, "h": 60 },
+    "sourceSize": { "w": 90, "h": 60 },
     "duration": 150
    }
  },
  "meta": {
   "app": "https://github.com/LibreSprite/LibreSprite/",
   "version": "1.1-dev",
-  "image": "C:\\Users\\marvl\\Downloads\\Palomon_anim.png",
+  "image": "C:\\Users\\marvl\\Documents\\GitHub\\jer_grupo1_pvp\\PvP (Pigeon vs Pigeon)\\public\\assets\\sprites\\Palomon_anim.png",
   "format": "RGBA8888",
-  "size": { "w": 120, "h": 20 },
+  "size": { "w": 360, "h": 60 },
   "scale": "1",
   "frameTags": [
    { "name": "Loop", "from": 0, "to": 3, "direction": "forward" }
