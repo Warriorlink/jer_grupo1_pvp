@@ -228,8 +228,23 @@ export class GameScene extends Phaser.Scene {
             return;
     }
 
+    const availablePositions = this.itemSpawnPositions.filter(pos => {
+
+        // Evitar posición donde hay churro
+        if (this.churro && this.churro.sprite.x === pos.x && this.churro.sprite.y === pos.y) {
+            return false;
+        }
+
+        // Evitar posición donde hay power-up
+        if (this.powerUp && this.powerUp.sprite.x === pos.x && this.powerUp.sprite.y === pos.y) {
+            return false;
+        }
+
+        return true;
+    });
+
     // Elegir una posición al azar
-    const pos = Phaser.Utils.Array.GetRandom(this.itemSpawnPositions);
+    const pos = Phaser.Utils.Array.GetRandom(availablePositions);
 
     const item = new ItemClass(this, pos.x, pos.y);
     this[refName] = (item);
