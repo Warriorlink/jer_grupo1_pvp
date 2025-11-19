@@ -35,6 +35,12 @@ export class GameScene extends Phaser.Scene {
         { x: 126, y: 280 },  // Izquierda inferior
         { x: 560, y: 455 }   // Suelo
     ];
+
+    this.powerUps =[
+        'avena',
+        'basura',
+        'pluma'
+    ];
 }
 
 
@@ -85,6 +91,16 @@ export class GameScene extends Phaser.Scene {
          }
         }
     });
+
+        this.time.addEvent({
+        delay: 8000,
+        loop: true,
+        callback: () => {
+         if (this.powerUp === null) {
+             this.spawnItem(Phaser.Utils.Array.GetRandom(this.powerUps));
+         }
+        }
+        })
 
     }
 
