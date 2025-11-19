@@ -5,12 +5,24 @@ export class MenuScene extends Phaser.Scene {
         super('MenuScene');
     }
 
+    preload() {
+        this.load.audio('AveMaria', 'assets/sounds/AveMaria.mp3');
+    }
+
     create() {
+
         this.add.text(480, 100, 'PvP', { 
             fontSize: '64px', 
             color: '#ffffffff'
         }).setOrigin(0.5);
 
+        if (!this.bgMusic) {
+            this.bgMusic = this.sound.add('AveMaria', {
+                loop: true,
+                volume: 0.5
+            });
+            this.bgMusic.play();
+        }
         const localBtn = this.add.text(300, 320, 'Local 2 Players', {
             fontSize: '24px',
             color: '#00ff00'
@@ -18,7 +30,13 @@ export class MenuScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .on('pointerover', () => localBtn.setStyle({ fill: '#00ff88' }))
         .on('pointerout', () => localBtn.setStyle({ fill: '#00ff00' }))
-        .on('pointerdown', () => { this.scene.start('GameScene') });
+        .on('pointerdown', () => { 
+            if (this.bgMusic) {
+                this.bgMusic.stop();
+                this.bgMusic.destroy();
+                this.bgMusic = null;
+            }
+            this.scene.start('GameScene') });
 
         const creditsBtn = this.add.text(300, 400, 'Credits', {
             fontSize: '24px',
@@ -47,5 +65,7 @@ export class MenuScene extends Phaser.Scene {
         .on('pointerout', () => onlineBtn.setStyle({ fill: '#7a2eacff' }))
         .on('pointerdown', () => { this.scene.start() });
         }
+
+        
 
     }

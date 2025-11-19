@@ -52,11 +52,19 @@ export class GameScene extends Phaser.Scene {
         this.load.image('avena', 'assets/sprites/Avena.png');
         this.load.image('pluma', 'assets/sprites/Pluma.png');
         this.load.image('basura', 'assets/sprites/Basura.png');
+        this.load.audio('Numb', 'assets/sounds/Numb.mp3');
     }
 
     create() {
 
         this.add.image(480, 270, 'background');
+
+        //Musica de fondo
+        this.bgMusic = this.sound.add('Numb', {
+            loop: true,
+            volume: 0.5
+        });
+        this.bgMusic.play();
 
         this.createPlatforms();
 
@@ -102,7 +110,18 @@ export class GameScene extends Phaser.Scene {
         }
         })
 
+        this.events.on('shutdown', this.onShutdown, this);
+this.events.on('destroy', this.onShutdown, this);
+
     }
+    
+    onShutdown() {
+    if (this.bgMusic) {
+        this.bgMusic.stop();
+        this.bgMusic.destroy();
+        this.bgMusic = null;
+    }
+}
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
