@@ -76,7 +76,7 @@ export class GameScene extends Phaser.Scene {
         
         // Cada 10 segundos intentar generar un churro
         this.time.addEvent({
-        delay: 10000,
+        delay: 5000,
         loop: true,
         callback: () => {
          if (this.churro === null) {
@@ -246,6 +246,10 @@ export class GameScene extends Phaser.Scene {
     
     item.applyEffect(pigeon);
     this.deleteItem(item);
+    if (pigeon.score >= 3) {
+        this.scene.launch('EndGameScene', { winnerId: playerId });
+        this.scene.stop('GameScene');
+    }
     }
 
     //Devuelve el objeto al que pertenece un sprite
@@ -268,7 +272,7 @@ export class GameScene extends Phaser.Scene {
     }
 }
 
-
+/*
     endGame(winnerId) {
         this.gameEnded = true;
         this.players.forEach(pigeon => {
@@ -276,13 +280,14 @@ export class GameScene extends Phaser.Scene {
         });
         this.physics.pause();
 
-        const winnerText = winnerId === 'player1' ? 'Player 1 Wins!' : 'Player 2 Wins!';
-        this.add.text(400, 250, winnerText, {
+        const winnerText = winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
+        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
+        this.add.text(480, 250, winnerText, {
             fontSize: '64px',
-            color: '#00ff00'
+            color: '#000000'
         }).setOrigin(0.5);
 
-        const menuBtn = this.add.text(400, 350, 'Return to Menu', {
+        const menuBtn = this.add.text(480, 350, 'Return to Menu', {
             fontSize: '32px',
             color: '#ffffff',
         }).setOrigin(0.5).setInteractive()
@@ -290,7 +295,7 @@ export class GameScene extends Phaser.Scene {
             .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
             .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
     }
-
+*/
     setPauseState(isPaused) {
         this.isPaused = isPaused;
         if (isPaused) {
