@@ -68,7 +68,8 @@ export class GameScene extends Phaser.Scene {
 
         //Colisiones entre palomas y plataformas
         this.physics.add.collider(this.playerSprites, this.platforms);
-        this.physics.add.collider(this.playerSprites, this.playerSprites);
+        this.physics.add.overlap(this.playerSprites, this.playerSprites);
+
 
  
 
