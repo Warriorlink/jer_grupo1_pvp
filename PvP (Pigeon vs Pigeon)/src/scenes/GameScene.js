@@ -77,7 +77,7 @@ export class GameScene extends Phaser.Scene {
     fontStyle: 'bold'
 });
 
-this.scoreTextP2 = this.add.text(820, 20, 'Palomón: 0', {
+this.scoreTextP2 = this.add.text(750, 20, 'Palomón: 0', {
     fontSize: '32px',
     color: '#ffffff',
     fontStyle: 'bold'

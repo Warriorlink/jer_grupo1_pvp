@@ -8,6 +8,18 @@ export class Pluma extends Item {
 
     applyEffect(pigeon){
  
-        console.log(`${pigeon.id} recogió pluma`);
+        const fastSpeed = 500;
+        const normalSpeed = 300;
+
+        // Aplicar velocidad reducida inmediatamente
+        pigeon.baseSpeed = fastSpeed;
+
+        // Restaurar velocidad después de 5 segundos
+        this.scene.time.addEvent({
+            delay: 5000,
+            callback: () => {
+                pigeon.baseSpeed = normalSpeed;
+            }
+        });
     }
 }
