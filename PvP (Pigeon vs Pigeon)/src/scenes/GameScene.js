@@ -70,10 +70,18 @@ export class GameScene extends Phaser.Scene {
 
         this.setUpPlayers();
 
-        // Crear churros
-        //this.createChurros();
+        //Puntuaciones correspondientes
+        this.scoreTextP1 = this.add.text(30, 20, 'Dovenando: 0', {
+    fontSize: '32px',
+    color: '#ffffff',
+    fontStyle: 'bold'
+});
 
-   
+this.scoreTextP2 = this.add.text(820, 20, 'Palomón: 0', {
+    fontSize: '32px',
+    color: '#ffffff',
+    fontStyle: 'bold'
+});
 
         this.playerSprites = this.physics.add.group();
         this.players.forEach(pigeon => {
@@ -296,6 +304,11 @@ this.events.on('destroy', this.onShutdown, this);
     const item = this.getItemBySprite(itemSprite);
     
     item.applyEffect(pigeon);
+
+    //Actualizar puntuaciones
+    this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
+    this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
+
     this.deleteItem(item);
     if (pigeon.score >= 3) {
         this.scene.launch('EndGameScene', { winnerId: playerId });
