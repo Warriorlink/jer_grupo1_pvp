@@ -5,6 +5,14 @@ export class CreditsScene extends Phaser.Scene {
         super('CreditsScene');
     }
     create() {
+        this.cameras.main.setAlpha(0);
+
+        this.tweens.add({
+        targets: this.cameras.main,
+        alpha: 1,
+        duration: 800
+        });
+
         this.add.text(480, 50, 'Credits', { 
             fontSize: '64px', 
             color: '#ffffffff'

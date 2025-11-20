@@ -56,6 +56,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.setAlpha(0);
+
+        this.tweens.add({
+        targets: this.cameras.main,
+        alpha: 1,
+        duration: 800
+        });
 
         this.add.image(480, 270, 'background');
 
