@@ -5,6 +5,14 @@ export class ControlsScene extends Phaser.Scene {
         super('ControlsScene');
     }
     create() {
+        this.cameras.main.setAlpha(0);
+
+        this.tweens.add({
+        targets: this.cameras.main,
+        alpha: 1,
+        duration: 800
+        });
+
         this.add.text(480, 50, 'Controls', { 
             fontSize: '64px', 
             color: '#ffffffff'
@@ -59,8 +67,22 @@ export class ControlsScene extends Phaser.Scene {
             color: '#ffff00',
         }).setOrigin(0.5);
         backButton.setInteractive({ useHandCursor: true });
-        backButton.on('pointerdown', () => {
-            this.scene.start('MenuScene');
-        });
+        backButton.on('pointerdown', () => { 
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a MenuScene
+                this.scene.transition({
+                    target: 'MenuScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
+            });
     }
 }

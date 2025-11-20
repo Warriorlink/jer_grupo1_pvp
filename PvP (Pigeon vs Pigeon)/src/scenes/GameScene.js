@@ -318,8 +318,21 @@ this.events.on('destroy', this.onShutdown, this);
 
     this.deleteItem(item);
     if (pigeon.score >= 3) {
-        this.scene.launch('EndGameScene', { winnerId: playerId });
-        this.scene.stop('GameScene');
+        // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a EndGameScene
+                this.scene.transition({
+                    target: 'EndGameScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {winnerId: playerId},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
     }
     }
 

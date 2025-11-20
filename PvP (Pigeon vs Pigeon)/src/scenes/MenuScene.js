@@ -10,7 +10,14 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.setAlpha(0);
 
+        this.tweens.add({
+        targets: this.cameras.main,
+        alpha: 1,
+        duration: 800
+        });
+        
         this.add.text(480, 100, 'PvP', {
             fontSize: '64px',
             color: '#ffffffff'
@@ -64,10 +71,11 @@ export class MenuScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => creditsBtn.setStyle({ fill: '#0088ff' }))
             .on('pointerout', () => creditsBtn.setStyle({ fill: '#0000ff' }))
-            .on('pointerdown', () => { // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            .on('pointerdown', () => { 
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
                 this.cameras.main.setAlpha(1);
 
-                // Transición a GameScene
+                // Transición a CreditsScene
                 this.scene.transition({
                     target: 'CreditsScene',
                     duration: 1000,
@@ -88,7 +96,23 @@ export class MenuScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => controlsBtn.setStyle({ fill: '#ff8888' }))
             .on('pointerout', () => controlsBtn.setStyle({ fill: '#ff0000' }))
-            .on('pointerdown', () => { this.scene.start('ControlsScene') });
+            .on('pointerdown', () => { 
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a ControlsScene
+                this.scene.transition({
+                    target: 'ControlsScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
+            });
 
         const onlineBtn = this.add.text(650, 320, 'Online (Not available)', {
             fontSize: '24px',
@@ -97,7 +121,6 @@ export class MenuScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => onlineBtn.setStyle({ fill: '#e001a8ff' }))
             .on('pointerout', () => onlineBtn.setStyle({ fill: '#7a2eacff' }))
-            .on('pointerdown', () => { this.scene.start() });
     }
 
 

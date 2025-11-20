@@ -9,6 +9,14 @@ export class EndGameScene extends Phaser.Scene {
     }
 
     create(data) {
+        this.cameras.main.setAlpha(0);
+
+        this.tweens.add({
+        targets: this.cameras.main,
+        alpha: 1,
+        duration: 800
+        });
+        
         this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
 
         const winnerText = data.winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
@@ -33,7 +41,23 @@ export class EndGameScene extends Phaser.Scene {
             fontSize: '32px',
             color: '#ffffff',
         }).setOrigin(0.5).setInteractive()
-            .on('pointerdown', () => { this.scene.start('MenuScene') })
+            .on('pointerdown', () => { 
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a MenuScene
+                this.scene.transition({
+                    target: 'MenuScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
+            })
             .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
             .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
     }

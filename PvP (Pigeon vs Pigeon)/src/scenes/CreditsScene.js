@@ -52,9 +52,23 @@ export class CreditsScene extends Phaser.Scene {
             fontSize: '24px',
             color: '#ffff00',
         }).setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .on('pointerdown', () => {
-            this.scene.start('MenuScene');
-        });
+        backButton.setInteractive({ useHandCursor: true })
+        backButton.on('pointerdown', () => { 
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a MenuScene
+                this.scene.transition({
+                    target: 'MenuScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
+            });
     }
 }

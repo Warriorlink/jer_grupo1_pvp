@@ -31,8 +31,22 @@ export class PauseScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive()
         .on('pointerdown', () => { 
             this.scene.stop(data.originalScene);
-            this.scene.start('MenuScene'); 
-        })
+                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+                this.cameras.main.setAlpha(1);
+
+                // Transición a MenuScene
+                this.scene.transition({
+                    target: 'MenuScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    // Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    } 
+                });
+            })
         .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
         .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
     }
