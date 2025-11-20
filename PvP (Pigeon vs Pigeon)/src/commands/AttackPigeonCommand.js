@@ -36,12 +36,15 @@ export class AttackPigeonCommand extends Command {
             const targetPigeon = targetSprite.pigeon;
             if (!targetPigeon) return;
 
+            // Knockback según dirección del atacante
             const knock = this.pigeon.attackForce * dir;
-            targetPigeon.takeHit(knock);
 
-            //Aplicar stun de 3s
+            // 1) STUN primero
             targetPigeon.stun();
 
+            // 2) y DESPUÉS aplicar knockback final
+            targetPigeon.takeHit(knock);
+            
             //Evitar múltiples impactos por el mismo ataque
             if (overlap && scene.physics && scene.physics.world) {
                 scene.physics.world.removeCollider(overlap);

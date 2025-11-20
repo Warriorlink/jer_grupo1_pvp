@@ -44,24 +44,30 @@ export class Pigeon {
     }
 
     //Aplica el efecto de recibir un golpe
+    // Aplica el efecto de recibir un golpe
     takeHit(knockbackX = 0) {
         // aplicar empuje siempre
         this.sprite.setVelocityX(knockbackX);
 
+        // permitir que el knockback no sea anulado por el update durante un breve tiempo (ms)
+        // ajusta 200 si quieres que sea más o menos tiempo visible
+        this.knockbackExpire = this.scene.time.now + 200;
+
         // si ya está stunada, no tocar la tint (para no sobreescribir la animación de stun)
         if (this.stunned) {
-            return;
+        return;
         }
 
         // efecto visual breve cuando no está stunada
         this.sprite.setTint(0xff0000);
         this.scene.time.delayedCall(200, () => {
-            // sólo limpiar si no quedó stunada mientras tanto
-            if (!this.stunned) {
-                this.sprite.clearTint();
-            }
-        });
+        // sólo limpiar si no quedó stunada mientras tanto
+        if (!this.stunned) {
+            this.sprite.clearTint();
+        }
+    });
     }
+
 
     //Aplica el efecto de stun a la paloma correspondiente
     stun(durationMs = null) {

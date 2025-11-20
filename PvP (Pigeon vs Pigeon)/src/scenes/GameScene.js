@@ -392,10 +392,16 @@ this.events.on('destroy', this.onShutdown, this);
             if (!pigeon) return;
 
             // Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+            // Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
             if (pigeon.stunned) {
-                pigeon.sprite.setVelocityX(0);
+                // permitir knockback durante un corto periodo tras recibir el golpe
+                if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
+                    // si no hay knockback activo, detener horizontalmente
+                    pigeon.sprite.setVelocityX(0);
+                }
                 return;
             }
+
 
             // calcular movimiento horizontal (-1,0,1)
             let moveX = 0;
