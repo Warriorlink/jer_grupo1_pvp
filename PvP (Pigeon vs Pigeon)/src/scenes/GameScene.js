@@ -329,6 +329,23 @@ this.events.on('destroy', this.onShutdown, this);
             null,
             this);
     });
+
+
+    if (refName === "powerUp") {
+
+    // Tiempo de vida del power-up 
+    const lifetime = 9000;
+
+    // Guardar el timer en el propio objeto para poder cancelarlo si hace falta
+    item.expireTimer = this.time.delayedCall(lifetime, () => {
+
+        if (this.powerUp === item) {
+            this.deleteItem(item);  
+        }
+
+    });
+    }
+    
     }
 
 

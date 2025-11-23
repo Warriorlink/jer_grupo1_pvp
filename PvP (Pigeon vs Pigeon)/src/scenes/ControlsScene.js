@@ -29,12 +29,7 @@ export class ControlsScene extends Phaser.Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
-        this.add.text(480, 240, 'Power-up: E', {
-            fontSize: '24px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
-
-        this.add.text(480, 280, 'Attack: F', {
+        this.add.text(480, 240, 'Attack: F', {
             fontSize: '24px',
             color: '#ffffff'
         }).setOrigin(0.5);
@@ -46,17 +41,12 @@ export class ControlsScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        this.add.text(480, 410, 'Move: I - J - L (Up, Left, Right)', {
+        this.add.text(480, 410, 'Move: ↑ - ← - → (Up, Left, Right)', {
             fontSize: '24px',
             color: '#ffffff'
         }).setOrigin(0.5);
 
-        this.add.text(480, 450, 'Power-up: O', {
-            fontSize: '24px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
-
-        this.add.text(480, 490, 'Attack: Ñ', {
+        this.add.text(480, 450, 'Attack: Shift', {
             fontSize: '24px',
             color: '#ffffff'
         }).setOrigin(0.5);

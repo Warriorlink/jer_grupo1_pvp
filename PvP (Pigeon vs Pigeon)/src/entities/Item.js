@@ -9,10 +9,12 @@ export class Item {
         this.sprite.body.allowGravity = false;
 
         // Referencia inversa útil para saber qué objeto se recogió
-        this.sprite.item = this;
+        //this.sprite.item = this;
+
+        this.expireTimer=null;
     }
 
-    // 💡 Cada ítem tendrá SU PROPIO efecto
+    // Cada ítem tendrá SU PROPIO efecto
     applyEffect(pigeon) {
         console.warn("applyEffect() no implementado en el item");
     }
