@@ -11,22 +11,44 @@ export class MovePigeonCommand extends Command {
     }
 
     execute() {
-        const sprite = this.pigeon.sprite;
+        const pigeon = this.pigeon;
+        const sprite = pigeon.sprite;
 
-        // si está stunado no permite moverse ni saltar
-        if (this.pigeon.stunned) {
+        // Si está stunado no permite moverse ni reproducir caminata
+        if (pigeon.stunned) {
             sprite.setVelocityX(0);
+            // usar el método del pigeon para reproducir la animación correcta
+            pigeon.playAnimation('idle');
             return;
         }
 
-        // actualizar facing según movimiento horizontal
-        if (this.moveX > 0) this.pigeon.facing = 'right';
-        else if (this.moveX < 0) this.pigeon.facing = 'left';
+        // --- Flip según movimiento, teniendo en cuenta sprites invertidos ---
+        // Si pigeon.invertFlipForMovement === false (normal):
+        //    flipX = true cuando moveX < 0 (mirar izquierda)
+        // Si pigeon.invertFlipForMovement === true (sprite invertido):
+        //    flipX = true cuando moveX > 0 (mirar derecha)
+        if (this.moveX > 0) {
+            pigeon.facing = 'right';
+        } else if (this.moveX < 0) {
+            pigeon.facing = 'left';
+        }
 
-        // Aplicar velocidad lateral según moveX
-        sprite.setVelocityX(this.moveX * this.pigeon.baseSpeed);
+        if (this.moveX !== 0) {
+    const desiredFlip = pigeon.invertFlipForMovement ? (this.moveX > 0) : (this.moveX < 0);
+    sprite.setFlipX(desiredFlip);
+}
 
-        // Si se intenta saltar, sólo aplicar si está en el suelo
+        // Velocidad horizontal
+        sprite.setVelocityX(this.moveX * pigeon.baseSpeed);
+
+        // Reproducir animación correcta desde el pigeon (prefijo por personaje)
+        if (this.moveX !== 0) {
+            pigeon.playAnimation('walk');
+        } else {
+            pigeon.playAnimation('idle');
+        }
+
+        // Salto únicamente si está en el suelo
         if (this.jump) {
             const body = sprite.body;
             const onGround = body && (typeof body.onFloor === 'function'
@@ -34,7 +56,7 @@ export class MovePigeonCommand extends Command {
                 : ((body.blocked && body.blocked.down) || (body.touching && body.touching.down)));
 
             if (onGround) {
-                sprite.setVelocityY(-this.pigeon.baseJumpSpeed);
+                sprite.setVelocityY(-pigeon.baseJumpSpeed);
             }
         }
     }

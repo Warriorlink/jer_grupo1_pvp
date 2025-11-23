@@ -53,6 +53,15 @@ export class GameScene extends Phaser.Scene {
         this.load.image('pluma', 'assets/sprites/Pluma.png');
         this.load.image('basura', 'assets/sprites/Basura.png');
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
+
+        this.load.spritesheet('palomonSheet', 'assets/sprites/Palomon_anim.png', {
+            frameWidth: 90,
+            frameHeight: 60
+        });
+        this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk.png', {
+            frameWidth: 90,
+            frameHeight: 60
+        });
     }
 
     create() {
@@ -76,6 +85,34 @@ export class GameScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.setUpPlayers();
+
+        this.anims.create({
+            key: 'palomon_idle',
+            frames: [{ key: 'palomonSheet', frame: 0 }],
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'palomon_walk',
+            frames: this.anims.generateFrameNumbers('palomonSheet', { start: 1, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dovenando_idle',
+            frames: [{ key: 'dovenandoSheet', frame: 0 }],
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dovenando_walk',
+            frames: this.anims.generateFrameNumbers('dovenandoSheet', { start: 1, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
 
         //Puntuaciones correspondientes
         this.scoreTextP1 = this.add.text(30, 20, 'Dovenando: 0', {
