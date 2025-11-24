@@ -28,35 +28,55 @@ export class ControlsScene extends Phaser.Scene {
     // Controles Jugador 1
         this.add.text(480, 150, 'Player 1', {
             fontSize: '32px',
-            color: '#ffff00',
-            fontStyle: 'bold'
+            color: '#000000',
+            fontStyle: 'bold',
+            stroke: '#ffffff',
+            strokeThickness: 5
         }).setOrigin(0.5);
 
         this.add.text(480, 200, 'Move: W - A - D (Up, Left, Right)', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
         }).setOrigin(0.5);
 
         this.add.text(480, 240, 'Attack: F', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5);
+
+        this.add.text(480, 300, 'Pause: Esc', {
+            fontSize: '32px',
+            color: '#000000',
+            fontStyle: 'bold',
+            stroke: '#ffffff',
+            strokeThickness: 5
         }).setOrigin(0.5);
 
         // Controles Jugador 2
         this.add.text(480, 360, 'Player 2 (Local)', {
             fontSize: '32px',
-            color: '#ffff00',
-            fontStyle: 'bold'
+            color: '#000000',
+            fontStyle: 'bold',
+            stroke: '#ffffff',
+            strokeThickness: 5
         }).setOrigin(0.5);
 
         this.add.text(480, 410, 'Move: ↑ - ← - → (Up, Left, Right)', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
         }).setOrigin(0.5);
 
         this.add.text(480, 450, 'Attack: Shift', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
         }).setOrigin(0.5);
 
         // Botón para volver al menú
@@ -64,7 +84,7 @@ export class ControlsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });   
         const backButtonText = this.add.text(480, 500, 'Back to Menu', {
             fontSize: '24px',
-            color: '#ffff00',
+            color: '#000000',
         }).setOrigin(0.5);
         backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'))
         backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'))

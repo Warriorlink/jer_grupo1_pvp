@@ -114,7 +114,7 @@ export class MenuScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });   
         const controlsBtnText = this.add.text(700, 400, 'Controls', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#000000'
         }).setOrigin(0.5).setDepth(10)
 
             controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
