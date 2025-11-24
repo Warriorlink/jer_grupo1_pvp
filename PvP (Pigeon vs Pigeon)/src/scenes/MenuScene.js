@@ -7,10 +7,14 @@ export class MenuScene extends Phaser.Scene {
 
     preload() {
         this.load.audio('AveMaria', 'assets/sounds/AveMaria.mp3');
+        this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
     }
 
     create() {
         this.cameras.main.setAlpha(0);
+
+        this.add.image(480, 270, 'Fondo');
+
 
         this.tweens.add({
         targets: this.cameras.main,
