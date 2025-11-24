@@ -5,30 +5,46 @@ export class PauseScene extends Phaser.Scene {
         super('PauseScene');
     }
 
+    preload() {
+        this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
+        this.load.image('boton', 'assets/sprites/boton.png');
+    }
+
     create(data) {
         this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
 
         this.add.text(480, 200, 'Game Paused', { 
             fontSize: '64px', 
-            color: '#ffffff' 
+            color: '#ffffff', 
+            fontStyle: 'bold',
+            stroke: '#000000', 
+            strokeThickness: 8
         }).setOrigin(0.5);
 
-        const resumeBtn = this.add.text(480, 300, 'Resume', {
-            fontSize: '32px',
-            color: '#00ff00'
-        }).setOrigin(0.5).setInteractive()
+        const resumeBtnSprite = this.add.image(250, 430, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const resumeBtnText = this.add.text(250, 430, 'Resume', {
+            fontSize: '24px',
+            color: 'ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+            resumeBtnSprite.on('pointerover', () => resumeBtnSprite.setTexture('botonEncima'))
+            resumeBtnSprite.on('pointerout', () => resumeBtnSprite.setTexture('boton'))
         .on('pointerdown', () => { 
             this.scene.stop(); 
             this.scene.resume(data.originalScene);
             this.scene.get(data.originalScene).resume(); 
-        })
-        .on('pointerover', () => resumeBtn.setStyle({ fill: '#00ff88' }))
-        .on('pointerout', () => resumeBtn.setStyle({ fill: '#00ff00' }));
+        });
 
-        const menuBtn = this.add.text(480, 400, 'Return to Menu', {
-            fontSize: '32px',
-            color: '#ffffff'
-        }).setOrigin(0.5).setInteractive()
+        const menuBtnSprite = this.add.image(700, 430, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const menuBtnText = this.add.text(700, 430, 'Return to Menu', {
+            fontSize: '24px',
+            color: 'ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+            menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'))
+            menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'))
         .on('pointerdown', () => { 
             this.scene.stop(data.originalScene);
                 // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
@@ -46,8 +62,6 @@ export class PauseScene extends Phaser.Scene {
                         this.cameras.main.setAlpha(1 - progress);
                     } 
                 });
-            })
-        .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
-        .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
+            });
     }
 }

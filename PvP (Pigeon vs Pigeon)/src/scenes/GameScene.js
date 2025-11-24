@@ -118,13 +118,17 @@ export class GameScene extends Phaser.Scene {
         this.scoreTextP1 = this.add.text(30, 20, 'Dovenando: 0', {
     fontSize: '32px',
     color: '#ffffff',
-    fontStyle: 'bold'
+    fontStyle: 'bold',
+    stroke: '#000000',
+    strokeThickness: 6
 });
 
 this.scoreTextP2 = this.add.text(750, 20, 'Palomón: 0', {
     fontSize: '32px',
     color: '#ffffff',
-    fontStyle: 'bold'
+    fontStyle: 'bold',
+    stroke: '#000000',
+    strokeThickness: 6
 });
 
         this.playerSprites = this.physics.add.group();

@@ -6,6 +6,8 @@ export class EndGameScene extends Phaser.Scene {
     }
     preload() {
         this.load.audio('SweetVictory', 'assets/sounds/SweetVictory.mp3');
+        this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
+        this.load.image('boton', 'assets/sprites/boton.png');
     }
 
     create(data) {
@@ -23,7 +25,9 @@ export class EndGameScene extends Phaser.Scene {
         this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
         this.add.text(480, 250, winnerText, {
             fontSize: '64px',
-            color: '#ffffffff'
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 8
         }).setOrigin(0.5);
 
         //Musica de fondo
@@ -37,10 +41,15 @@ export class EndGameScene extends Phaser.Scene {
         this.events.on('destroy', this.onShutdown, this);
 
         //Botón
-        const menuBtn = this.add.text(480, 350, 'Return to Menu', {
-            fontSize: '32px',
-            color: '#ffffff',
-        }).setOrigin(0.5).setInteractive()
+         const menuBtnSprite = this.add.image(480, 430, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const menuBtnText = this.add.text(480, 430, 'Return to menu', {
+            fontSize: '24px',
+            color: 'ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+            menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'))
+            menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'))
             .on('pointerdown', () => { 
                 // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
                 this.cameras.main.setAlpha(1);
@@ -57,9 +66,7 @@ export class EndGameScene extends Phaser.Scene {
                         this.cameras.main.setAlpha(1 - progress);
                     } 
                 });
-            })
-            .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
-            .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
+            });
     }
 
 onShutdown() {

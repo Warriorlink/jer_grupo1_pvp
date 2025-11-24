@@ -42,10 +42,10 @@ export class MenuScene extends Phaser.Scene {
 
         ////////////////Boton local////////////////
         
-        const localBtnSprite = this.add.image(250, 320, 'boton')
+        const localBtnSprite = this.add.image(250, 350, 'boton')
             .setInteractive({ useHandCursor: true });
 
-        const localBtnText = this.add.text(250, 320, 'Local 2 Players', {
+        const localBtnText = this.add.text(250, 350, 'Local 2 Players', {
             fontSize: '24px',
             color: 'ffffff',
         }).setOrigin(0.5).setDepth(10)
@@ -81,9 +81,9 @@ export class MenuScene extends Phaser.Scene {
             ///////////////Boton credits////////////////
 
 
-            const creditsBtnSprite = this.add.image(250, 400, 'boton')
+            const creditsBtnSprite = this.add.image(250, 430, 'boton')
             .setInteractive({ useHandCursor: true });
-        const creditsBtnText = this.add.text(250, 400, 'Credits', {
+        const creditsBtnText = this.add.text(250, 430, 'Credits', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
@@ -110,9 +110,9 @@ export class MenuScene extends Phaser.Scene {
 
             //////////////Boton controls////////////////
 
-         const controlsBtnSprite = this.add.image(700, 400, 'boton')
+         const controlsBtnSprite = this.add.image(700, 430, 'boton')
             .setInteractive({ useHandCursor: true });   
-        const controlsBtnText = this.add.text(700, 400, 'Controls', {
+        const controlsBtnText = this.add.text(700, 430, 'Controls', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
@@ -139,9 +139,9 @@ export class MenuScene extends Phaser.Scene {
 
             //////////////Boton online (no funcional)////////////////
 
-            const onlineBtnSprite = this.add.image(700, 320, 'boton')
+            const onlineBtnSprite = this.add.image(700, 350, 'boton')
             .setInteractive({ useHandCursor: true });   
-        const onlineBtnText = this.add.text(700, 320, 'Online (Not available)', {
+        const onlineBtnText = this.add.text(700, 350, 'Online (Not available)', {
             fontSize: '24px',
             color: '#7a2eacff'
         }).setOrigin(0.5)
