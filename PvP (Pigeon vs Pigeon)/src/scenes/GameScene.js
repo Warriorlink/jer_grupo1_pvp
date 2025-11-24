@@ -55,12 +55,12 @@ export class GameScene extends Phaser.Scene {
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
 
         this.load.spritesheet('palomonSheet', 'assets/sprites/Palomon_anim.png', {
-            frameWidth: 90,
-            frameHeight: 60
+            frameWidth: 66,
+            frameHeight: 66
         });
         this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk.png', {
-            frameWidth: 90,
-            frameHeight: 60
+            frameWidth: 66,
+            frameHeight: 66
         });
     }
 
