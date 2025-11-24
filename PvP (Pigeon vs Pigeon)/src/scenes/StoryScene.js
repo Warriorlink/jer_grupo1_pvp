@@ -29,7 +29,7 @@ export class StoryScene extends Phaser.Scene {
     }).setOrigin(0.5);
     // Historia
 
-        this.add.text(480, 120, 'En una ciudad cualquiera, durante una noche húmeda y oscura, dos palomas merodean por los callejones en busca de comida.', {
+        this.add.text(480, 120, 'In some nameless city, on a damp and murky night, two pigeons wandered through the alleys in search of something to calm their hunger.', {
             fontSize: '16px',
             color: '#ffffff',
             stroke: '#000000',
@@ -38,7 +38,7 @@ export class StoryScene extends Phaser.Scene {
             wordWrap: { width: 800, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
-        this.add.text(480, 170, 'El irresistible aroma de unos churros olvidados despierta en ellas un instinto de supervivencia y codicia, y pronto la situación se convierte en una batalla sin cuartel.', {
+        this.add.text(480, 170, 'The alluring fragrance of a few forgotten churros awakens in them a fierce blend of survival and greed, and before long the situation erupts into open warfare.', {
             fontSize: '16px',
             color: '#ffffff',
             stroke: '#000000',
@@ -47,7 +47,7 @@ export class StoryScene extends Phaser.Scene {
             wordWrap: { width: 800, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
-        this.add.text(480, 220, 'Aunque no hay héroes ni villanos, cada una cree firmemente que ese churro le pertenece por derecho propio. No hay moral, tampoco amistad... solo churros.', {
+        this.add.text(480, 230, 'Though there are neither heroes nor villains, each firmly believes that the churro is hers by birthright. Morality falters, friendship fades… there are only churros left.', {
             fontSize: '16px',
             color: '#ffffff',
             stroke: '#000000',
@@ -65,7 +65,7 @@ export class StoryScene extends Phaser.Scene {
             strokeThickness: 5
         }).setOrigin(0.5);
 
-        this.add.text(220, 430, 'Un ave pícara y escurridiza, maestra del sigilo. Su filosofía es: "Todo churro tiene dueño, y ese dueño soy yo".', {
+        this.add.text(220, 430, 'A cunning, slippery bird, skilled in the art of stealth. His guiding principle: "All churros belong to someone… and that someone is me."', {
             fontSize: '16px',
             color: '#ffffff',
             stroke: '#000000',
@@ -85,7 +85,7 @@ export class StoryScene extends Phaser.Scene {
             strokeThickness: 5
         }).setOrigin(0.5);
 
-        this.add.text(750, 430, 'Una paloma muy dura con un pasado oscuro. Formó parte de la mafia aviar y está habituado a los peligros de las calles y las peleas de bandas.', {
+        this.add.text(750, 430, 'A tough pigeon with a dark history. He once belonged to the avian mafia and is well acquainted with the perils of the streets and gang fights.', {
             fontSize: '16px',
             color: '#ffffff',
             stroke: '#000000',
