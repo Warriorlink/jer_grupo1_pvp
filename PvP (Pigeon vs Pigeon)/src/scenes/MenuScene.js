@@ -8,6 +8,9 @@ export class MenuScene extends Phaser.Scene {
     preload() {
         this.load.audio('AveMaria', 'assets/sounds/AveMaria.mp3');
         this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
+        this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
+        this.load.image('boton', 'assets/sprites/boton.png');
+
     }
 
     create() {
@@ -24,7 +27,9 @@ export class MenuScene extends Phaser.Scene {
         
         this.add.text(480, 100, 'PvP', {
             fontSize: '64px',
-            color: '#ffffffff'
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 8
         }).setOrigin(0.5);
 
         if (!this.bgMusic) {
@@ -34,14 +39,20 @@ export class MenuScene extends Phaser.Scene {
             });
             this.bgMusic.play();
         }
-        const localBtn = this.add.text(300, 320, 'Local 2 Players', {
+
+        ////////////////Boton local////////////////
+        
+        const localBtnSprite = this.add.image(250, 320, 'boton')
+            .setInteractive({ useHandCursor: true });
+
+        const localBtnText = this.add.text(250, 320, 'Local 2 Players', {
             fontSize: '24px',
-            color: '#00ff00'
-        }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => localBtn.setStyle({ fill: '#00ff88' }))
-            .on('pointerout', () => localBtn.setStyle({ fill: '#00ff00' }))
-            .on('pointerdown', () => {
+            color: 'ffffff',
+        }).setOrigin(0.5).setDepth(10)
+
+            localBtnSprite.on('pointerover', () => localBtnSprite.setTexture('botonEncima'))
+            localBtnSprite.on('pointerout', () => localBtnSprite.setTexture('boton'))
+            localBtnSprite.on('pointerdown', () => {
 
                 // Apagar música como antes
                 if (this.bgMusic) {
@@ -67,15 +78,19 @@ export class MenuScene extends Phaser.Scene {
                 });
             });
 
+            ///////////////Boton credits////////////////
 
-        const creditsBtn = this.add.text(300, 400, 'Credits', {
+
+            const creditsBtnSprite = this.add.image(250, 400, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const creditsBtnText = this.add.text(250, 400, 'Credits', {
             fontSize: '24px',
-            color: '#0000ff'
-        }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => creditsBtn.setStyle({ fill: '#0088ff' }))
-            .on('pointerout', () => creditsBtn.setStyle({ fill: '#0000ff' }))
-            .on('pointerdown', () => { 
+            color: 'ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+            creditsBtnSprite.on('pointerover', () => creditsBtnSprite.setTexture('botonEncima'))
+            creditsBtnSprite.on('pointerout', () => creditsBtnSprite.setTexture('boton'))
+            creditsBtnSprite.on('pointerdown', () => { 
                 // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
                 this.cameras.main.setAlpha(1);
 
@@ -93,14 +108,18 @@ export class MenuScene extends Phaser.Scene {
                 });
             });
 
-        const controlsBtn = this.add.text(650, 400, 'Controls', {
+            //////////////Boton controls////////////////
+
+         const controlsBtnSprite = this.add.image(700, 400, 'boton')
+            .setInteractive({ useHandCursor: true });   
+        const controlsBtnText = this.add.text(700, 400, 'Controls', {
             fontSize: '24px',
-            color: '#ff0000'
-        }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => controlsBtn.setStyle({ fill: '#ff8888' }))
-            .on('pointerout', () => controlsBtn.setStyle({ fill: '#ff0000' }))
-            .on('pointerdown', () => { 
+            color: '#ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+            controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
+            controlsBtnSprite.on('pointerout', () => controlsBtnSprite.setTexture('boton'))
+            controlsBtnSprite.on('pointerdown', () => { 
                 // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
                 this.cameras.main.setAlpha(1);
 
@@ -118,13 +137,17 @@ export class MenuScene extends Phaser.Scene {
                 });
             });
 
-        const onlineBtn = this.add.text(650, 320, 'Online (Not available)', {
+            //////////////Boton online (no funcional)////////////////
+
+            const onlineBtnSprite = this.add.image(700, 320, 'boton')
+            .setInteractive({ useHandCursor: true });   
+        const onlineBtnText = this.add.text(700, 320, 'Online (Not available)', {
             fontSize: '24px',
             color: '#7a2eacff'
         }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => onlineBtn.setStyle({ fill: '#e001a8ff' }))
-            .on('pointerout', () => onlineBtn.setStyle({ fill: '#7a2eacff' }))
+
+            onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
+            onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
     }
 
 

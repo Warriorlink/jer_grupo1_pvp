@@ -4,6 +4,11 @@ export class ControlsScene extends Phaser.Scene {
     constructor() {
         super('ControlsScene');
     }
+    preload() {
+        this.load.image('fondo', 'assets/sprites/pantalla inicio.png');
+        this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
+        this.load.image('boton', 'assets/sprites/boton.png');
+    }
     create() {
         this.cameras.main.setAlpha(0);
 
@@ -12,10 +17,13 @@ export class ControlsScene extends Phaser.Scene {
         alpha: 1,
         duration: 800
         });
+        this.add.image(480, 270, 'fondo');
 
         this.add.text(480, 50, 'Controls', { 
             fontSize: '64px', 
-            color: '#ffffffff'
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 8
     }).setOrigin(0.5);
     // Controles Jugador 1
         this.add.text(480, 150, 'Player 1', {
@@ -52,12 +60,15 @@ export class ControlsScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Botón para volver al menú
-        const backButton = this.add.text(480, 520, 'Back to Menu', {
+         const backBtnSprite = this.add.image(480, 500, 'boton')
+            .setInteractive({ useHandCursor: true });   
+        const backButtonText = this.add.text(480, 500, 'Back to Menu', {
             fontSize: '24px',
             color: '#ffff00',
         }).setOrigin(0.5);
-        backButton.setInteractive({ useHandCursor: true });
-        backButton.on('pointerdown', () => { 
+        backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'))
+        backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'))
+        backBtnSprite.on('pointerdown', () => { 
                 // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
                 this.cameras.main.setAlpha(1);
 
