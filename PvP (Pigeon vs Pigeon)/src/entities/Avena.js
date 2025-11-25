@@ -7,6 +7,9 @@ export class Avena extends Item {
     }
 
     applyEffect(pigeon){
+        this.scene.sound.play('SonidoAvena', {
+            volume: 0.5
+        });
  
         // Valores nuevos del power-up (temporalmente)
         const boostedKnockback = 400;       // más empuje
@@ -22,6 +25,7 @@ export class Avena extends Item {
 
         // Restaurar después de 10 segundos
         this.scene.time.addEvent({
+            
             delay: 10000,
             callback: () => {
                 pigeon.attackForce = normalKnockback;

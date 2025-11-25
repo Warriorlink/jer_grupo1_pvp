@@ -18,6 +18,7 @@ export class AttackPigeonCommand extends Command {
 
         //Marcar ataque
         this.pigeon.markAttacked(now);
+        scene.sound.play('SonidoAtaque', { volume: 0.7 });
 
         const dir = this.pigeon.facing === 'right' ? 1 : -1;
         const x = this.pigeon.sprite.x + dir * this.pigeon.attackRange;

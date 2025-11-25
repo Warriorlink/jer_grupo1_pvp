@@ -52,13 +52,19 @@ export class GameScene extends Phaser.Scene {
         this.load.image('avena', 'assets/sprites/Avena.png');
         this.load.image('pluma', 'assets/sprites/Pluma.png');
         this.load.image('basura', 'assets/sprites/Basura.png');
+
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
+        this.load.audio('SonidoPluma', 'assets/sounds/sonidoPluma.mp3');
+        this.load.audio('SonidoChurro', 'assets/sounds/sonidoChurro.mp3');
+        this.load.audio('SonidoBasura', 'assets/sounds/sonidoBasura.mp3');
+        this.load.audio('SonidoAtaque', 'assets/sounds/sonidoAtaque.mp3');
+        this.load.audio('SonidoAvena', 'assets/sounds/sonidoAlpiste.mp3');
 
         this.load.spritesheet('palomonSheet', 'assets/sprites/Palomon_anim.png', {
             frameWidth: 66,
             frameHeight: 66
         });
-        this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk.png', {
+        this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk_noWing.png', {
             frameWidth: 66,
             frameHeight: 66
         });

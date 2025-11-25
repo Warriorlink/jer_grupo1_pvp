@@ -7,6 +7,9 @@ export class Basura extends Item {
     }
 
     applyEffect(pigeon) {
+        this.scene.sound.play('SonidoBasura', {
+            volume: 0.5
+        });
 
         const slowSpeed = 100;
         const normalSpeed = 300;

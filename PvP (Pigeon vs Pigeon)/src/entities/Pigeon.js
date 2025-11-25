@@ -41,8 +41,6 @@ export class Pigeon {
 
         this.invertFlipForMovement = (character === "dovenando");
 
-        
-        const initialFlip = this.invertFlipForMovement ? true : false;
         this.sprite.setFlipX(this.invertFlipForMovement);
     }
 

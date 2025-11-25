@@ -7,6 +7,9 @@ export class Churro extends Item {
     }
 
     applyEffect(pigeon){
+        this.scene.sound.play('SonidoChurro', {
+            volume: 0.5
+        });
         pigeon.score++;
         console.log(`${pigeon.id} recogió un Churro → score: ${pigeon.score}`);
     }

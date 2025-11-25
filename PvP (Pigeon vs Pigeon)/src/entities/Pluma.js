@@ -7,6 +7,10 @@ export class Pluma extends Item {
     }
 
     applyEffect(pigeon){
+
+        this.scene.sound.play('SonidoPluma', {
+            volume: 0.5
+        });
  
         const fastSpeed = 500;
         const normalSpeed = 300;
