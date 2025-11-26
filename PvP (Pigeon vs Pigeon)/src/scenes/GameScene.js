@@ -68,6 +68,10 @@ export class GameScene extends Phaser.Scene {
             frameWidth: 66,
             frameHeight: 66
         });
+        this.load.spritesheet('churroSheet', 'assets/sprites/Churro JER-sheet.png', {
+            frameWidth: 25,
+            frameHeight: 25
+        });
     }
 
     create() {
@@ -116,6 +120,13 @@ export class GameScene extends Phaser.Scene {
         this.anims.create({
             key: 'dovenando_walk',
             frames: this.anims.generateFrameNumbers('dovenandoSheet', { start: 1, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'churro_anim',
+            frames: this.anims.generateFrameNumbers('churroSheet', { start: 0, end: 3 }),
             frameRate: 8,
             repeat: -1
         });
