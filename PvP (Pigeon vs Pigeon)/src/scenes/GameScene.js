@@ -60,7 +60,7 @@ export class GameScene extends Phaser.Scene {
         this.load.audio('SonidoAtaque', 'assets/sounds/sonidoAtaque.mp3');
         this.load.audio('SonidoAvena', 'assets/sounds/sonidoAlpiste.mp3');
 
-        this.load.spritesheet('palomonSheet', 'assets/sprites/Palomon_anim.png', {
+        this.load.spritesheet('palomonSheet', 'assets/sprites/Palomon_walk.png', {
             frameWidth: 66,
             frameHeight: 66
         });
