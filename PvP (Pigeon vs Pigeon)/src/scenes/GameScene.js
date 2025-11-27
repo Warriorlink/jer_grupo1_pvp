@@ -52,6 +52,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('avena', 'assets/sprites/Avena.png');
         this.load.image('pluma', 'assets/sprites/Pluma.png');
         this.load.image('basura', 'assets/sprites/Basura.png');
+        this.load.image('dovenandoAttack', 'assets/sprites/Dovenando_attack.png');
+        this.load.image('palomonAttack', 'assets/sprites/Palomon_attack.png');
 
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
         this.load.audio('SonidoPluma', 'assets/sounds/sonidoPluma.mp3');
@@ -64,13 +66,21 @@ export class GameScene extends Phaser.Scene {
             frameWidth: 66,
             frameHeight: 66
         });
-        this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk_noWing.png', {
+        this.load.spritesheet('dovenandoSheet', 'assets/sprites/Dovenando_walk.png', {
             frameWidth: 66,
             frameHeight: 66
         });
         this.load.spritesheet('churroSheet', 'assets/sprites/Churro JER-sheet.png', {
             frameWidth: 25,
             frameHeight: 25
+        });
+        this.load.spritesheet('palomonAttackSheet', 'assets/sprites/Palomon_walk_noWing.png', {
+            frameWidth: 66,
+            frameHeight: 66
+        });
+        this.load.spritesheet('dovenandoAttackSheet', 'assets/sprites/Dovenando_walk_noWing.png', {
+            frameWidth: 66,
+            frameHeight: 66
         });
     }
 
@@ -130,6 +140,23 @@ export class GameScene extends Phaser.Scene {
             frameRate: 8,
             repeat: -1
         });
+
+        // Animación de ataque — Palomón (sin ala)
+this.anims.create({
+    key: 'palomon_attack',
+    frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+    frameRate: 8,
+    repeat: -1
+});
+
+// Animación de ataque — Dovenando (sin ala)
+this.anims.create({
+    key: 'dovenando_attack',
+    frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+    frameRate: 8,
+    repeat: -1
+});
+
 
         //Puntuaciones correspondientes
         this.scoreTextP1 = this.add.text(30, 20, 'Dovenando: 0', {

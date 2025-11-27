@@ -20,6 +20,8 @@ export class Pigeon {
         this.defaultStunDuration = 3000;
         this.knockbackExpire = null;
 
+        this.isAttacking = false;
+
         let textureKey = null;
         if (character === "palomon") {
             textureKey = "palomonSheet";
@@ -57,15 +59,18 @@ export class Pigeon {
 
     // Reproduce la animación correcta según el personaje y el nombre (idle, walk...)
     playAnimation(animName) {
-        const key = `${this.character}_${animName}`; // ej. palomon_walk
-        // comprobación para evitar errores "missing animation" y loguearlo
+        if (this.isAttacking) return; // NO INTERRUMPIR ATAQUE
+
+        const key = `${this.character}_${animName}`;
+
         if (!this.scene.anims.exists(key)) {
-            // WARNING en consola para depuración
             console.warn(`Animación no existe: ${key}`);
             return;
         }
+
         this.sprite.anims.play(key, true);
     }
+
 
     // Aplica knockback/efecto visual de recibir golpe
     takeHit(knockbackX = 0) {
@@ -97,4 +102,71 @@ export class Pigeon {
             this.stunTimeout = null;
         });
     }
+
+    startAttackAnimation() {
+        if (this.isAttacking) return;
+        this.isAttacking = true;
+
+        const key = `${this.character}_attack`;
+
+        // Usar animación si existe, si no ignorar
+        if (this.scene.anims.exists(key)) {
+            this.sprite.anims.play(key, true);
+        }
+
+        // Si está mirando al contrario, mantener flip
+        this.sprite.setFlipX(this.facing === "left" ? !this.invertFlipForMovement : this.invertFlipForMovement);
+
+        // Volver a animación normal tras el ataque
+        this.scene.time.delayedCall(250, () => {   // Duración aproximada del ataque
+            this.endAttackAnimation();
+        });
+    }
+
+    endAttackAnimation() {
+        this.isAttacking = false;
+
+        // Si está quieto → idle
+        if (this.sprite.body.velocity.x === 0) {
+            this.playAnimation("idle");
+        }
+        else {
+            this.playAnimation("walk");
+        }
+    }
+
+    showAttackSprite(durationMs = 250) {
+        const scene = this.scene;
+        const key = this.character === 'dovenando' ? 'dovenandoAttack' : 'palomonAttack';
+
+        // Crear sprite visual del ataque
+        const attackSprite = scene.add.sprite(this.sprite.x, this.sprite.y, key);
+        attackSprite.setOrigin(0.5, 0.5);
+        attackSprite.setDepth(this.sprite.depth + 1);
+
+        // Ajuste inicial según dirección
+        const offsetX = this.facing === 'right' ? 20 : -20; // distancia delante de la paloma
+        attackSprite.x += offsetX;
+
+        // Voltear sprite según dirección
+        attackSprite.setFlipX(this.facing === 'left');
+
+        // Evento para seguir a la paloma
+        const followEvent = scene.time.addEvent({
+            delay: 16, // aprox 60fps
+            loop: true,
+            callback: () => {
+                attackSprite.x = this.sprite.x + offsetX;
+                attackSprite.y = this.sprite.y; // puedes ajustar vertical si quieres
+            }
+        });
+
+        // Destruir el sprite y detener seguimiento después de durationMs
+        scene.time.delayedCall(durationMs, () => {
+            followEvent.remove(false);
+            attackSprite.destroy();
+        });
+    }
+
+
 }
