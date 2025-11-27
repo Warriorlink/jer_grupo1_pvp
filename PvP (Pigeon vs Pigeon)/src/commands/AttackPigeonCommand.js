@@ -43,7 +43,7 @@ export class AttackPigeonCommand extends Command {
             const knock = this.pigeon.attackForce * dir;
 
             // 1) STUN primero
-            targetPigeon.stun();
+            targetPigeon.stun(this.pigeon.stunForce);
 
             // 2) y DESPUÉS aplicar knockback final
             targetPigeon.takeHit(knock);

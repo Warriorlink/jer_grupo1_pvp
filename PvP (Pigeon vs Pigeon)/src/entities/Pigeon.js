@@ -13,6 +13,7 @@ export class Pigeon {
         this.lastAttackTime = 0;
         this.attackRange = 40;
         this.attackForce = 200;
+        this.stunForce = 3000;
 
         this.facing = 'right';
         this.stunned = false;
@@ -88,7 +89,7 @@ export class Pigeon {
     }
 
     // Aplica stun
-    stun(durationMs = null) {
+    stun(durationMs) {
         durationMs = durationMs == null ? this.defaultStunDuration : durationMs;
         if (this.stunned) return;
 

@@ -26,7 +26,7 @@ export class Avena extends Item {
 
         // Aplicar potencia elevada
         pigeon.attackForce = boostedKnockback;
-        pigeon.defaultStunDuration = boostedStunDuration;
+        pigeon.stunForce = boostedStunDuration;
 
         // Restaurar después de 10 segundos
         this.scene.time.addEvent({
@@ -34,7 +34,7 @@ export class Avena extends Item {
             delay: duration,
             callback: () => {
                 pigeon.attackForce = normalKnockback;
-                pigeon.defaultStunDuration = normalStunDuration;
+                pigeon.stunForce = normalStunDuration;
             }
         });
     }
