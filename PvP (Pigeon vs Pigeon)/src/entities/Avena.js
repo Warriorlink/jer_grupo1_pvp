@@ -18,6 +18,11 @@ export class Avena extends Item {
         // Valores normales
         const normalKnockback = 200;        // coincide con Pigeon.attackForce inicial
         const normalStunDuration = 3000;    // coincide con Pigeon.defaultStunDuration
+        
+        const duration = 10000;
+
+        // Mostrar el icono del powerup
+        this.showItemIcon(pigeon, 'iconAvena', duration);
 
         // Aplicar potencia elevada
         pigeon.attackForce = boostedKnockback;
@@ -26,7 +31,7 @@ export class Avena extends Item {
         // Restaurar después de 10 segundos
         this.scene.time.addEvent({
             
-            delay: 10000,
+            delay: duration,
             callback: () => {
                 pigeon.attackForce = normalKnockback;
                 pigeon.defaultStunDuration = normalStunDuration;

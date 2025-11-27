@@ -17,31 +17,31 @@ export class GameScene extends Phaser.Scene {
 
     init() {
 
-    this.players = new Map();
-    this.inputMappings = [];
-    this.isPaused = false;
-    this.escWasDown = false;
-    this.gameEnded = false;
-    this.processor = new CommandProcessor();
-    this.churro = null;
-    this.powerUp = null;
+        this.players = new Map();
+        this.inputMappings = [];
+        this.isPaused = false;
+        this.escWasDown = false;
+        this.gameEnded = false;
+        this.processor = new CommandProcessor();
+        this.churro = null;
+        this.powerUp = null;
 
-    this.itemSpawnPositions = [
-        { x: 560, y: 45 },   // Repiso superior
-        { x: 415, y: 200 },  // Repiso en medio
-        { x: 790, y: 115 },  // Derecha superior
-        { x: 790, y: 280 },  // Derecha inferior
-        { x: 126, y: 115 },  // Izquierda superior
-        { x: 126, y: 280 },  // Izquierda inferior
-        { x: 560, y: 455 }   // Suelo
-    ];
+        this.itemSpawnPositions = [
+            { x: 560, y: 45 },   // Repiso superior
+            { x: 415, y: 200 },  // Repiso en medio
+            { x: 790, y: 115 },  // Derecha superior
+            { x: 790, y: 280 },  // Derecha inferior
+            { x: 126, y: 115 },  // Izquierda superior
+            { x: 126, y: 280 },  // Izquierda inferior
+            { x: 560, y: 455 }   // Suelo
+        ];
 
-    this.powerUps =[
-        'avena',
-        'basura',
-        'pluma'
-    ];
-}
+        this.powerUps = [
+            'avena',
+            'basura',
+            'pluma'
+        ];
+    }
 
 
     preload() {
@@ -54,6 +54,10 @@ export class GameScene extends Phaser.Scene {
         this.load.image('basura', 'assets/sprites/Basura.png');
         this.load.image('dovenandoAttack', 'assets/sprites/Dovenando_attack.png');
         this.load.image('palomonAttack', 'assets/sprites/Palomon_attack.png');
+        this.load.image('iconPluma', 'assets/sprites/Icon_fast.png');
+        this.load.image('iconBasura', 'assets/sprites/Icon_slow.png');
+        this.load.image('iconAvena', 'assets/sprites/Icon_strong.png');
+
 
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
         this.load.audio('SonidoPluma', 'assets/sounds/sonidoPluma.mp3');
@@ -88,9 +92,9 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
-        targets: this.cameras.main,
-        alpha: 1,
-        duration: 800
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 800
         });
 
         this.add.image(480, 270, 'background');
@@ -142,38 +146,38 @@ export class GameScene extends Phaser.Scene {
         });
 
         // Animación de ataque — Palomón (sin ala)
-this.anims.create({
-    key: 'palomon_attack',
-    frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
-    frameRate: 8,
-    repeat: -1
-});
+        this.anims.create({
+            key: 'palomon_attack',
+            frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+            frameRate: 8,
+            repeat: -1
+        });
 
-// Animación de ataque — Dovenando (sin ala)
-this.anims.create({
-    key: 'dovenando_attack',
-    frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
-    frameRate: 8,
-    repeat: -1
-});
+        // Animación de ataque — Dovenando (sin ala)
+        this.anims.create({
+            key: 'dovenando_attack',
+            frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+            frameRate: 8,
+            repeat: -1
+        });
 
 
         //Puntuaciones correspondientes
-        this.scoreTextP1 = this.add.text(30, 20, 'Dovenando: 0', {
-    fontSize: '32px',
-    color: '#ffffff',
-    fontStyle: 'bold',
-    stroke: '#000000',
-    strokeThickness: 6
-});
+        this.scoreTextP1 = this.add.text(10, 20, 'Dovenando: 0', {
+            fontSize: '32px',
+            color: '#ffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
+        });
 
-this.scoreTextP2 = this.add.text(750, 20, 'Palomón: 0', {
-    fontSize: '32px',
-    color: '#ffffff',
-    fontStyle: 'bold',
-    stroke: '#000000',
-    strokeThickness: 6
-});
+        this.scoreTextP2 = this.add.text(750, 20, 'Palomón: 0', {
+            fontSize: '32px',
+            color: '#ffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
+        });
 
         this.playerSprites = this.physics.add.group();
         this.players.forEach(pigeon => {
@@ -185,43 +189,43 @@ this.scoreTextP2 = this.add.text(750, 20, 'Palomón: 0', {
         this.physics.add.overlap(this.playerSprites, this.playerSprites);
 
 
- 
+
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        
+
         // Cada 10 segundos intentar generar un churro
         this.time.addEvent({
-        delay: 5000,
-        loop: true,
-        callback: () => {
-         if (this.churro === null) {
-             this.spawnItem("churro");
-         }
-        }
-    });
+            delay: 5000,
+            loop: true,
+            callback: () => {
+                if (this.churro === null) {
+                    this.spawnItem("churro");
+                }
+            }
+        });
 
         this.time.addEvent({
-        delay: 8000,
-        loop: true,
-        callback: () => {
-         if (this.powerUp === null) {
-             this.spawnItem(Phaser.Utils.Array.GetRandom(this.powerUps));
-         }
-        }
+            delay: 8000,
+            loop: true,
+            callback: () => {
+                if (this.powerUp === null) {
+                    this.spawnItem(Phaser.Utils.Array.GetRandom(this.powerUps));
+                }
+            }
         })
 
         this.events.on('shutdown', this.onShutdown, this);
-this.events.on('destroy', this.onShutdown, this);
+        this.events.on('destroy', this.onShutdown, this);
 
     }
-    
+
     onShutdown() {
-    if (this.bgMusic) {
-        this.bgMusic.stop();
-        this.bgMusic.destroy();
-        this.bgMusic = null;
+        if (this.bgMusic) {
+            this.bgMusic.stop();
+            this.bgMusic.destroy();
+            this.bgMusic = null;
+        }
     }
-}
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
@@ -283,20 +287,20 @@ this.events.on('destroy', this.onShutdown, this);
         this.players.set('player2', rightPigeon);
 
         const InputConfig = [
-          {
-            playerId: 'player1',
-            upKey: 'W',
-            leftKey: 'A',
-            rightKey: 'D',
-            attackKey: 'F'
-          },
-          {
-            playerId: 'player2',
-            upKey: 'UP',
-            leftKey: 'LEFT',
-            rightKey: 'RIGHT',
-            attackKey: 'SHIFT'
-          }
+            {
+                playerId: 'player1',
+                upKey: 'W',
+                leftKey: 'A',
+                rightKey: 'D',
+                attackKey: 'F'
+            },
+            {
+                playerId: 'player2',
+                upKey: 'UP',
+                leftKey: 'LEFT',
+                rightKey: 'RIGHT',
+                attackKey: 'SHIFT'
+            }
         ];
 
         this.inputMappings = InputConfig.map(config => {
@@ -310,132 +314,127 @@ this.events.on('destroy', this.onShutdown, this);
         });
     }
 
-    /*createChurros() {
-        // Crear un churro en el centro para pruebas
-        this.churros.push(new Churro(this, 480, 200));
-    }*/
-
     spawnItem(type) {
 
         let refName = null;
-    let ItemClass = null;
+        let ItemClass = null;
 
-    // decidir qué clase instanciar y qué referencia usar
-    switch (type) {
-        case "churro":
-            refName = "churro";
-            ItemClass = Churro;
-            break;
+        // decidir qué clase instanciar y qué referencia usar
+        switch (type) {
+            case "churro":
+                refName = "churro";
+                ItemClass = Churro;
+                break;
 
-        case "avena":
-            refName = "powerUp";
-            ItemClass = Avena;
-            break;
+            case "avena":
+                refName = "powerUp";
+                ItemClass = Avena;
+                break;
 
-        case "pluma":
-            refName = "powerUp";
-            ItemClass = Pluma;
-            break;
+            case "pluma":
+                refName = "powerUp";
+                ItemClass = Pluma;
+                break;
 
-        case "basura":
-            refName = "powerUp";
-            ItemClass = Basura;
-            break;
+            case "basura":
+                refName = "powerUp";
+                ItemClass = Basura;
+                break;
 
-        default:
-            console.warn("Tipo desconocido:", type);
-            return;
-    }
-
-    const availablePositions = this.itemSpawnPositions.filter(pos => {
-
-        // Evitar posición donde hay churro
-        if (this.churro && this.churro.sprite.x === pos.x && this.churro.sprite.y === pos.y) {
-            return false;
+            default:
+                console.warn("Tipo desconocido:", type);
+                return;
         }
 
-        // Evitar posición donde hay power-up
-        if (this.powerUp && this.powerUp.sprite.x === pos.x && this.powerUp.sprite.y === pos.y) {
-            return false;
+        const availablePositions = this.itemSpawnPositions.filter(pos => {
+
+            // Evitar posición donde hay churro
+            if (this.churro && this.churro.sprite.x === pos.x && this.churro.sprite.y === pos.y) {
+                return false;
+            }
+
+            // Evitar posición donde hay power-up
+            if (this.powerUp && this.powerUp.sprite.x === pos.x && this.powerUp.sprite.y === pos.y) {
+                return false;
+            }
+
+            return true;
+        });
+
+        // Elegir una posición al azar
+        const pos = Phaser.Utils.Array.GetRandom(availablePositions);
+
+        const item = new ItemClass(this, pos.x, pos.y);
+        this[refName] = (item);
+
+        // Activar overlap con ambos jugadores
+        this.players.forEach(pigeon => {
+            this.physics.add.overlap(
+                pigeon.sprite,
+                item.sprite,
+                this.onItemPickup,
+                null,
+                this);
+        });
+
+
+        if (refName === "powerUp") {
+
+            // Tiempo de vida del power-up 
+            const lifetime = 9000;
+
+            // Guardar el timer en el propio objeto para poder cancelarlo si hace falta
+            item.expireTimer = this.time.delayedCall(lifetime, () => {
+
+                if (this.powerUp === item) {
+                    this.deleteItem(item);
+                }
+
+            });
         }
 
-        return true;
-    });
-
-    // Elegir una posición al azar
-    const pos = Phaser.Utils.Array.GetRandom(availablePositions);
-
-    const item = new ItemClass(this, pos.x, pos.y);
-    this[refName] = (item);
-
-    // Activar overlap con ambos jugadores
-    this.players.forEach(pigeon => {
-        this.physics.add.overlap(
-            pigeon.sprite,
-            item.sprite,
-            this.onItemPickup,
-            null,
-            this);
-    });
-
-
-    if (refName === "powerUp") {
-
-    // Tiempo de vida del power-up 
-    const lifetime = 9000;
-
-    // Guardar el timer en el propio objeto para poder cancelarlo si hace falta
-    item.expireTimer = this.time.delayedCall(lifetime, () => {
-
-        if (this.powerUp === item) {
-            this.deleteItem(item);  
-        }
-
-    });
-    }
-    
     }
 
 
     onItemPickup(pigeonSprite, itemSprite) {
 
-    let playerId = null;
+        let playerId = null;
 
-    this.players.forEach((pigeon, id) => {
-        if (pigeon.sprite === pigeonSprite) {
-            playerId = id;
+        this.players.forEach((pigeon, id) => {
+            if (pigeon.sprite === pigeonSprite) {
+                playerId = id;
+            }
+        });
+
+        if (!playerId) return;
+
+        const pigeon = this.players.get(playerId);
+        const item = this.getItemBySprite(itemSprite);
+
+        item.applyEffect(pigeon);
+
+        //Actualizar puntuaciones
+        this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
+        this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
+
+        this.deleteItem(item);
+        if (pigeon.score >= 3) {
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
+
+            // Transición a EndGameScene
+            this.scene.transition({
+                target: 'EndGameScene',
+                duration: 1000,
+                moveBelow: true,
+                data: { winnerId: playerId },
+
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
+            });
         }
-    });
-
-    if (!playerId) return;
-
-    const pigeon = this.players.get(playerId);
-    const item = this.getItemBySprite(itemSprite);
-    
-    item.applyEffect(pigeon);
-
-    //Actualizar puntuaciones
-    this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
-    this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
-
-    this.deleteItem(item);
-    if (pigeon.score >= 3) {
-        // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
-
-                // Transición a EndGameScene
-                this.scene.transition({
-                    target: 'EndGameScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {winnerId: playerId},
-
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
-    }
     }
 
     //Devuelve el objeto al que pertenece un sprite
@@ -447,41 +446,41 @@ this.events.on('destroy', this.onShutdown, this);
 
     //Elimina de la escena un objeto dado
     deleteItem(item) {
-    if (item === this.churro) {
-        this.churro.destroy();
-        this.churro = null;
+        if (item === this.churro) {
+            this.churro.destroy();
+            this.churro = null;
+        }
+
+        if (item === this.powerUp) {
+            this.powerUp.destroy();
+            this.powerUp = null;
+        }
     }
 
-    if (item === this.powerUp) {
-        this.powerUp.destroy();
-        this.powerUp = null;
-    }
-}
-
-/*
-    endGame(winnerId) {
-        this.gameEnded = true;
-        this.players.forEach(pigeon => {
-            pigeon.sprite.setVelocity(0, 0);
-        });
-        this.physics.pause();
-
-        const winnerText = winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
-        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
-        this.add.text(480, 250, winnerText, {
-            fontSize: '64px',
-            color: '#000000'
-        }).setOrigin(0.5);
-
-        const menuBtn = this.add.text(480, 350, 'Return to Menu', {
-            fontSize: '32px',
-            color: '#ffffff',
-        }).setOrigin(0.5).setInteractive()
-            .on('pointerdown', () => { this.scene.start('MenuScene') })
-            .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
-            .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
-    }
-*/
+    /*
+        endGame(winnerId) {
+            this.gameEnded = true;
+            this.players.forEach(pigeon => {
+                pigeon.sprite.setVelocity(0, 0);
+            });
+            this.physics.pause();
+    
+            const winnerText = winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
+            this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
+            this.add.text(480, 250, winnerText, {
+                fontSize: '64px',
+                color: '#000000'
+            }).setOrigin(0.5);
+    
+            const menuBtn = this.add.text(480, 350, 'Return to Menu', {
+                fontSize: '32px',
+                color: '#ffffff',
+            }).setOrigin(0.5).setInteractive()
+                .on('pointerdown', () => { this.scene.start('MenuScene') })
+                .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
+                .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
+        }
+    */
     setPauseState(isPaused) {
         this.isPaused = isPaused;
         if (isPaused) {

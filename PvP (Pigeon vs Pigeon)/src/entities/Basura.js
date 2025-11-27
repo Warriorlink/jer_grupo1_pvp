@@ -13,13 +13,16 @@ export class Basura extends Item {
 
         const slowSpeed = 100;
         const normalSpeed = 300;
+        const duration = 5000;
+
+        // Mostrar el icono del powerup
+        this.showItemIcon(pigeon, 'iconBasura', duration);
 
         // Aplicar velocidad reducida inmediatamente
         pigeon.baseSpeed = slowSpeed;
-
         // Restaurar velocidad después de 5 segundos
         this.scene.time.addEvent({
-            delay: 5000,
+            delay: duration,
             callback: () => {
                 pigeon.baseSpeed = normalSpeed;
             }
