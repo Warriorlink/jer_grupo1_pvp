@@ -7,7 +7,7 @@ export class Pigeon {
         this.score = 0;
 
         this.baseSpeed = 300;
-        this.baseJumpSpeed = 400;
+        this.baseJumpSpeed = 630;
 
         this.attackCooldown = 500;
         this.lastAttackTime = 0;
