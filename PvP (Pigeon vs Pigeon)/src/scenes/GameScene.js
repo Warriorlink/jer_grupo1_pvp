@@ -57,6 +57,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('iconPluma', 'assets/sprites/Icon_fast.png');
         this.load.image('iconBasura', 'assets/sprites/Icon_slow.png');
         this.load.image('iconAvena', 'assets/sprites/Icon_strong.png');
+        this.load.image('Icon_p', 'assets/sprites/Icon_Palomon.png');
+        this.load.image('Icon_d', 'assets/sprites/Icon_Dovenando.png');
 
 
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
@@ -109,6 +111,12 @@ export class GameScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.setUpPlayers();
+
+        this.pigeonIndicators = {
+            player1: this.add.image(10, 60, 'Icon_d').setVisible(false).setDepth(999),
+            player2: this.add.image(10, 60, 'Icon_p').setVisible(false).setDepth(999)
+        };
+
 
         this.anims.create({
             key: 'palomon_idle',
@@ -541,6 +549,23 @@ export class GameScene extends Phaser.Scene {
                 const attackCmd = new AttackPigeonCommand(pigeon);
                 this.processor.process(attackCmd);
             }
+
+            this.players.forEach((pigeon, id) => {
+
+        const indicator = this.pigeonIndicators[id];
+        const sprite = pigeon.sprite;
+
+        if (sprite.y < -5) {
+            // Paloma fuera por arriba → mostrar indicador
+            indicator.setVisible(true);
+            indicator.x = sprite.x;
+            indicator.y = 50;
+
+        } else {
+            // Si vuelve a entrar → ocultar icono
+            indicator.setVisible(false);
+        }
+    });
         });
     }
 }
