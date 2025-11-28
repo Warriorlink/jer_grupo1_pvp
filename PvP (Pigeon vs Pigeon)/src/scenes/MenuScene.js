@@ -20,11 +20,11 @@ export class MenuScene extends Phaser.Scene {
 
 
         this.tweens.add({
-        targets: this.cameras.main,
-        alpha: 1,
-        duration: 800
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 800
         });
-        
+
         this.add.text(480, 100, 'PvP', {
             fontSize: '64px',
             color: '#ffffffff',
@@ -41,141 +41,172 @@ export class MenuScene extends Phaser.Scene {
         }
 
         ////////////////Boton local////////////////
-        
-        const localBtnSprite = this.add.image(250, 350, 'boton')
+
+        const localBtnSprite = this.add.image(250, 360, 'boton')
             .setInteractive({ useHandCursor: true });
 
-        const localBtnText = this.add.text(250, 350, 'Local 2 Players', {
+        const localBtnText = this.add.text(250, 360, 'Local 2 Players', {
             fontSize: '24px',
             color: 'ffffff',
         }).setOrigin(0.5).setDepth(10)
 
-            localBtnSprite.on('pointerover', () => localBtnSprite.setTexture('botonEncima'))
-            localBtnSprite.on('pointerout', () => localBtnSprite.setTexture('boton'))
-            localBtnSprite.on('pointerdown', () => {
+        localBtnSprite.on('pointerover', () => localBtnSprite.setTexture('botonEncima'))
+        localBtnSprite.on('pointerout', () => localBtnSprite.setTexture('boton'))
+        localBtnSprite.on('pointerdown', () => {
 
-                // Apagar música como antes
-                if (this.bgMusic) {
-                    this.bgMusic.stop();
-                    this.bgMusic.destroy();
-                    this.bgMusic = null;
+            // Apagar música como antes
+            if (this.bgMusic) {
+                this.bgMusic.stop();
+                this.bgMusic.destroy();
+                this.bgMusic = null;
+            }
+
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
+
+            // Transición a GameScene
+            this.scene.transition({
+                target: 'GameScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
                 }
-
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
-
-                // Transición a GameScene
-                this.scene.transition({
-                    target: 'GameScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
-
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    }
-                });
             });
+        });
 
-            ///////////////Boton credits////////////////
+        ///////////////Boton credits////////////////
 
 
-            const creditsBtnSprite = this.add.image(480, 500, 'boton')
+        const creditsBtnSprite = this.add.image(250, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const creditsBtnText = this.add.text(480, 500, 'Credits', {
+        const creditsBtnText = this.add.text(250, 500, 'Credits', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
 
-            creditsBtnSprite.on('pointerover', () => creditsBtnSprite.setTexture('botonEncima'))
-            creditsBtnSprite.on('pointerout', () => creditsBtnSprite.setTexture('boton'))
-            creditsBtnSprite.on('pointerdown', () => { 
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
+        creditsBtnSprite.on('pointerover', () => creditsBtnSprite.setTexture('botonEncima'))
+        creditsBtnSprite.on('pointerout', () => creditsBtnSprite.setTexture('boton'))
+        creditsBtnSprite.on('pointerdown', () => {
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
 
-                // Transición a CreditsScene
-                this.scene.transition({
-                    target: 'CreditsScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
+            // Transición a CreditsScene
+            this.scene.transition({
+                target: 'CreditsScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
 
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
             });
+        });
 
-            //////////////Boton controls////////////////
+        ///////////////Boton options////////////////
 
-         const controlsBtnSprite = this.add.image(700, 430, 'boton')
-            .setInteractive({ useHandCursor: true });   
+
+        const optionsBtnSprite = this.add.image(700, 500, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const optionsBtnText = this.add.text(700, 500, 'Options', {
+            fontSize: '24px',
+            color: 'ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+        optionsBtnSprite.on('pointerover', () => optionsBtnSprite.setTexture('botonEncima'))
+        optionsBtnSprite.on('pointerout', () => optionsBtnSprite.setTexture('boton'))
+        optionsBtnSprite.on('pointerdown', () => {
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
+
+            // Transición a CreditsScene
+            this.scene.transition({
+                target: 'OptionsScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
+            });
+        });
+
+        
+        //////////////Boton controls////////////////
+
+        const controlsBtnSprite = this.add.image(700, 430, 'boton')
+            .setInteractive({ useHandCursor: true });
         const controlsBtnText = this.add.text(700, 430, 'Controls', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
 
-            controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
-            controlsBtnSprite.on('pointerout', () => controlsBtnSprite.setTexture('boton'))
-            controlsBtnSprite.on('pointerdown', () => { 
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
+        controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
+        controlsBtnSprite.on('pointerout', () => controlsBtnSprite.setTexture('boton'))
+        controlsBtnSprite.on('pointerdown', () => {
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
 
-                // Transición a ControlsScene
-                this.scene.transition({
-                    target: 'ControlsScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
+            // Transición a ControlsScene
+            this.scene.transition({
+                target: 'ControlsScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
 
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
             });
+        });
 
-            const storyBtnSprite = this.add.image(250, 430, 'boton')
-            .setInteractive({ useHandCursor: true });   
+        const storyBtnSprite = this.add.image(250, 430, 'boton')
+            .setInteractive({ useHandCursor: true });
         const storyBtnText = this.add.text(250, 430, 'Story', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
 
-            storyBtnSprite.on('pointerover', () => storyBtnSprite.setTexture('botonEncima'))
-            storyBtnSprite.on('pointerout', () => storyBtnSprite.setTexture('boton'))
-            storyBtnSprite.on('pointerdown', () => { 
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
+        storyBtnSprite.on('pointerover', () => storyBtnSprite.setTexture('botonEncima'))
+        storyBtnSprite.on('pointerout', () => storyBtnSprite.setTexture('boton'))
+        storyBtnSprite.on('pointerdown', () => {
+            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+            this.cameras.main.setAlpha(1);
 
-                // Transición a StoryScene
-                this.scene.transition({
-                    target: 'StoryScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
+            // Transición a StoryScene
+            this.scene.transition({
+                target: 'StoryScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
 
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
+                // Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
             });
+        });
 
 
-            //////////////Boton online (no funcional)////////////////
+        //////////////Boton online (no funcional)////////////////
 
-            const onlineBtnSprite = this.add.image(700, 350, 'boton')
-            .setInteractive({ useHandCursor: true });   
-        const onlineBtnText = this.add.text(700, 350, 'Online (Not available)', {
+        const onlineBtnSprite = this.add.image(700, 360, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
             fontSize: '24px',
             color: '#7a2eacff'
         }).setOrigin(0.5)
 
-            onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
-            onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
+        onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
+        onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
     }
 
 
