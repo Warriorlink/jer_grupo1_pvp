@@ -6,19 +6,22 @@ export class Pigeon {
         this.character = character;
         this.score = 0;
 
-        this.baseSpeed = 300;
-        this.baseJumpSpeed = 630;
+
+
+        this.speed = 300;
+        this.jumpSpeed = 630;
+        this.attackRange = 40;
+        this.attackForce = 200;
+        this.stunForce = 1000;
 
         this.attackCooldown = 500;
         this.lastAttackTime = 0;
-        this.attackRange = 40;
-        this.attackForce = 200;
-        this.stunForce = 3000;
+        
 
         this.facing = 'right';
         this.stunned = false;
         this.stunTimeout = null;
-        this.defaultStunDuration = 3000;
+        this.defaultStunDuration = 1000;
         this.knockbackExpire = null;
 
         this.isAttacking = false;
@@ -169,5 +172,29 @@ export class Pigeon {
         });
     }
 
+    addScore(value){
+        
+        this.score+=value;
+        console.log(`${this.id} recogió un Churro → score: ${this.score}`);
+    }
+
+   applyModifier(property, amount, duration) {
+
+    if (!this.hasOwnProperty(property)) {
+        console.warn(`La propiedad ${property} no existe en la paloma.`);
+        return;
+    }
+
+    // Aplicar modificador
+    this[property] += amount;
+
+    // Crear un timer por modificador
+    this.scene.time.addEvent({
+        delay: duration,
+        callback: () => {
+            this[property] -= amount;
+        }
+    });
+}
 
 }

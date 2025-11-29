@@ -91,6 +91,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
@@ -100,7 +101,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.add.image(480, 270, 'background');
-
+        
         //Musica de fondo
         this.bgMusic = this.sound.add('Numb', {
             loop: true,
@@ -111,7 +112,7 @@ export class GameScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.setUpPlayers();
-
+        
         this.pigeonIndicators = {
             player1: this.add.image(10, 60, 'Icon_d').setVisible(false).setDepth(999),
             player2: this.add.image(10, 60, 'Icon_p').setVisible(false).setDepth(999)
@@ -213,7 +214,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.time.addEvent({
-            delay: 8000,
+            delay: 7000,
             loop: true,
             callback: () => {
                 if (this.powerUp === null) {

@@ -39,7 +39,7 @@ export class MovePigeonCommand extends Command {
 }
 
         // Velocidad horizontal
-        sprite.setVelocityX(this.moveX * pigeon.baseSpeed);
+        sprite.setVelocityX(this.moveX * pigeon.speed);
 
         // Reproducir animación correcta desde el pigeon (prefijo por personaje)
         if (this.moveX !== 0) {
@@ -56,7 +56,7 @@ export class MovePigeonCommand extends Command {
                 : ((body.blocked && body.blocked.down) || (body.touching && body.touching.down)));
 
             if (onGround) {
-                sprite.setVelocityY(-pigeon.baseJumpSpeed);
+                sprite.setVelocityY(-pigeon.jumpSpeed);
             }
         }
     }
