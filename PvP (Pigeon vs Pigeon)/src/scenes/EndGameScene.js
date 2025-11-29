@@ -27,7 +27,7 @@ export class EndGameScene extends Phaser.Scene {
         });
 
 
-        this.add.text(480, 70, 'SUPREME VICTORY', {
+        this.add.text(480, 250, 'SUPREME VICTORY', {
             fontSize: '100px',
             color: '#ffffffff',
             
@@ -35,7 +35,7 @@ export class EndGameScene extends Phaser.Scene {
             strokeThickness: 10
         }).setOrigin(0.5);
         const winnerText = data.winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
-        this.add.text(480, 250, winnerText, {
+        this.add.text(480, 70, winnerText, {
             fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
