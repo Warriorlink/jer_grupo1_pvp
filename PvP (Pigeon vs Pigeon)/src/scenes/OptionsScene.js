@@ -11,8 +11,8 @@ export class OptionsScene extends Phaser.Scene {
         this.load.image('boton', 'assets/sprites/boton.png');
 
 
-        //this.load.image('slider_bar', 'assets/sprites/slider_bar.png');
-        //this.load.image('slider_button', 'assets/sprites/slider_button.png');
+        this.load.image('slider_bar', 'assets/sprites/slider_bar.png');
+        this.load.image('slider_button', 'assets/sprites/slider_button.png');
     }
 
     create() {
@@ -52,7 +52,7 @@ export class OptionsScene extends Phaser.Scene {
             .setOrigin(0.5);
 
         //Botón del slider
-        const button = this.add.image(barX, barY, 'slider_Button')
+        const button = this.add.image(barX, barY, 'slider_button')
             .setDisplaySize(40, 40)
             .setInteractive({ draggable: true })
             .setOrigin(0.5);
