@@ -10,7 +10,6 @@ export class OptionsScene extends Phaser.Scene {
         this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
         this.load.image('boton', 'assets/sprites/boton.png');
 
-
         this.load.image('slider_bar', 'assets/sprites/slider_bar.png');
         this.load.image('slider_button', 'assets/sprites/slider_button.png');
     }
@@ -26,14 +25,13 @@ export class OptionsScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'fondoPvP').setScale(0.5);
 
+        //Textos
         this.add.text(480, 50, 'Options', {
             fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
         }).setOrigin(0.5);
-
-
 
         this.add.text(480, 240, 'Volume', {
             fontSize: '32px',
@@ -57,29 +55,29 @@ export class OptionsScene extends Phaser.Scene {
             .setInteractive({ draggable: true })
             .setOrigin(0.5);
 
-        // establecer posición inicial según volumen global
+        //Establecer posición inicial del botón según volumen global
         button.x = barX - 150 + (this.sound.volume * 300);
 
-        // interactividad
+        //Interactividad
         this.input.setDraggable(button);
 
         this.input.on('drag', (pointer, obj, dragX, dragY) => {
             if (obj !== button) return;
 
-            // limitar movimiento en X a la barra
+            //Limitar movimiento en X a la barra
             const left = barX - 150;
             const right = barX + 150;
 
             button.x = Phaser.Math.Clamp(dragX, left, right);
 
-            // convertir posición a un valor 0 - 1
+            //Convertir posición a un valor 0 - 1
             const volume = (button.x - left) / 300;
 
-            // aplicar volumen global
+            //Aplicar volumen global
             this.sound.volume = volume;
         });
 
-
+        //Botón de volver al menú
         const backBtnSprite = this.add.image(480, 450, 'boton')
             .setInteractive({ useHandCursor: true });
 

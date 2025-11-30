@@ -10,7 +10,6 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
         this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
         this.load.image('boton', 'assets/sprites/boton.png');
-
     }
 
     create() {
@@ -25,6 +24,7 @@ export class MenuScene extends Phaser.Scene {
             duration: 800
         });
 
+        //Textos de la escena
         this.add.text(480, 100, 'PvP', {
             fontSize: '64px',
             color: '#ffffffff',
@@ -40,8 +40,7 @@ export class MenuScene extends Phaser.Scene {
             this.bgMusic.play();
         }
 
-        ////////////////Boton local////////////////
-
+        //Botón para jugar local
         const localBtnSprite = this.add.image(250, 360, 'boton')
             .setInteractive({ useHandCursor: true });
 
@@ -54,33 +53,30 @@ export class MenuScene extends Phaser.Scene {
         localBtnSprite.on('pointerout', () => localBtnSprite.setTexture('boton'))
         localBtnSprite.on('pointerdown', () => {
 
-            // Apagar música como antes
+            //Apagar música
             if (this.bgMusic) {
                 this.bgMusic.stop();
                 this.bgMusic.destroy();
                 this.bgMusic = null;
             }
 
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
             this.cameras.main.setAlpha(1);
 
-            // Transición a GameScene
+            //Transición a GameScene
             this.scene.transition({
                 target: 'GameScene',
                 duration: 1000,
                 moveBelow: true,
                 data: {},
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
             });
         });
 
-        ///////////////Boton credits////////////////
-
-
+        //Botón de creditos
         const creditsBtnSprite = this.add.image(250, 500, 'boton')
             .setInteractive({ useHandCursor: true });
         const creditsBtnText = this.add.text(250, 500, 'Credits', {
@@ -91,26 +87,24 @@ export class MenuScene extends Phaser.Scene {
         creditsBtnSprite.on('pointerover', () => creditsBtnSprite.setTexture('botonEncima'))
         creditsBtnSprite.on('pointerout', () => creditsBtnSprite.setTexture('boton'))
         creditsBtnSprite.on('pointerdown', () => {
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+
             this.cameras.main.setAlpha(1);
 
-            // Transición a CreditsScene
+            //Transición a CreditsScene
             this.scene.transition({
                 target: 'CreditsScene',
                 duration: 1000,
                 moveBelow: true,
                 data: {},
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
             });
         });
 
-        ///////////////Boton options////////////////
-
-
+        //Botón de opciones
         const optionsBtnSprite = this.add.image(700, 500, 'boton')
             .setInteractive({ useHandCursor: true });
         const optionsBtnText = this.add.text(700, 500, 'Options', {
@@ -121,26 +115,24 @@ export class MenuScene extends Phaser.Scene {
         optionsBtnSprite.on('pointerover', () => optionsBtnSprite.setTexture('botonEncima'))
         optionsBtnSprite.on('pointerout', () => optionsBtnSprite.setTexture('boton'))
         optionsBtnSprite.on('pointerdown', () => {
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+
             this.cameras.main.setAlpha(1);
 
-            // Transición a CreditsScene
+            //Transición a CreditsScene
             this.scene.transition({
                 target: 'OptionsScene',
                 duration: 1000,
                 moveBelow: true,
                 data: {},
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
             });
         });
 
-        
-        //////////////Boton controls////////////////
-
+        //Botón de controles
         const controlsBtnSprite = this.add.image(700, 430, 'boton')
             .setInteractive({ useHandCursor: true });
         const controlsBtnText = this.add.text(700, 430, 'Controls', {
@@ -151,23 +143,24 @@ export class MenuScene extends Phaser.Scene {
         controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
         controlsBtnSprite.on('pointerout', () => controlsBtnSprite.setTexture('boton'))
         controlsBtnSprite.on('pointerdown', () => {
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+
             this.cameras.main.setAlpha(1);
 
-            // Transición a ControlsScene
+            // ransición a ControlsScene
             this.scene.transition({
                 target: 'ControlsScene',
                 duration: 1000,
                 moveBelow: true,
                 data: {},
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
             });
         });
 
+        //Botón de historia
         const storyBtnSprite = this.add.image(250, 430, 'boton')
             .setInteractive({ useHandCursor: true });
         const storyBtnText = this.add.text(250, 430, 'Story', {
@@ -178,26 +171,24 @@ export class MenuScene extends Phaser.Scene {
         storyBtnSprite.on('pointerover', () => storyBtnSprite.setTexture('botonEncima'))
         storyBtnSprite.on('pointerout', () => storyBtnSprite.setTexture('boton'))
         storyBtnSprite.on('pointerdown', () => {
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+
             this.cameras.main.setAlpha(1);
 
-            // Transición a StoryScene
+            //Transición a StoryScene
             this.scene.transition({
                 target: 'StoryScene',
                 duration: 1000,
                 moveBelow: true,
                 data: {},
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
             });
         });
 
-
-        //////////////Boton online (no funcional)////////////////
-
+        //Botón para jugar online (no funciona)
         const onlineBtnSprite = this.add.image(700, 360, 'boton')
             .setInteractive({ useHandCursor: true });
         const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
@@ -208,7 +199,4 @@ export class MenuScene extends Phaser.Scene {
         onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
         onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
     }
-
-
-
 }

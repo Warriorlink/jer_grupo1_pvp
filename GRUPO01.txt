@@ -1,0 +1,8 @@
+Integrantes del equipo:
+- Alejandro Marín Sánchez - a.marins.2023@alumnos.urjc.es - Warriorlink
+- Miguel Amado Camuñas - m.amado.2023@alumnos.urjc.es - Miguel548
+- Hugo Checa Villanueva - h.checa.2023@alumnos.urjc.es - HugoCh05
+- Lucas Lorente Herranz - l.lorente.2023@alumnos.urjc.es - Lumi151
+
+URL del repositorio:
+https://github.com/Warriorlink/jer_grupo1_pvp.git

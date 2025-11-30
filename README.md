@@ -2,8 +2,10 @@
 
 ## Nombre del juego
 PvP (Pigeon vs Pigeon)
+
 ## Nombre del equipo de desarrollo
 GB3D
+
 ## Descripción de la temática del juego
 **PvP (Pigeon vs Pigeon) es un videojuego** 2D multijugador competitivo tanto local como en red en el que dos palomas callejeras luchan por hacerse con la mayor cantidad de churros posible hasta que una de las dos consiga un número específico para ganar.
 
@@ -82,7 +84,7 @@ El tono general será sarcástico y caricaturesco, buscando que la rivalidad ent
 # **4. Jugabilidad**
 
 ## **Objetivo del juego**
-El objetivo principal del juego es **conseguir más churros que el oponente** antes de que uno de los jugadores alcance la cantidad necesaria (3 churros) para la victoria.  
+El objetivo principal del juego es **conseguir más churros que el oponente** antes de que uno de los jugadores alcance la cantidad necesaria (5 churros) para la victoria.  
 Durante la partida, los jugadores deberán entorpecer a su rival, utilizando ataques, trampas y potenciadores que cambien el curso de la partida. 
 A continuación, se muestra una imagen del boceto del churro a recoger y la imagen final implementada en el juego:
 
@@ -122,7 +124,7 @@ También se podrán obtener distintos potenciadores temporales, los cuales apare
   <img src="./Images/GDD/Pluma.png" alt="Imagen de la pluma dorada" width="200">
 </p>
 
-*Basura:* cada cierto tiempo (unos 10-15 segundos) aparecerá basura en el entorno de juego que en el momento en el que un jugador interaccione con ella, lo ralentizará a la mitad de su velocidad base durante unos 5 segundos. En caso de que la pluma dorada esté activa, la basura desaparece al contacto sin ralentizar al jugador).
+*Basura:* cada cierto tiempo aparecerá basura en el entorno de juego que en el momento en el que un jugador interaccione con ella, lo ralentizará a la mitad de su velocidad base durante unos 5 segundos.
 
 <p align="center">
   <img src="./Images/GDD/Basura.jpeg" alt="Imagen del boceto de la basura" width="200">
@@ -149,7 +151,7 @@ Se busca un diseño que combine verticalidad y horizontalidad, con múltiples ni
 # **5. Imágen y diseño visual**
 
 ## **Logotipo**
-Se optó por crear un diseño simple y reconocible para los jugadores
+Se optó por crear un diseño simple y reconocible para los jugadores:
 
 <p align="center">
   <img src="./Images/GDD/Logo PvP.png" alt="Imagen del logotipo" width="300">

@@ -14,15 +14,16 @@ export class CreditsScene extends Phaser.Scene {
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
-        targets: this.cameras.main,
-        alpha: 1,
-        duration: 800
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 800
         });
 
-        this.add.image(480, 270, 'fondoPvP') .setScale(0.5);
+        //Textos y fondo
+        this.add.image(480, 270, 'fondoPvP').setScale(0.5);
 
-        this.add.text(480, 50, 'Credits', { 
-            fontSize: '64px', 
+        this.add.text(480, 50, 'Credits', {
+            fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
@@ -72,31 +73,31 @@ export class CreditsScene extends Phaser.Scene {
             strokeThickness: 3
         }).setOrigin(0.5);
 
-         const backBtnSprite = this.add.image(480, 510, 'boton')
-            .setInteractive({ useHandCursor: true });   
+        //Botón para volver al menú
+        const backBtnSprite = this.add.image(480, 510, 'boton')
+            .setInteractive({ useHandCursor: true });
         const backButtonText = this.add.text(480, 510, 'Back to Menu', {
             fontSize: '24px',
             color: '#000000',
         }).setOrigin(0.5)
 
         backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'))
-            backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'))
-        backBtnSprite.on('pointerdown', () => { 
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
+        backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'))
+        backBtnSprite.on('pointerdown', () => {
 
-                // Transición a MenuScene
-                this.scene.transition({
-                    target: 'MenuScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
+            this.cameras.main.setAlpha(1);
+            //Transición a MenuScene
+            this.scene.transition({
+                target: 'MenuScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
 
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
+                //Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
             });
+        });
     }
 }

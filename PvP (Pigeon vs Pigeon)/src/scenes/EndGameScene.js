@@ -26,23 +26,23 @@ export class EndGameScene extends Phaser.Scene {
             duration: 800
         });
 
-
+        //Textos de victoria
         this.add.text(480, 250, 'SUPREME VICTORY', {
             fontSize: '100px',
-            color: '#ffffffff',
-            
+            color: '#4444ff',
+            fontStyle: 'bold',
             stroke: '#000000',
             strokeThickness: 10
         }).setOrigin(0.5);
         const winnerText = data.winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
-        this.add.text(480, 70, winnerText, {
+        this.add.text(480, 350, winnerText, {
             fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        //Musica de fondo
+        //Música de fondo
         this.bgMusic = this.sound.add('SweetVictory', {
             loop: true,
             volume: 0.6
@@ -52,10 +52,10 @@ export class EndGameScene extends Phaser.Scene {
         this.events.on('shutdown', this.onShutdown, this);
         this.events.on('destroy', this.onShutdown, this);
 
-        //Botón
-        const menuBtnSprite = this.add.image(480, 430, 'boton')
+        //Botón para volver al menú
+        const menuBtnSprite = this.add.image(480, 460, 'boton')
             .setInteractive({ useHandCursor: true });
-        const menuBtnText = this.add.text(480, 430, 'Return to menu', {
+        const menuBtnText = this.add.text(480, 460, 'Return to menu', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
@@ -63,17 +63,16 @@ export class EndGameScene extends Phaser.Scene {
         menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'))
         menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'))
             .on('pointerdown', () => {
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
 
-                // Transición a MenuScene
+                this.cameras.main.setAlpha(1);
+                //Transición a MenuScene
                 this.scene.transition({
                     target: 'MenuScene',
                     duration: 1000,
                     moveBelow: true,
                     data: {},
 
-                    // Fade-out progresivo
+                    //Fade-out progresivo
                     onUpdate: (progress) => {
                         this.cameras.main.setAlpha(1 - progress);
                     }
@@ -81,6 +80,7 @@ export class EndGameScene extends Phaser.Scene {
             });
     }
 
+    //Parar la música al salir de la escena
     onShutdown() {
         if (this.bgMusic) {
             this.bgMusic.stop();

@@ -22,6 +22,7 @@ export class AttackPigeonCommand extends Command {
         this.pigeon.showAttackSprite(250);
         scene.sound.play('SonidoAtaque', { volume: 0.7 });
 
+        //Dirección a la que ataca
         const dir = this.pigeon.facing === 'right' ? 1 : -1;
         const x = this.pigeon.sprite.x + dir * this.pigeon.attackRange;
         const y = this.pigeon.sprite.y;
@@ -39,15 +40,13 @@ export class AttackPigeonCommand extends Command {
             const targetPigeon = targetSprite.pigeon;
             if (!targetPigeon) return;
 
-            // Knockback según dirección del atacante
+            //Knockback según dirección del atacante
             const knock = this.pigeon.attackForce * dir;
 
-            // 1) STUN primero
+            //STUN y knockback
             targetPigeon.stun(this.pigeon.stunForce);
-
-            // 2) y DESPUÉS aplicar knockback final
             targetPigeon.takeHit(knock);
-            
+
             //Evitar múltiples impactos por el mismo ataque
             if (overlap && scene.physics && scene.physics.world) {
                 scene.physics.world.removeCollider(overlap);

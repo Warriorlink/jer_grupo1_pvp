@@ -15,6 +15,5 @@ export class CommandProcessor {
 
     process(command) {
         command.execute();
-        // Sent over the websocket
     }
 }

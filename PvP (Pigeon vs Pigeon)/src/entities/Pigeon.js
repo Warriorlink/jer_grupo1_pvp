@@ -6,8 +6,7 @@ export class Pigeon {
         this.character = character;
         this.score = 0;
 
-
-
+        //Propiedades de ataque y movimiento
         this.speed = 300;
         this.jumpSpeed = 630;
         this.attackRange = 40;
@@ -16,7 +15,6 @@ export class Pigeon {
 
         this.attackCooldown = 500;
         this.lastAttackTime = 0;
-        
 
         this.facing = 'right';
         this.stunned = false;
@@ -26,6 +24,7 @@ export class Pigeon {
 
         this.isAttacking = false;
 
+        //Asignación de sprite para cada paloma
         let textureKey = null;
         if (character === "palomon") {
             textureKey = "palomonSheet";
@@ -36,37 +35,36 @@ export class Pigeon {
             textureKey = "palomonSheet";
         }
 
-
+        //Físicas de las palomas
         this.sprite = this.scene.physics.add.sprite(x, y, textureKey);
         this.sprite.body.setCollideWorldBounds(true);
         this.sprite.body.allowGravity = true;
 
-
         this.sprite.pigeon = this;
-
 
         this.invertFlipForMovement = (character === "dovenando");
 
         this.sprite.setFlipX(this.invertFlipForMovement);
     }
 
-    // Determina si la paloma puede atacar
+    //Determina si la paloma puede atacar
     canAttack(now) {
         now = now || this.scene.time.now;
         return (now - this.lastAttackTime) >= this.attackCooldown;
     }
 
-    // Marca el tiempo del último ataque
+    //Marca el tiempo del último ataque
     markAttacked(now) {
         this.lastAttackTime = now || this.scene.time.now;
     }
 
-    // Reproduce la animación correcta según el personaje y el nombre (idle, walk...)
+    //Reproduce la animación correcta según el personaje y el nombre (idle, walk...)
     playAnimation(animName) {
-        if (this.isAttacking) return; // NO INTERRUMPIR ATAQUE
+        if (this.isAttacking) return;
 
         const key = `${this.character}_${animName}`;
 
+        //Por si acaso no existe la animación
         if (!this.scene.anims.exists(key)) {
             console.warn(`Animación no existe: ${key}`);
             return;
@@ -76,11 +74,10 @@ export class Pigeon {
     }
 
 
-    // Aplica knockback/efecto visual de recibir golpe
+    //Aplica knockback/efecto visual de recibir golpe
     takeHit(knockbackX = 0) {
         this.sprite.setVelocityX(knockbackX);
 
-        // permitir que el knockback no sea anulado por el update durante un breve tiempo
         this.knockbackExpire = this.scene.time.now + 200;
 
         if (this.stunned) return;
@@ -91,7 +88,7 @@ export class Pigeon {
         });
     }
 
-    // Aplica stun
+    //Aplicar stun
     stun(durationMs) {
         durationMs = durationMs == null ? this.defaultStunDuration : durationMs;
         if (this.stunned) return;
@@ -107,30 +104,30 @@ export class Pigeon {
         });
     }
 
+    //Animación de ataque
     startAttackAnimation() {
         if (this.isAttacking) return;
         this.isAttacking = true;
 
         const key = `${this.character}_attack`;
 
-        // Usar animación si existe, si no ignorar
         if (this.scene.anims.exists(key)) {
             this.sprite.anims.play(key, true);
         }
 
-        // Si está mirando al contrario, mantener flip
+        //Si está mirando al contrario, mantener flip
         this.sprite.setFlipX(this.facing === "left" ? !this.invertFlipForMovement : this.invertFlipForMovement);
 
-        // Volver a animación normal tras el ataque
+        //Volver a animación normal tras el ataque
         this.scene.time.delayedCall(250, () => {   // Duración aproximada del ataque
             this.endAttackAnimation();
         });
     }
 
+    //Fin de la animación de ataque
     endAttackAnimation() {
         this.isAttacking = false;
 
-        // Si está quieto → idle
         if (this.sprite.body.velocity.x === 0) {
             this.playAnimation("idle");
         }
@@ -139,62 +136,61 @@ export class Pigeon {
         }
     }
 
+    //Sprite del ataque
     showAttackSprite(durationMs = 250) {
         const scene = this.scene;
         const key = this.character === 'dovenando' ? 'dovenandoAttack' : 'palomonAttack';
 
-        // Crear sprite visual del ataque
+        //Crear sprite visual del ataque
         const attackSprite = scene.add.sprite(this.sprite.x, this.sprite.y, key);
         attackSprite.setOrigin(0.5, 0.5);
         attackSprite.setDepth(this.sprite.depth + 1);
 
-        // Ajuste inicial según dirección
-        const offsetX = this.facing === 'right' ? 20 : -20; // distancia delante de la paloma
+        //Ajuste inicial según dirección
+        const offsetX = this.facing === 'right' ? 20 : -20;
         attackSprite.x += offsetX;
 
-        // Voltear sprite según dirección
         attackSprite.setFlipX(this.facing === 'left');
 
-        // Evento para seguir a la paloma
+        //Evento para seguir a la paloma
         const followEvent = scene.time.addEvent({
-            delay: 16, // aprox 60fps
+            delay: 16,
             loop: true,
             callback: () => {
                 attackSprite.x = this.sprite.x + offsetX;
-                attackSprite.y = this.sprite.y; // puedes ajustar vertical si quieres
+                attackSprite.y = this.sprite.y;
             }
         });
 
-        // Destruir el sprite y detener seguimiento después de durationMs
+        //Destruir el sprite y detener seguimiento después de duration
         scene.time.delayedCall(durationMs, () => {
             followEvent.remove(false);
             attackSprite.destroy();
         });
     }
 
-    addScore(value){
-        
-        this.score+=value;
+    //Añadir puntuación
+    addScore(value) {
+
+        this.score += value;
         console.log(`${this.id} recogió un Churro → score: ${this.score}`);
     }
 
-   applyModifier(property, amount, duration) {
+    //Aplicar power-up
+    applyModifier(property, amount, duration) {
 
-    if (!this.hasOwnProperty(property)) {
-        console.warn(`La propiedad ${property} no existe en la paloma.`);
-        return;
-    }
-
-    // Aplicar modificador
-    this[property] += amount;
-
-    // Crear un timer por modificador
-    this.scene.time.addEvent({
-        delay: duration,
-        callback: () => {
-            this[property] -= amount;
+        if (!this.hasOwnProperty(property)) {
+            console.warn(`La propiedad ${property} no existe en la paloma.`);
+            return;
         }
-    });
-}
 
+        this[property] += amount;
+
+        this.scene.time.addEvent({
+            delay: duration,
+            callback: () => {
+                this[property] -= amount;
+            }
+        });
+    }
 }

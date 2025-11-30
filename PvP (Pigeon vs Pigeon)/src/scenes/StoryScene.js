@@ -15,20 +15,20 @@ export class StoryScene extends Phaser.Scene {
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
-        targets: this.cameras.main,
-        alpha: 1,
-        duration: 800
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 800
         });
         this.add.image(480, 270, 'fondo');
 
-        this.add.text(480, 50, 'Story', { 
-            fontSize: '64px', 
+        this.add.text(480, 50, 'Story', {
+            fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
-    }).setOrigin(0.5);
-    // Historia
+        }).setOrigin(0.5);
 
+        //Historia general
         this.add.text(480, 120, 'In some nameless city, on a damp and murky night, two pigeons wandered through the alleys in search of something to calm their hunger.', {
             fontSize: '16px',
             color: '#ffffff',
@@ -56,7 +56,7 @@ export class StoryScene extends Phaser.Scene {
             wordWrap: { width: 800, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
-        // Dovenando
+        //Historia Dovenando
         this.add.text(200, 270, 'Dovenando', {
             fontSize: '32px',
             color: '#000000',
@@ -76,7 +76,7 @@ export class StoryScene extends Phaser.Scene {
 
         this.add.image(200, 340, 'dovenando').setOrigin(0.5).setScale(1.5);
 
-        // Palomon
+        //Historia Palomon
         this.add.text(770, 270, 'Palomón', {
             fontSize: '32px',
             color: '#000000',
@@ -96,31 +96,31 @@ export class StoryScene extends Phaser.Scene {
 
         this.add.image(770, 340, 'palomon').setOrigin(0.5).setScale(1.5);
 
-        // Botón para volver al menú
-         const menuBtnSprite = this.add.image(480, 500, 'boton')
-            .setInteractive({ useHandCursor: true });   
+        //Botón para volver al menú
+        const menuBtnSprite = this.add.image(480, 500, 'boton')
+            .setInteractive({ useHandCursor: true });
         const menuButtonText = this.add.text(480, 500, 'Back to Menu', {
             fontSize: '24px',
             color: '#000000',
         }).setOrigin(0.5);
         menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'))
         menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'))
-        menuBtnSprite.on('pointerdown', () => { 
-                // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
-                this.cameras.main.setAlpha(1);
+        menuBtnSprite.on('pointerdown', () => {
+            
+            this.cameras.main.setAlpha(1);
 
-                // Transición a MenuScene
-                this.scene.transition({
-                    target: 'MenuScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
+            //Transición a MenuScene
+            this.scene.transition({
+                target: 'MenuScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
 
-                    // Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    } 
-                });
+                //Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
             });
+        });
     }
 }

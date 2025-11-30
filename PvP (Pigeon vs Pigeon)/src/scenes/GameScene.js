@@ -26,14 +26,15 @@ export class GameScene extends Phaser.Scene {
         this.churro = null;
         this.powerUp = null;
 
+        //Posiciones de aparición de objetos y churros
         this.itemSpawnPositions = [
-            { x: 560, y: 45 },   // Repiso superior
-            { x: 415, y: 200 },  // Repiso en medio
-            { x: 790, y: 115 },  // Derecha superior
-            { x: 790, y: 280 },  // Derecha inferior
-            { x: 126, y: 115 },  // Izquierda superior
-            { x: 126, y: 280 },  // Izquierda inferior
-            { x: 560, y: 455 }   // Suelo
+            { x: 560, y: 45 },
+            { x: 415, y: 200 },
+            { x: 790, y: 115 },
+            { x: 790, y: 280 },
+            { x: 126, y: 115 },
+            { x: 126, y: 280 },
+            { x: 560, y: 455 }
         ];
 
         this.powerUps = [
@@ -45,6 +46,7 @@ export class GameScene extends Phaser.Scene {
 
 
     preload() {
+        //Sprites e imágenes de fondo
         this.load.image('background', 'assets/sprites/background.png');
         this.load.image('palomon', 'assets/sprites/palomon.png');
         this.load.image('dovenando', 'assets/sprites/dovenando.png');
@@ -60,7 +62,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('Icon_p', 'assets/sprites/Icon_Palomon.png');
         this.load.image('Icon_d', 'assets/sprites/Icon_Dovenando.png');
 
-
+        //Música y sonidos
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
         this.load.audio('SonidoPluma', 'assets/sounds/sonidoPluma.mp3');
         this.load.audio('SonidoChurro', 'assets/sounds/sonidoChurro.mp3');
@@ -91,7 +93,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        
+
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
@@ -101,7 +103,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.add.image(480, 270, 'background');
-        
+
         //Musica de fondo
         this.bgMusic = this.sound.add('Numb', {
             loop: true,
@@ -112,13 +114,13 @@ export class GameScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.setUpPlayers();
-        
+
         this.pigeonIndicators = {
             player1: this.add.image(10, 60, 'Icon_d').setVisible(false).setDepth(999),
             player2: this.add.image(10, 60, 'Icon_p').setVisible(false).setDepth(999)
         };
 
-
+        //Animaciones de los spritesheets
         this.anims.create({
             key: 'palomon_idle',
             frames: [{ key: 'palomonSheet', frame: 0 }],
@@ -154,7 +156,6 @@ export class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
-        // Animación de ataque — Palomón (sin ala)
         this.anims.create({
             key: 'palomon_attack',
             frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
@@ -162,7 +163,6 @@ export class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
-        // Animación de ataque — Dovenando (sin ala)
         this.anims.create({
             key: 'dovenando_attack',
             frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
@@ -171,7 +171,7 @@ export class GameScene extends Phaser.Scene {
         });
 
 
-        //Puntuaciones correspondientes
+        //Puntuacione
         this.scoreTextP1 = this.add.text(10, 20, 'Dovenando: 0', {
             fontSize: '32px',
             color: '#ffffff',
@@ -197,12 +197,9 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.playerSprites, this.platforms);
         this.physics.add.overlap(this.playerSprites, this.playerSprites);
 
-
-
-
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
-        // Cada 10 segundos intentar generar un churro
+        //Cada 5 segundos intentar generar un churro
         this.time.addEvent({
             delay: 5000,
             loop: true,
@@ -213,6 +210,7 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
+        //Cada 7 segundos intentar generar un churro
         this.time.addEvent({
             delay: 7000,
             loop: true,
@@ -228,6 +226,7 @@ export class GameScene extends Phaser.Scene {
 
     }
 
+    //Eliminar música al cerrar la escena
     onShutdown() {
         if (this.bgMusic) {
             this.bgMusic.stop();
@@ -288,9 +287,13 @@ export class GameScene extends Phaser.Scene {
 
     }
 
+    //Configuración de palomas y controles
     setUpPlayers() {
         const leftPigeon = new Pigeon(this, 'player1', 150, 435, 'dovenando');
         const rightPigeon = new Pigeon(this, 'player2', 800, 435, 'palomon');
+
+        rightPigeon.sprite.flipX = true;
+        rightPigeon.facing = 'left';
 
         this.players.set('player1', leftPigeon);
         this.players.set('player2', rightPigeon);
@@ -323,12 +326,13 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
+    //Generar un objeto en una posición aleatoria disponible
     spawnItem(type) {
 
         let refName = null;
         let ItemClass = null;
 
-        // decidir qué clase instanciar y qué referencia usar
+        //Decidir qué clase instanciar y qué referencia usar
         switch (type) {
             case "churro":
                 refName = "churro";
@@ -357,7 +361,7 @@ export class GameScene extends Phaser.Scene {
 
         const availablePositions = this.itemSpawnPositions.filter(pos => {
 
-            // Evitar posición donde hay churro
+            //Evitar posición donde hay churro
             if (this.churro && this.churro.sprite.x === pos.x && this.churro.sprite.y === pos.y) {
                 return false;
             }
@@ -370,13 +374,13 @@ export class GameScene extends Phaser.Scene {
             return true;
         });
 
-        // Elegir una posición al azar
+        //Elegir una posición al azar
         const pos = Phaser.Utils.Array.GetRandom(availablePositions);
 
         const item = new ItemClass(this, pos.x, pos.y);
         this[refName] = (item);
 
-        // Activar overlap con ambos jugadores
+        //Activar overlap con ambos jugadores
         this.players.forEach(pigeon => {
             this.physics.add.overlap(
                 pigeon.sprite,
@@ -389,22 +393,20 @@ export class GameScene extends Phaser.Scene {
 
         if (refName === "powerUp") {
 
-            // Tiempo de vida del power-up 
+            //Tiempo de vida del power-up 
             const lifetime = 9000;
 
-            // Guardar el timer en el propio objeto para poder cancelarlo si hace falta
+            //Guardar el timer en el propio objeto para poder cancelarlo si hace falta
             item.expireTimer = this.time.delayedCall(lifetime, () => {
 
                 if (this.powerUp === item) {
                     this.deleteItem(item);
                 }
-
             });
         }
-
     }
 
-
+    //Manejo de recogida de objetos
     onItemPickup(pigeonSprite, itemSprite) {
 
         let playerId = null;
@@ -427,18 +429,18 @@ export class GameScene extends Phaser.Scene {
         this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
 
         this.deleteItem(item);
-        if (pigeon.score >= 3) {
-            // Asegurar que la cámara está totalmente visible antes de empezar el fade-out
+        if (pigeon.score >= 5) {
+
             this.cameras.main.setAlpha(1);
 
-            // Transición a EndGameScene
+            //Transición a EndGameScene
             this.scene.transition({
                 target: 'EndGameScene',
                 duration: 1000,
                 moveBelow: true,
                 data: { winnerId: playerId },
 
-                // Fade-out progresivo
+                //Fade-out progresivo
                 onUpdate: (progress) => {
                     this.cameras.main.setAlpha(1 - progress);
                 }
@@ -466,30 +468,7 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    /*
-        endGame(winnerId) {
-            this.gameEnded = true;
-            this.players.forEach(pigeon => {
-                pigeon.sprite.setVelocity(0, 0);
-            });
-            this.physics.pause();
-    
-            const winnerText = winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
-            this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
-            this.add.text(480, 250, winnerText, {
-                fontSize: '64px',
-                color: '#000000'
-            }).setOrigin(0.5);
-    
-            const menuBtn = this.add.text(480, 350, 'Return to Menu', {
-                fontSize: '32px',
-                color: '#ffffff',
-            }).setOrigin(0.5).setInteractive()
-                .on('pointerdown', () => { this.scene.start('MenuScene') })
-                .on('pointerover', () => menuBtn.setStyle({ fill: '#707673ff' }))
-                .on('pointerout', () => menuBtn.setStyle({ fill: '#ffffff' }));
-        }
-    */
+    //Establece el estado de pausa del juego
     setPauseState(isPaused) {
         this.isPaused = isPaused;
         if (isPaused) {
@@ -521,31 +500,27 @@ export class GameScene extends Phaser.Scene {
             const pigeon = this.players.get(mapping.playerId);
             if (!pigeon) return;
 
-            // Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
-            // Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+            //Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
             if (pigeon.stunned) {
-                // permitir knockback durante un corto periodo tras recibir el golpe
+                //Permitir knockback durante un corto periodo tras recibir el golpe
                 if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
-                    // si no hay knockback activo, detener horizontalmente
                     pigeon.sprite.setVelocityX(0);
                 }
                 return;
             }
 
-
-            // calcular movimiento horizontal (-1,0,1)
+            //Calcular movimiento horizontal
             let moveX = 0;
             if (mapping.leftKeyObj.isDown) moveX = -1;
             else if (mapping.rightKeyObj.isDown) moveX = 1;
 
-            // salto (true si se pulsa)
             const jump = mapping.upKeyObj.isDown;
 
-            // enviar comando con movimiento horizontal y salto
+            //Enviar comando con movimiento horizontal y salto
             let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
             this.processor.process(moveCommand);
 
-            // ataque (si se ha configurado la tecla)
+            //Ataque
             if (mapping.attackKeyObj && mapping.attackKeyObj.isDown) {
                 const attackCmd = new AttackPigeonCommand(pigeon);
                 this.processor.process(attackCmd);
@@ -553,20 +528,20 @@ export class GameScene extends Phaser.Scene {
 
             this.players.forEach((pigeon, id) => {
 
-        const indicator = this.pigeonIndicators[id];
-        const sprite = pigeon.sprite;
+                const indicator = this.pigeonIndicators[id];
+                const sprite = pigeon.sprite;
 
-        if (sprite.y < -5) {
-            // Paloma fuera por arriba → mostrar indicador
-            indicator.setVisible(true);
-            indicator.x = sprite.x;
-            indicator.y = 50;
+                if (sprite.y < -5) {
+                    //Si la paloma esta fuera por arriba muestra el indicador
+                    indicator.setVisible(true);
+                    indicator.x = sprite.x;
+                    indicator.y = 50;
 
-        } else {
-            // Si vuelve a entrar → ocultar icono
-            indicator.setVisible(false);
-        }
-    });
+                } else {
+                    //Si vuelve a entrar se oculta el icono
+                    indicator.setVisible(false);
+                }
+            });
         });
     }
 }
