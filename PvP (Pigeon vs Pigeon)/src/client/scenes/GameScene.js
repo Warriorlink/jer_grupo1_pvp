@@ -9,6 +9,8 @@ import { Avena } from '../entities/Avena.js';
 import { Pluma } from '../entities/Pluma.js';
 import { Basura } from '../entities/Basura.js';
 
+import { connectionManager } from '../services/ConnectionManager';
+
 export class GameScene extends Phaser.Scene {
 
     constructor() {
@@ -94,6 +96,14 @@ export class GameScene extends Phaser.Scene {
 
     create() {
 
+        this.connectionListener = (data) => {
+            if (!data.connected && this.scene.isActive()) {
+                this.onConnectionLost();
+            }
+        };
+        connectionManager.addListener(this.connectionListener);
+
+        
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
@@ -226,14 +236,11 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    //Eliminar música al cerrar la escena
-    onShutdown() {
-        if (this.bgMusic) {
-            this.bgMusic.stop();
-            this.bgMusic.destroy();
-            this.bgMusic = null;
+    onConnectionLost() {
+            this.scene.pause();
+            this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
         }
-    }
+    
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
@@ -544,4 +551,21 @@ export class GameScene extends Phaser.Scene {
             });
         });
     }
+    
+
+    //Eliminar música al cerrar la escena y cerrrar listeners
+    shutdown() {
+        // Remover el listener
+        if (this.connectionListener) {
+            connectionManager.removeListener(this.connectionListener);
+        }
+
+        if (this.bgMusic) {
+            this.bgMusic.stop();
+            this.bgMusic.destroy();
+            this.bgMusic = null;
+        }
+    }
+    
+    
 }

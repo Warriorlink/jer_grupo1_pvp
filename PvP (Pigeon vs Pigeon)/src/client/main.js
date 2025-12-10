@@ -7,7 +7,7 @@ import { ControlsScene } from './scenes/ControlsScene.js';
 import { EndGameScene } from './scenes/EndGameScene.js';
 import { StoryScene } from './scenes/StoryScene.js';
 import { OptionsScene } from './scenes/OptionsScene.js';
-
+import { ConnectionLostScene } from './scenes/ConnectionLostScene.js';
 const config = {
   type: Phaser.AUTO,
   width: 960,
@@ -20,7 +20,7 @@ const config = {
       debug: false
     }
   },
-  scene: [MenuScene, GameScene, PauseScene, CreditsScene, ControlsScene, EndGameScene, StoryScene, OptionsScene],
+  scene: [MenuScene, GameScene, PauseScene, CreditsScene, ControlsScene, EndGameScene, StoryScene, OptionsScene, ConnectionLostScene],
   backgroundColor: '#1a2a2e',
 }
 

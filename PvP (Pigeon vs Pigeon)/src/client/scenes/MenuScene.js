@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { connectionManager } from '../services/ConnectionManager';
 
 export class MenuScene extends Phaser.Scene {
     constructor() {
@@ -39,6 +40,11 @@ export class MenuScene extends Phaser.Scene {
             });
             this.bgMusic.play();
         }
+
+        this.connectionText = this.add.text(400, 150, 'Servidor: Comprobando...', {
+            fontSize: '20px',
+            color: '#ffffffff'
+        }).setOrigin(0.5);
 
         //Botón para jugar local
         const localBtnSprite = this.add.image(250, 360, 'boton')
@@ -198,5 +204,37 @@ export class MenuScene extends Phaser.Scene {
 
         onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
         onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
+    
+        this.connectionListener = (data) => {
+            this.updateConnectionDisplay(data);
+        };
+        connectionManager.addListener(this.connectionListener);
+        
+    }
+
+    updateConnectionDisplay(data) {
+        // Solo actualizar si el texto existe (la escena está creada)
+        if (!this.connectionText || !this.scene || !this.scene.isActive('MenuScene')) {
+            return;
+        }
+
+        try {
+            if (data.connected) {
+                this.connectionText.setText(`Servidor: ${data.count} usuario(s) conectado(s)`);
+                this.connectionText.setColor('#ffffffff');
+            } else {
+                this.connectionText.setText('Servidor: Desconectado');
+                this.connectionText.setColor('#000000ff');
+            }
+        } catch (error) {
+            console.error('[MenuScene] Error updating connection display:', error);
+        }
+    }
+
+    shutdown() {
+        // Remover el listener
+        if (this.connectionListener) {
+            connectionManager.removeListener(this.connectionListener);
+        }
     }
 }

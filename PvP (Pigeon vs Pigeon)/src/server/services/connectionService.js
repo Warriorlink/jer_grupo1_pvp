@@ -22,6 +22,7 @@ export function createConnectionService() {
      */
     updateConnection(sessionId) {
       connectedSessions.set(sessionId, Date.now());
+      //Consolo.log del usuario conectado
       return connectedSessions.size;
     },
 
