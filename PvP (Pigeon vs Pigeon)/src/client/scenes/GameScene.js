@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Pigeon } from '../entities/Pigeon.js';
-import { CommandProcessor } from '../commands/CommandProcessor';
+import { CommandProcessor } from '../commands/CommandProcessor.js';
 import { MovePigeonCommand } from '../commands/MovePigeonCommand.js';
 import { PauseCommand } from '../commands/PauseCommand.js';
 import { AttackPigeonCommand } from '../commands/AttackPigeonCommand.js';
