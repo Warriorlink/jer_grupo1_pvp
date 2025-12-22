@@ -82,6 +82,41 @@ export class MenuScene extends Phaser.Scene {
             });
         });
 
+        //Botón para jugar online (no funciona)
+        const onlineBtnSprite = this.add.image(700, 360, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
+            fontSize: '24px',
+            color: '#ffffff'
+        }).setOrigin(0.5).setDepth(10)
+
+        onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
+        onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
+        onlineBtnSprite.on('pointerdown', () => {
+
+            //Apagar música
+            if (this.bgMusic) {
+                this.bgMusic.stop();
+                this.bgMusic.destroy();
+                this.bgMusic = null;
+            }
+
+            this.cameras.main.setAlpha(1);
+
+            //Transición a GameScene
+            this.scene.transition({
+                target: 'LobbyScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+
+                //Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
+            });
+        });
+
         //Botón de creditos
         const creditsBtnSprite = this.add.image(250, 500, 'boton')
             .setInteractive({ useHandCursor: true });
@@ -194,22 +229,12 @@ export class MenuScene extends Phaser.Scene {
             });
         });
 
-        //Botón para jugar online (no funciona)
-        const onlineBtnSprite = this.add.image(700, 360, 'boton')
-            .setInteractive({ useHandCursor: true });
-        const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
-            fontSize: '24px',
-            color: '#7a2eacff'
-        }).setOrigin(0.5)
 
-        onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
-        onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
-    
         this.connectionListener = (data) => {
             this.updateConnectionDisplay(data);
         };
         connectionManager.addListener(this.connectionListener);
-        
+
     }
 
     updateConnectionDisplay(data) {
