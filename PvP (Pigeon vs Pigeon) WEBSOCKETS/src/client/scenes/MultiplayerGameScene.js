@@ -14,7 +14,7 @@ import { connectionManager } from '../services/ConnectionManager.js';
 export class MultiplayerGameScene extends Phaser.Scene {
 
     constructor() {
-        super('MultiplayerGameScene');
+        super('GameScene');
     }
 
     init() {
@@ -44,13 +44,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
             'basura',
             'pluma'
         ];
-
-        // WebSocket and role passed via scene data (from LobbyScene)
-        const data = this.sys.settings.data || {};
-        this.ws = data.ws || null;
-        this.playerRole = data.playerRole || 'player1';
-        this.roomId = data.roomId || null;
-        this.renderedItems = new Map();
     }
 
 
@@ -110,7 +103,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
-
+        
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
@@ -131,20 +124,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.setUpPlayers();
-
-        // Show initial role text (left/right)
-        const roleText = this.playerRole === 'player1' ? 'Eres la paloma izquierda' : 'Eres la paloma derecha';
-        const roleDisplay = this.add.text(480, 40, roleText, {
-            fontSize: '24px',
-            color: '#ffffff',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            padding: { x: 10, y: 6 }
-        }).setOrigin(0.5);
-
-        // Fade out after 2.5s
-        this.time.delayedCall(2500, () => {
-            this.tweens.add({ targets: roleDisplay, alpha: 0, duration: 600, onComplete: () => roleDisplay.destroy() });
-        });
 
         this.pigeonIndicators = {
             player1: this.add.image(10, 60, 'Icon_d').setVisible(false).setDepth(999),
@@ -230,11 +209,27 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
-        // NOTE: Item spawning and authoritative game logic moved to server.
-        // Client no longer spawns items locally; server will send spawn/state messages.
+        //Cada 5 segundos intentar generar un churro
+        this.time.addEvent({
+            delay: 5000,
+            loop: true,
+            callback: () => {
+                if (this.churro === null) {
+                    this.spawnItem("churro");
+                }
+            }
+        });
 
-        // Set up WebSocket listeners
-        this.setupWebSocketListeners();
+        //Cada 7 segundos intentar generar un churro
+        this.time.addEvent({
+            delay: 7000,
+            loop: true,
+            callback: () => {
+                if (this.powerUp === null) {
+                    this.spawnItem(Phaser.Utils.Array.GetRandom(this.powerUps));
+                }
+            }
+        })
 
         this.events.on('shutdown', this.onShutdown, this);
         this.events.on('destroy', this.onShutdown, this);
@@ -242,10 +237,10 @@ export class MultiplayerGameScene extends Phaser.Scene {
     }
 
     onConnectionLost() {
-        this.scene.pause();
-        this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
-    }
-
+            this.scene.pause();
+            this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
+        }
+    
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
@@ -337,150 +332,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
             };
         });
     }
-
-    setupWebSocketListeners() {
-        if (!this.ws) return;
-
-        this.ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                this.handleServerMessage(data);
-            } catch (error) {
-                console.error('Error parsing server message:', error);
-            }
-        };
-
-        this.ws.onclose = () => {
-            console.log('WebSocket connection closed');
-            if (!this.gameEnded) {
-                this.handleDisconnection();
-            }
-        };
-
-        this.ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-            if (!this.gameEnded) {
-                this.handleDisconnection();
-            }
-        };
-    }
-
-    handleServerMessage(data) {
-        switch (data.type) {
-            case 'init':
-                // Initial state from server when game starts
-                // data: { state }
-                this.applyState(data.state || {});
-                break;
-
-            case 'state':
-                // Authoritative periodic state updates from server
-                this.applyState(data.state || {});
-                break;
-
-            case 'gameOver':
-                this.endGame(data.winner, data.player1Score, data.player2Score);
-                break;
-
-            case 'playerDisconnected':
-                this.handleDisconnection();
-                break;
-
-            default:
-                console.log('Unknown message type:', data.type);
-        }
-    }
-
-    // Apply server authoritative state to client entities
-    applyState(state) {
-        if (!state) return;
-
-        // Players
-        const playersState = state.players || {};
-        ['player1', 'player2'].forEach(id => {
-            const pState = playersState[id];
-            const pigeon = this.players.get(id);
-            if (!pigeon || !pState) return;
-
-            // Update position
-            if (typeof pState.x === 'number') pigeon.sprite.x = pState.x;
-            if (typeof pState.y === 'number') pigeon.sprite.y = pState.y;
-
-            // Update facing
-            if (pState.facing) pigeon.facing = pState.facing;
-
-            // Update stunned state and visual
-            pigeon.stunned = !!pState.stunned;
-
-            // Update score display
-            if (typeof pState.score === 'number') {
-                pigeon.score = pState.score;
-            }
-        });
-
-        // Update score texts
-        const p1 = this.players.get('player1');
-        const p2 = this.players.get('player2');
-        if (p1) this.scoreTextP1.setText('Dovenando: ' + (p1.score || 0));
-        if (p2) this.scoreTextP2.setText('Palomón: ' + (p2.score || 0));
-
-        // Items: state.items = [{id, type, x, y}]
-        const items = state.items || [];
-        const seen = new Set();
-
-        items.forEach(it => {
-            seen.add(it.id);
-            if (!this.renderedItems.has(it.id)) {
-                const tex = it.type || 'churro';
-                const spr = this.add.sprite(it.x, it.y, tex);
-                if (it.type === 'churro') spr.play && spr.play('churro_anim');
-                this.renderedItems.set(it.id, spr);
-            } else {
-                const spr = this.renderedItems.get(it.id);
-                spr.x = it.x;
-                spr.y = it.y;
-            }
-        });
-
-        // Remove any rendered items not present in server state
-        Array.from(this.renderedItems.keys()).forEach(id => {
-            if (!seen.has(id)) {
-                const spr = this.renderedItems.get(id);
-                if (spr && spr.destroy) spr.destroy();
-                this.renderedItems.delete(id);
-            }
-        });
-    }
-
-    handleDisconnection() {
-        this.gameEnded = true;
-        // Stop physics and show message
-        try { this.physics.pause(); } catch (e) {}
-
-        this.add.text(400, 250, 'Opponent Disconnected', {
-            fontSize: '48px',
-            color: '#ff0000'
-        }).setOrigin(0.5);
-
-        this.createMenuButton();
-    }
-
-    createMenuButton() {
-        const menuBtn = this.add.text(400, 400, 'Return to Main Menu', {
-            fontSize: '32px',
-            color: '#ffffff',
-        }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => menuBtn.setColor('#cccccc'))
-            .on('pointerout', () => menuBtn.setColor('#ffffff'))
-            .on('pointerdown', () => {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.close();
-                }
-                this.scene.start('MenuScene');
-            });
-    }
-
 
     //Generar un objeto en una posición aleatoria disponible
     spawnItem(type) {
@@ -645,40 +496,68 @@ export class MultiplayerGameScene extends Phaser.Scene {
             );
         }
     }
-    sendMessage(message) {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify(message));
-        }
-    }
+
     update() {
 
         if (this.escKey.isDown && !this.escWasDown) {
             this.togglePause();
         }
 
-        // Only send input for the local player to the server
-        const localMapping = this.inputMappings.find(m => m.playerId === this.playerRole);
-        if (localMapping && this.ws && this.ws.readyState === WebSocket.OPEN) {
-            const inputMessage = {
-                type: 'input',
-                input: {
-                    left: !!localMapping.leftKeyObj.isDown,
-                    right: !!localMapping.rightKeyObj.isDown,
-                    up: !!localMapping.upKeyObj.isDown,
-                    attack: !!(localMapping.attackKeyObj && localMapping.attackKeyObj.isDown)
-                },
-                ts: Date.now()
-            };
+        this.inputMappings.forEach(mapping => {
+            const pigeon = this.players.get(mapping.playerId);
+            if (!pigeon) return;
 
-            this.sendMessage(inputMessage);
-        }
+            //Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+            if (pigeon.stunned) {
+                //Permitir knockback durante un corto periodo tras recibir el golpe
+                if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
+                    pigeon.sprite.setVelocityX(0);
+                }
+                return;
+            }
+
+            //Calcular movimiento horizontal
+            let moveX = 0;
+            if (mapping.leftKeyObj.isDown) moveX = -1;
+            else if (mapping.rightKeyObj.isDown) moveX = 1;
+
+            const jump = mapping.upKeyObj.isDown;
+
+            //Enviar comando con movimiento horizontal y salto
+            let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
+            this.processor.process(moveCommand);
+
+            //Ataque
+            if (mapping.attackKeyObj && mapping.attackKeyObj.isDown) {
+                const attackCmd = new AttackPigeonCommand(pigeon);
+                this.processor.process(attackCmd);
+            }
+
+            this.players.forEach((pigeon, id) => {
+
+                const indicator = this.pigeonIndicators[id];
+                const sprite = pigeon.sprite;
+
+                if (sprite.y < -5) {
+                    //Si la paloma esta fuera por arriba muestra el indicador
+                    indicator.setVisible(true);
+                    indicator.x = sprite.x;
+                    indicator.y = 50;
+
+                } else {
+                    //Si vuelve a entrar se oculta el icono
+                    indicator.setVisible(false);
+                }
+            });
+        });
     }
-
+    
 
     //Eliminar música al cerrar la escena y cerrrar listeners
     shutdown() {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.close();
+        // Remover el listener
+        if (this.connectionListener) {
+            connectionManager.removeListener(this.connectionListener);
         }
 
         if (this.bgMusic) {
@@ -687,6 +566,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.bgMusic = null;
         }
     }
-
-
+    
+    
 }
