@@ -14,7 +14,7 @@ import { connectionManager } from '../services/ConnectionManager.js';
 export class MultiplayerGameScene extends Phaser.Scene {
 
     constructor() {
-        super('GameScene');
+        super('MultiplayerGameScene');
     }
 
     init() {

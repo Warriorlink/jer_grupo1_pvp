@@ -231,8 +231,8 @@ export class GameScene extends Phaser.Scene {
             }
         })
 
-        this.events.on('shutdown', this.onShutdown, this);
-        this.events.on('destroy', this.onShutdown, this);
+        this.events.on('shutdown', this.shutdown, this);
+        this.events.on('destroy', this.shutdown, this);
 
     }
 
