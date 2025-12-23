@@ -140,6 +140,11 @@ wss.on('connection', (ws) => {
           gameRoomService.handleGoal(ws, data.side);
           break;
 
+        case 'spawnItem':
+          // data.type: 'spawnItem', data.itemType: optional 'churro'|'avena'|... 
+          gameRoomService.handleSpawnCommand(ws, data.itemType);
+          break;
+
         default:
           console.log('Mensaje desconocido:', data.type);
       }

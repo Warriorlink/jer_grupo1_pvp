@@ -11,6 +11,13 @@ export class ConnectionLostScene extends Phaser.Scene {
         this.reconnectCheckInterval = null;
     }
 
+    preload() {
+        this.load.image('Fondo', 'assets/sprites/desconexion.png');
+        this.load.image('botonEncima', 'assets/sprites/boton_encima.png');
+        this.load.image('boton', 'assets/sprites/boton.png');
+
+    }
+
     init(data) {
         // Guardar la escena que estaba activa cuando se perdió la conexión
         this.previousScene = data.previousScene;
@@ -18,7 +25,7 @@ export class ConnectionLostScene extends Phaser.Scene {
 
     create() {
         // Fondo semi-transparente
-        this.add.rectangle(400, 300, 800, 600, 0x000000, 0.8);
+        this.add.rectangle(480, 270, 800, 600, 0x000000, 0.8);
 
         // Título
         this.add.text(400, 200, 'CONEXIÓN PERDIDA', {
