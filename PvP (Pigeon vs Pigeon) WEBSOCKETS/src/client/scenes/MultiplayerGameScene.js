@@ -17,16 +17,29 @@ export class MultiplayerGameScene extends Phaser.Scene {
         super('MultiplayerGameScene');
     }
 
-    init() {
+    init(data) {
+        this.ws = data.ws;
+        this.roomId = data.roomId;
 
         this.players = new Map();
-        this.inputMappings = [];
         this.isPaused = false;
         this.escWasDown = false;
         this.gameEnded = false;
         this.processor = new CommandProcessor();
         this.churro = null;
         this.powerUp = null;
+
+        this.playerRole = data.playerRole;        //'player1' o 'player2'
+        this.roleText = null;     //texto temporal en pantalla para saber quien eres
+        this.localPaloma = null;
+        this.remotePaloma = null;
+        this.localScore = 0;
+        this.remoteScore = 0;
+        //Para que deje de dar por culo
+        /** @type {{ up: Phaser.Input.Keyboard.Key, left: Phaser.Input.Keyboard.Key, right: Phaser.Input.Keyboard.Key, attack: Phaser.Input.Keyboard.Key }} */
+        this.keys;
+
+
 
         //Posiciones de aparición de objetos y churros
         this.itemSpawnPositions = [
@@ -46,7 +59,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         ];
     }
 
-
+    #region //Preloads, hago region para simplificar el buscar las cosas y que no sea todo tan extenso
     preload() {
         //Sprites e imágenes de fondo
         this.load.image('background', 'assets/sprites/background.png');
@@ -93,6 +106,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
             frameHeight: 66
         });
     }
+    #endregion
 
     create() {
 
@@ -103,7 +117,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
-        
+
         this.cameras.main.setAlpha(0);
 
         this.tweens.add({
@@ -114,6 +128,12 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'background');
 
+        const roleText = this.playerRole === 'player1' ? 'You are Palomon' : 'You are Dovenando';
+        this.add.text(480, 20, roleText, {
+            fontSize: '24px',
+            color: '#000000'
+        }).setOrigin(0.5);
+
         //Musica de fondo
         this.bgMusic = this.sound.add('Numb', {
             loop: true,
@@ -121,6 +141,12 @@ export class MultiplayerGameScene extends Phaser.Scene {
         });
         this.bgMusic.play();
 
+        this.keys = this.input.keyboard.addKeys({
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            attack: Phaser.Input.Keyboard.KeyCodes.F
+        });
         this.createPlatforms();
 
         this.setUpPlayers();
@@ -130,56 +156,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
             player2: this.add.image(10, 60, 'Icon_p').setVisible(false).setDepth(999)
         };
 
-        //Animaciones de los spritesheets
-        this.anims.create({
-            key: 'palomon_idle',
-            frames: [{ key: 'palomonSheet', frame: 0 }],
-            frameRate: 1,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'palomon_walk',
-            frames: this.anims.generateFrameNumbers('palomonSheet', { start: 1, end: 3 }),
-            frameRate: 8,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'dovenando_idle',
-            frames: [{ key: 'dovenandoSheet', frame: 0 }],
-            frameRate: 1,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'dovenando_walk',
-            frames: this.anims.generateFrameNumbers('dovenandoSheet', { start: 1, end: 3 }),
-            frameRate: 8,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'churro_anim',
-            frames: this.anims.generateFrameNumbers('churroSheet', { start: 0, end: 3 }),
-            frameRate: 8,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'palomon_attack',
-            frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
-            frameRate: 8,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'dovenando_attack',
-            frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
-            frameRate: 8,
-            repeat: -1
-        });
-
+        this.createAnimations();
 
         //Puntuacione
         this.scoreTextP1 = this.add.text(10, 20, 'Dovenando: 0', {
@@ -231,16 +208,67 @@ export class MultiplayerGameScene extends Phaser.Scene {
             }
         })
 
-        this.events.on('shutdown', this.onShutdown, this);
-        this.events.on('destroy', this.onShutdown, this);
+        this.events.on('shutdown', this.shutdown, this);
+        this.events.on('destroy', this.shutdown, this);
 
     }
 
     onConnectionLost() {
-            this.scene.pause();
-            this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
-        }
-    
+        this.scene.pause();
+        this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
+    }
+
+    createAnimations() {
+        //Animaciones de los spritesheets
+        this.anims.create({
+            key: 'palomon_idle',
+            frames: [{ key: 'palomonSheet', frame: 0 }],
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'palomon_walk',
+            frames: this.anims.generateFrameNumbers('palomonSheet', { start: 1, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dovenando_idle',
+            frames: [{ key: 'dovenandoSheet', frame: 0 }],
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dovenando_walk',
+            frames: this.anims.generateFrameNumbers('dovenandoSheet', { start: 1, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'churro_anim',
+            frames: this.anims.generateFrameNumbers('churroSheet', { start: 0, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'palomon_attack',
+            frames: this.anims.generateFrameNumbers('palomonAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dovenando_attack',
+            frames: this.anims.generateFrameNumbers('dovenandoAttackSheet', { start: 1, end: 3 }), // ajusta end si hay más frames
+            frameRate: 8,
+            repeat: -1
+        });
+    }
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
@@ -296,41 +324,104 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     //Configuración de palomas y controles
     setUpPlayers() {
-        const leftPigeon = new Pigeon(this, 'player1', 150, 435, 'dovenando');
-        const rightPigeon = new Pigeon(this, 'player2', 800, 435, 'palomon');
+        if (this.playerRole === 'player1') {
+            this.localPaloma = new Pigeon(this, 'player1', 150, 435, 'dovenando');
+            this.remotePaloma = new Pigeon(this, 'player2', 800, 435, 'palomon');
+        } else {
+            this.localPaloma = new Pigeon(this, 'player2', 800, 435, 'palomon');
+            this.remotePaloma = new Pigeon(this, 'player1', 150, 435, 'dovenando');
+        }
 
-        rightPigeon.sprite.flipX = true;
-        rightPigeon.facing = 'left';
+        this.players.set(this.localPaloma.id, this.localPaloma);
+        this.players.set(this.remotePaloma.id, this.remotePaloma);
 
-        this.players.set('player1', leftPigeon);
-        this.players.set('player2', rightPigeon);
+        this.remotePaloma.sprite.flipX = true;
+        this.remotePaloma.facing = 'left';
+    }
 
-        const InputConfig = [
-            {
-                playerId: 'player1',
-                upKey: 'W',
-                leftKey: 'A',
-                rightKey: 'D',
-                attackKey: 'F'
-            },
-            {
-                playerId: 'player2',
-                upKey: 'UP',
-                leftKey: 'LEFT',
-                rightKey: 'RIGHT',
-                attackKey: 'SHIFT'
+    setupWebSocketListeners() {
+        this.ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                this.handleServerMessage(data);
+            } catch (error) {
+                console.error('Error parsing server message:', error);
             }
-        ];
+        };
 
-        this.inputMappings = InputConfig.map(config => {
-            return {
-                playerId: config.playerId,
-                upKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.upKey]),
-                rightKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.rightKey]),
-                leftKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.leftKey]),
-                attackKeyObj: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[config.attackKey]),
-            };
-        });
+        this.ws.onclose = () => {
+            console.log('WebSocket connection closed');
+            if (!this.gameEnded) {
+                this.handleDisconnection();
+            }
+        };
+
+        this.ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            if (!this.gameEnded) {
+                this.handleDisconnection();
+            }
+        };
+    }
+
+    handleServerMessage(data) {
+        switch (data.type) {
+            case 'paddleUpdate':
+                // Update opponent's paddle position
+                this.remotePaloma.sprite.x = data.x;
+                break;
+
+            case 'scoreUpdate':
+                // Update scores from server
+                this.localScore = this.playerRole === 'player1' ? data.player1Score : data.player2Score;
+                this.remoteScore = this.playerRole === 'player1' ? data.player2Score : data.player1Score;
+
+                this.scoreTextP1.setText(data.player1Score.toString());
+                this.scoreTextP2.setText(data.player2Score.toString());
+
+                break;
+
+            case 'gameOver':
+                this.endGame(data.winner, data.player1Score, data.player2Score);
+                break;
+
+            case 'playerDisconnected':
+                this.handleDisconnection();
+                break;
+
+            default:
+                console.log('Unknown message type:', data.type);
+        }
+    }
+
+    handleDisconnection() {
+        this.gameEnded = true;
+        this.localPaloma.sprite.setVelocity(0, 0);
+        this.remotePaloma.sprite.setVelocity(0, 0);
+        this.physics.pause();
+
+        this.add.text(400, 250, 'Opponent Disconnected', {
+            fontSize: '48px',
+            color: '#ff0000'
+        }).setOrigin(0.5);
+
+        this.createMenuButton();
+    }
+
+    createMenuButton() {
+        const menuBtn = this.add.text(400, 400, 'Return to Main Menu', {
+            fontSize: '32px',
+            color: '#ffffff',
+        }).setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on('pointerover', () => menuBtn.setColor('#cccccc'))
+            .on('pointerout', () => menuBtn.setColor('#ffffff'))
+            .on('pointerdown', () => {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.close();
+                }
+                this.scene.start('MenuScene');
+            });
     }
 
     //Generar un objeto en una posición aleatoria disponible
@@ -497,61 +588,79 @@ export class MultiplayerGameScene extends Phaser.Scene {
         }
     }
 
+    sendMessage(message) {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(message));
+        }
+    }
+
     update() {
+
+        if (this.gameEnded) return;
 
         if (this.escKey.isDown && !this.escWasDown) {
             this.togglePause();
         }
 
-        this.inputMappings.forEach(mapping => {
-            const pigeon = this.players.get(mapping.playerId);
-            if (!pigeon) return;
+        const pigeon = this.localPaloma;
+        if (!pigeon) return;
 
-            //Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
-            if (pigeon.stunned) {
-                //Permitir knockback durante un corto periodo tras recibir el golpe
-                if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
-                    pigeon.sprite.setVelocityX(0);
-                }
-                return;
+        //Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+        if (pigeon.stunned) {
+            //Permitir knockback durante un corto periodo tras recibir el golpe
+            if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
+                pigeon.sprite.setVelocityX(0);
             }
+            return;
+        }
 
-            //Calcular movimiento horizontal
-            let moveX = 0;
-            if (mapping.leftKeyObj.isDown) moveX = -1;
-            else if (mapping.rightKeyObj.isDown) moveX = 1;
+        //Movimiento horizontal (A - D)
+        let moveX = 0;
 
-            const jump = mapping.upKeyObj.isDown;
+        if (this.keys.left.isDown) {
+            moveX = -1;
+            pigeon.sprite.flipX = true;
+            pigeon.facing = 'left';
+        }
+        else if (this.keys.right.isDown) {
+            moveX = 1;
+            pigeon.sprite.flipX = false;
+            pigeon.facing = 'right';
+        }
 
-            //Enviar comando con movimiento horizontal y salto
-            let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
-            this.processor.process(moveCommand);
+        //Salto (W)
+        const jump = Phaser.Input.Keyboard.JustDown(this.keys.up);
 
-            //Ataque
-            if (mapping.attackKeyObj && mapping.attackKeyObj.isDown) {
-                const attackCmd = new AttackPigeonCommand(pigeon);
-                this.processor.process(attackCmd);
+        //Enviar comando con movimiento horizontal y salto
+        let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
+        this.processor.process(moveCommand);
+
+        //Ataque
+        // Ataque (F)
+        if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
+            const attackCmd = new AttackPigeonCommand(pigeon);
+            this.processor.process(attackCmd);
+        }
+
+        this.players.forEach((pigeon, id) => {
+
+            const indicator = this.pigeonIndicators[id];
+            const sprite = pigeon.sprite;
+
+            if (sprite.y < -5) {
+                //Si la paloma esta fuera por arriba muestra el indicador
+                indicator.setVisible(true);
+                indicator.x = sprite.x;
+                indicator.y = 50;
+
+            } else {
+                //Si vuelve a entrar se oculta el icono
+                indicator.setVisible(false);
             }
-
-            this.players.forEach((pigeon, id) => {
-
-                const indicator = this.pigeonIndicators[id];
-                const sprite = pigeon.sprite;
-
-                if (sprite.y < -5) {
-                    //Si la paloma esta fuera por arriba muestra el indicador
-                    indicator.setVisible(true);
-                    indicator.x = sprite.x;
-                    indicator.y = 50;
-
-                } else {
-                    //Si vuelve a entrar se oculta el icono
-                    indicator.setVisible(false);
-                }
-            });
         });
-    }
-    
+    };
+
+
 
     //Eliminar música al cerrar la escena y cerrrar listeners
     shutdown() {
@@ -560,12 +669,16 @@ export class MultiplayerGameScene extends Phaser.Scene {
             connectionManager.removeListener(this.connectionListener);
         }
 
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.close();
+        }
+
         if (this.bgMusic) {
             this.bgMusic.stop();
             this.bgMusic.destroy();
             this.bgMusic = null;
         }
     }
-    
-    
+
+
 }
