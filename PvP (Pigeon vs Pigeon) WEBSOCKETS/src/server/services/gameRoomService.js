@@ -36,6 +36,7 @@ export function createGameRoomService() {
 
     return roomId;
   }
+  
 
   /**
    * Handle paddle movement from a player

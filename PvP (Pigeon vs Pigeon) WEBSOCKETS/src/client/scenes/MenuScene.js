@@ -85,9 +85,9 @@ export class MenuScene extends Phaser.Scene {
         //Botón para jugar online (no funciona)
         const onlineBtnSprite = this.add.image(700, 360, 'boton')
             .setInteractive({ useHandCursor: true });
-        const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
+        const onlineBtnText = this.add.text(700, 360, 'Online', {
             fontSize: '24px',
-            color: '#ffffff'
+            color: '#000000ff'
         }).setOrigin(0.5).setDepth(10)
 
         onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))

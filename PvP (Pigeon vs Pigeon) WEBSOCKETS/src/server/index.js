@@ -133,7 +133,7 @@ wss.on('connection', (ws) => {
           break;
 
         case 'paddleMove':
-          gameRoomService.handlePaddleMove(ws, data.y);
+          gameRoomService.handlePaddleMove(ws, data.x);
           break;
 
         case 'goal':

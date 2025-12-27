@@ -117,6 +117,8 @@ export class MultiplayerGameScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
+        // Set up WebSocket listeners
+        this.setupWebSocketListeners();
 
         this.cameras.main.setAlpha(0);
 
@@ -635,6 +637,12 @@ export class MultiplayerGameScene extends Phaser.Scene {
         let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
         this.processor.process(moveCommand);
 
+        // Send paddle position to server
+        this.sendMessage({
+            type: 'paddleMove',
+            x: this.localPaloma.sprite.x
+        });
+
         //Ataque
         // Ataque (F)
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
@@ -658,6 +666,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 indicator.setVisible(false);
             }
         });
+        
     };
 
 
