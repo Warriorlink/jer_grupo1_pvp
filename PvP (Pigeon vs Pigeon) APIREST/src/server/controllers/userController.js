@@ -44,7 +44,8 @@ export function createUserController(userService) {
       // TODO: Implementar
       // 1. Llamar a userService.getAllUsers()
       // 2. Retornar 200 con el array de usuarios
-      throw new Error('getAll() no implementado');
+      const users = userService.getAllUsers();
+      res.status(200).json(users);
     } catch (error) {
       next(error);
     }
@@ -86,7 +87,15 @@ export function createUserController(userService) {
       // 3. Llamar a userService.updateUser()
       // 4. Si no existe, retornar 404
       // 5. Si existe, retornar 200 con el usuario actualizado
-      throw new Error('update() no implementado');
+      const { id } = req.params;
+      const updates = req.body;
+      const updatedUser = userService.updateUser(id, updates);
+      if (!updatedUser) {
+        return res.status(404).json({
+          error: 'Usuario no encontrado'
+        });
+      }
+      res.status(200).json(updatedUser);
     } catch (error) {
       next(error);
     }
@@ -102,7 +111,13 @@ export function createUserController(userService) {
       // 2. Llamar a userService.deleteUser()
       // 3. Si no existía, retornar 404
       // 4. Si se eliminó, retornar 204 (No Content)
-      throw new Error('remove() no implementado');
+      const deleted = userService.deleteUser(id);
+      if (!deleted) {
+        return res.status(404).json({
+          error: 'Usuario no encontrado'
+        });
+      }
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
