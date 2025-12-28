@@ -380,10 +380,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 p.sprite.flipX = data.facing === 'left' ? !p.invertFlipForMovement : p.invertFlipForMovement;
 
                 // Animación
-                const animKey =
-                    p.character === 'palomon'
-                        ? `palomon_${data.anim}`
-                        : `dovenando_${data.anim}`;
+                const animKey = p.character === 'palomon' ? `palomon_${data.anim}` : `dovenando_${data.anim}`;
 
                 if (!p.sprite.anims.isPlaying ||
                     p.sprite.anims.currentAnim.key !== animKey) {
@@ -401,19 +398,17 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
                 break;
 
-            case 'attackUpdate':
-                if (this.remotePaloma) {
-                    this.remotePaloma.facing = data.facing;
-                    this.remotePaloma.currentAnim = 'attack';
-                    this.remotePaloma.startAttackAnimation();
-                    this.remotePaloma.showAttackSprite(250);
+            case 'attackResolve': {
+                const attacker = this.players.get(data.attackerId);
+                if (!attacker) return;
 
-                    // Volver a idle
-                    this.time.delayedCall(250, () => {
-                        this.remotePaloma.currentAnim = 'idle';
-                    });
-                }
+                attacker.facing = data.facing;
+                attacker.sprite.flipX = data.facing === 'left';
+
+                const cmd = new AttackPigeonCommand(attacker);
+                this.processor.process(cmd);
                 break;
+            }
 
 
             case 'gameOver':
@@ -682,12 +677,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
         //Ataque
         // Ataque (F)
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
-            const attackCmd = new AttackPigeonCommand(pigeon);
-            this.processor.process(attackCmd);
-
             this.sendMessage({
-                type: 'attack',
-                facing: pigeon.facing
+                type: 'attackRequest',
+                facing: pigeon.facing,
+                x: pigeon.sprite.x,
+                y: pigeon.sprite.y
             });
         }
 

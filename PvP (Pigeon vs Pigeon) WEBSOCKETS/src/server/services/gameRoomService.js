@@ -77,17 +77,23 @@ export function createGameRoomService() {
     const room = rooms.get(roomId);
     if (!room || !room.active) return;
 
-    // Relay to the other player
-    const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
+    const attackerId = room.player1.ws === ws ? 'player1' : 'player2';
+    const defenderId = attackerId === 'player1' ? 'player2' : 'player1';
 
-    if (opponent.readyState === 1) { // WebSocket.OPEN
-      opponent.send(JSON.stringify({
-        type: 'attackUpdate',
-        facing: data.facing
-      }));
+    // Broadcast a AMBOS
+    const msg = {
+      type: 'attackResolve',
+      attackerId,
+      defenderId,
+      facing: data.facing,
+      x: data.x,
+      y: data.y
+    };
 
-    }
+    room.player1.ws.send(JSON.stringify(msg));
+    room.player2.ws.send(JSON.stringify(msg));
   }
+
 
   /**
    * Handle goal event from a player

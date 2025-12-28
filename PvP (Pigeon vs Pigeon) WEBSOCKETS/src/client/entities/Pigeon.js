@@ -76,35 +76,54 @@ export class Pigeon {
     }
 
 
-    //Aplica knockback/efecto visual de recibir golpe
     takeHit(knockbackX = 0) {
-        this.sprite.setVelocityX(knockbackX);
+    this.sprite.setVelocityX(knockbackX);
 
-        this.knockbackExpire = this.scene.time.now + 200;
+    this.knockbackExpire = this.scene.time.now + 120;
 
-        if (this.stunned) return;
+    this.scene.time.delayedCall(120, () => {
+        if (this.stunned) {
+            this.sprite.setVelocityX(0);
+        }
+    });
 
-        this.sprite.setTint(0xff0000);
-        this.scene.time.delayedCall(200, () => {
-            if (!this.stunned) this.sprite.clearTint();
-        });
-    }
+    if (this.stunned) return;
+
+    this.sprite.setTint(0xff0000);
+    this.scene.time.delayedCall(200, () => {
+        if (!this.stunned) this.sprite.clearTint();
+    });
+}
+
 
     //Aplicar stun
     stun(durationMs) {
-        durationMs = durationMs == null ? this.defaultStunDuration : durationMs;
-        if (this.stunned) return;
+    durationMs = durationMs == null ? this.defaultStunDuration : durationMs;
+    if (this.stunned) return;
 
-        this.stunned = true;
-        this.sprite.setTint(0x9999ff);
-        this.sprite.setVelocityX(0);
+    this.stunned = true;
+    this.sprite.setTint(0x9999ff);
 
-        this.stunTimeout = this.scene.time.delayedCall(durationMs, () => {
-            this.stunned = false;
-            this.sprite.clearTint();
-            this.stunTimeout = null;
-        });
-    }
+    //FRENAR MOVIMIENTO COMPLETAMENTE
+    this.sprite.setVelocityX(0);
+    this.sprite.setAccelerationX(0);
+
+    //Añadir fricción SOLO durante el stun
+    this.sprite.setDamping(true);
+    this.sprite.setDragX(900);
+
+    this.stunTimeout = this.scene.time.delayedCall(durationMs, () => {
+        this.stunned = false;
+        this.sprite.clearTint();
+
+        // 🔓 Restaurar físicas normales
+        this.sprite.setDamping(false);
+        this.sprite.setDragX(0);
+
+        this.stunTimeout = null;
+    });
+}
+
 
     //Animación de ataque
     startAttackAnimation() {
