@@ -16,6 +16,8 @@ export function createMessageService(userService) {
   // TODO: Declarar variables privadas
   // - Array de mensajes
   // - Contador para IDs
+  const messages = [];
+  let nextId = 1;
 
   /**
    * Crea un nuevo mensaje
@@ -31,7 +33,15 @@ export function createMessageService(userService) {
     // 3. Crear objeto mensaje con id, email, message, timestamp
     // 4. Agregar a la lista
     // 5. Retornar el mensaje creado
-    throw new Error('createMessage() no implementado - TODO para estudiantes');
+    const newMessage = {
+      id: String(nextId),
+      email,
+      message,
+      timestamp: new Date().toISOString()
+    };
+    messages.push(newMessage);
+    nextId++;
+    return newMessage;
   }
 
   /**
@@ -42,7 +52,7 @@ export function createMessageService(userService) {
   function getRecentMessages(limit = 50) {
     // TODO: Implementar
     // Retornar los últimos 'limit' mensajes, ordenados por timestamp
-    throw new Error('getRecentMessages() no implementado - TODO para estudiantes');
+    return messages.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, limit);
   }
 
   /**
@@ -53,7 +63,8 @@ export function createMessageService(userService) {
   function getMessagesSince(since) {
     // TODO: Implementar
     // Filtrar mensajes cuyo timestamp sea mayor que 'since'
-    throw new Error('getMessagesSince() no implementado - TODO para estudiantes');
+    const sinceDate = new Date(since);
+    return messages.filter(msg => new Date(msg.timestamp) > sinceDate);
   }
 
   // Exponer la API pública del servicio

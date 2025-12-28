@@ -48,7 +48,7 @@ export function createUserService() {
   function getAllUsers() {
     // TODO: Implementar
     // Retornar una copia del array de usuarios
-    throw new Error('getAllUsers() no implementado');
+    return users.slice();
   }
 
   /**
@@ -70,7 +70,8 @@ export function createUserService() {
     // TODO: Implementar
     // Buscar y retornar el usuario por email, o null si no existe
     // IMPORTANTE: Esta función será usada por el chat para verificar emails
-    throw new Error('getUserByEmail() no implementado');
+    const user = users.find(u => u.email === email);
+    return user || null;
   }
 
   /**
@@ -86,7 +87,19 @@ export function createUserService() {
     // 3. Actualizar solo los campos permitidos (name, avatar, level)
     // 4. NO permitir actualizar id, email, o createdAt
     // 5. Retornar el usuario actualizado
-    throw new Error('updateUser() no implementado');
+    const userIndex = users.findIndex(u => u.id === id);
+    if (userIndex === -1) {
+      return null;
+    }
+    const user = users[userIndex];
+    const updatedUser = {
+      ...user,
+      name: updates.name || user.name,
+      avatar: updates.avatar || user.avatar,
+      level: updates.level || user.level
+    };
+    users[userIndex] = updatedUser;
+    return updatedUser;
   }
 
   /**
@@ -99,7 +112,12 @@ export function createUserService() {
     // 1. Buscar el índice del usuario
     // 2. Si existe, eliminarlo del array
     // 3. Retornar true si se eliminó, false si no existía
-    throw new Error('deleteUser() no implementado');
+    const userIndex = users.findIndex(u => u.id === id);
+    if (userIndex === -1) {
+      return false;
+    }
+    users.splice(userIndex, 1);
+    return true;
   }
 
   // Exponer la API pública del servicio
