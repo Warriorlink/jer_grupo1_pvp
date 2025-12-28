@@ -41,9 +41,11 @@ export class MenuScene extends Phaser.Scene {
             this.bgMusic.play();
         }
 
-        this.connectionText = this.add.text(400, 150, 'Servidor: Comprobando...', {
-            fontSize: '20px',
-            color: '#ffffffff'
+        this.connectionText = this.add.text(480, 180, 'Server: Checking...', {
+            fontSize: '24px',
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 8
         }).setOrigin(0.5);
 
         //Botón para jugar local
@@ -245,11 +247,11 @@ export class MenuScene extends Phaser.Scene {
 
         try {
             if (data.connected) {
-                this.connectionText.setText(`Servidor: ${data.count} usuario(s) conectado(s)`);
+                this.connectionText.setText(`Server: ${data.count} user(s) connected`);
                 this.connectionText.setColor('#ffffffff');
             } else {
-                this.connectionText.setText('Servidor: Desconectado');
-                this.connectionText.setColor('#000000ff');
+                this.connectionText.setText('Server: Disconnected');
+                this.connectionText.setColor('#ff0000ff');
             }
         } catch (error) {
             console.error('[MenuScene] Error updating connection display:', error);

@@ -12,6 +12,14 @@ export default class LobbyScene extends Phaser.Scene {
     this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
   }
   create() {
+    this.cameras.main.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.cameras.main,
+      alpha: 1,
+      duration: 800
+    });
+
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
@@ -34,37 +42,49 @@ export default class LobbyScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Status text
-    this.statusText = this.add.text(width / 2, height / 2 - 50, 'Connecting to server...', {
-      fontSize: '24px',
-      color: '#ffff00'
+    this.statusText = this.add.text(480, 200, 'Connecting to server...', {
+      fontSize: '32px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 6
     }).setOrigin(0.5);
 
     // Player count text
-    this.playerCountText = this.add.text(width / 2, height / 2 + 20, '', {
-      fontSize: '20px',
-      color: '#00ff00'
+    this.playerCountText = this.add.text(480, 300, '', {
+      fontSize: '32px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 6
     }).setOrigin(0.5);
 
     // Cancel button
-    const cancelButton = this.add.text(width / 2, height - 100, 'Cancel', {
+    const backBtnSprite = this.add.image(480, 450, 'boton')
+      .setInteractive({ useHandCursor: true });
+
+    const backButtonText = this.add.text(480, 450, 'Back to Menu', {
       fontSize: '24px',
-      color: '#ff6666',
-      backgroundColor: '#333333',
-      padding: { x: 20, y: 10 }
-    }).setOrigin(0.5).setInteractive();
+      color: '#000000',
+    }).setOrigin(0.5);
 
-    cancelButton.on('pointerover', () => {
-      cancelButton.setColor('#ff0000');
-    });
+    backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'));
+    backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'));
 
-    cancelButton.on('pointerout', () => {
-      cancelButton.setColor('#ff6666');
-    });
-
-    cancelButton.on('pointerdown', () => {
+    backBtnSprite.on('pointerdown', () => {
       this.leaveQueue();
       this.bgMusic.stop();
-      this.scene.start('MenuScene');
+      this.bgMusic.destroy();
+      this.bgMusic = null;
+      this.cameras.main.setAlpha(1);
+
+      this.scene.transition({
+        target: 'MenuScene',
+        duration: 1000,
+        moveBelow: true,
+        data: {},
+        onUpdate: (progress) => {
+          this.cameras.main.setAlpha(1 - progress);
+        }
+      });
     });
 
     // Connect to WebSocket server
