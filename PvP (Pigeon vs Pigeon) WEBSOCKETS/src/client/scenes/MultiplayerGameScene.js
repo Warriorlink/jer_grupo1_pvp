@@ -369,8 +369,26 @@ export class MultiplayerGameScene extends Phaser.Scene {
     handleServerMessage(data) {
         switch (data.type) {
             case 'paddleUpdate':
-                // Update opponent's paddle position
-                this.remotePaloma.sprite.x = data.x;
+                const p = this.remotePaloma;
+
+                // Posición
+                p.sprite.x = data.x;
+                p.sprite.y = data.y;
+
+                // Dirección
+                p.facing = data.facing;
+                p.sprite.flipX = data.facing === 'left' ? !p.invertFlipForMovement : p.invertFlipForMovement;
+
+                // Animación
+                const animKey =
+                    p.character === 'palomon'
+                        ? `palomon_${data.anim}`
+                        : `dovenando_${data.anim}`;
+
+                if (!p.sprite.anims.isPlaying ||
+                    p.sprite.anims.currentAnim.key !== animKey) {
+                    p.sprite.play(animKey, true);
+                }
                 break;
 
             case 'scoreUpdate':
@@ -382,6 +400,21 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 this.scoreTextP2.setText(data.player2Score.toString());
 
                 break;
+
+            case 'attackUpdate':
+                if (this.remotePaloma) {
+                    this.remotePaloma.facing = data.facing;
+                    this.remotePaloma.currentAnim = 'attack';
+                    this.remotePaloma.startAttackAnimation();
+                    this.remotePaloma.showAttackSprite(250);
+
+                    // Volver a idle
+                    this.time.delayedCall(250, () => {
+                        this.remotePaloma.currentAnim = 'idle';
+                    });
+                }
+                break;
+
 
             case 'gameOver':
                 this.endGame(data.winner, data.player1Score, data.player2Score);
@@ -640,7 +673,10 @@ export class MultiplayerGameScene extends Phaser.Scene {
         // Send paddle position to server
         this.sendMessage({
             type: 'paddleMove',
-            x: this.localPaloma.sprite.x
+            x: this.localPaloma.sprite.x,
+            y: this.localPaloma.sprite.y,
+            anim: this.localPaloma.currentAnim,
+            facing: this.localPaloma.facing
         });
 
         //Ataque
@@ -648,6 +684,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
             const attackCmd = new AttackPigeonCommand(pigeon);
             this.processor.process(attackCmd);
+
+            this.sendMessage({
+                type: 'attack',
+                facing: pigeon.facing
+            });
         }
 
         this.players.forEach((pigeon, id) => {
@@ -666,7 +707,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 indicator.setVisible(false);
             }
         });
-        
+
     };
 
 

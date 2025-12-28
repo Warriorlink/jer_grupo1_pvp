@@ -38,8 +38,10 @@ export class MovePigeonCommand extends Command {
         //Reproducir animación correcta
         if (this.moveX !== 0) {
             pigeon.playAnimation('walk');
+            pigeon.currentAnim = 'walk';
         } else {
             pigeon.playAnimation('idle');
+            pigeon.currentAnim = 'idle';
         }
 
         //Saltar únicamente si está en el suelo

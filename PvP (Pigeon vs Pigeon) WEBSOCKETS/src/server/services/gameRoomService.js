@@ -36,14 +36,14 @@ export function createGameRoomService() {
 
     return roomId;
   }
-  
+
 
   /**
    * Handle paddle movement from a player
    * @param {WebSocket} ws - Player's WebSocket
    * @param {number} y - Paddle Y position
    */
-  function handlePaddleMove(ws, x) {
+  function handlePaddleMove(ws, data) {
     const roomId = ws.roomId;
     if (!roomId) return;
 
@@ -56,8 +56,36 @@ export function createGameRoomService() {
     if (opponent.readyState === 1) { // WebSocket.OPEN
       opponent.send(JSON.stringify({
         type: 'paddleUpdate',
-        x
+        x: data.x,
+        y: data.y,
+        anim: data.anim,
+        facing: data.facing
       }));
+
+    }
+  }
+
+  /**
+   * Handle attack from a player
+   * @param {WebSocket} ws - Player's WebSocket
+   * @param {number} y - Paddle Y position
+   */
+  function handleAttack(ws, data) {
+    const roomId = ws.roomId;
+    if (!roomId) return;
+
+    const room = rooms.get(roomId);
+    if (!room || !room.active) return;
+
+    // Relay to the other player
+    const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
+
+    if (opponent.readyState === 1) { // WebSocket.OPEN
+      opponent.send(JSON.stringify({
+        type: 'attackUpdate',
+        facing: data.facing
+      }));
+
     }
   }
 

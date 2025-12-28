@@ -18,6 +18,7 @@ export class AttackPigeonCommand extends Command {
 
         //Marcar ataque
         this.pigeon.markAttacked(now);
+        this.pigeon.currentAnim = 'attack';
         this.pigeon.startAttackAnimation();
         this.pigeon.showAttackSprite(250);
         scene.sound.play('SonidoAtaque', { volume: 0.7 });

@@ -23,6 +23,8 @@ export class Pigeon {
         this.knockbackExpire = null;
 
         this.isAttacking = false;
+        this.currentAnim = 'idle'; // idle | walk | attack
+
 
         //Asignación de sprite para cada paloma
         let textureKey = null;
