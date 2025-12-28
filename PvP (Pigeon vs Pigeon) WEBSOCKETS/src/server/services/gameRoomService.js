@@ -212,6 +212,7 @@ export function createGameRoomService() {
   return {
     createRoom,
     handlePaddleMove,
+    handleAttack,
     handleGoal,
     handleDisconnect,
     getActiveRoomCount
