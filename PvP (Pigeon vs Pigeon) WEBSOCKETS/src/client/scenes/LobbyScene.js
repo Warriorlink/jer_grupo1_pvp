@@ -7,14 +7,30 @@ export default class LobbyScene extends Phaser.Scene {
     this.ws = null;
   }
 
+  preload() {
+    this.load.audio('Ascensor', 'assets/sounds/CancionEspera.mp3');
+    this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
+  }
   create() {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
+    this.add.image(480, 270, 'Fondo');
+
+    if (!this.bgMusic) {
+      this.bgMusic = this.sound.add('Ascensor', {
+        loop: true,
+        volume: 0.5
+      });
+      this.bgMusic.play();
+    }
+
     // Title
     this.add.text(width / 2, 100, 'Online Multiplayer', {
-      fontSize: '48px',
-      color: '#ffffff'
+      fontSize: '64px',
+      color: '#ffffffff',
+      stroke: '#000000',
+      strokeThickness: 8
     }).setOrigin(0.5);
 
     // Status text
@@ -47,6 +63,7 @@ export default class LobbyScene extends Phaser.Scene {
 
     cancelButton.on('pointerdown', () => {
       this.leaveQueue();
+      this.bgMusic.stop();
       this.scene.start('MenuScene');
     });
 
@@ -106,7 +123,8 @@ export default class LobbyScene extends Phaser.Scene {
 
       case 'gameStart':
         console.log('Game starting!', data);
-        
+        this.bgMusic.stop();
+
         // Store game data and transition to multiplayer game scene
         this.scene.start('MultiplayerGameScene', {
           ws: this.ws,
@@ -114,7 +132,7 @@ export default class LobbyScene extends Phaser.Scene {
           roomId: data.roomId,
           initialBall: data.ball
 
-          
+
         });
         break;
 
