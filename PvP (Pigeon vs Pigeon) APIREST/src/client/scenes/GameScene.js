@@ -554,7 +554,7 @@ export class GameScene extends Phaser.Scene {
     
 
     //Eliminar música al cerrar la escena y cerrrar listeners
-    shutdown() {
+    onShutdown() {
         // Remover el listener
         if (this.connectionListener) {
             connectionManager.removeListener(this.connectionListener);
