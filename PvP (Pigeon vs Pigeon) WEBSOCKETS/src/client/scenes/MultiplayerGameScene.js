@@ -41,22 +41,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
 
 
-        //Posiciones de aparición de objetos y churros
-        this.itemSpawnPositions = [
-            { x: 560, y: 45 },
-            { x: 415, y: 200 },
-            { x: 790, y: 115 },
-            { x: 790, y: 280 },
-            { x: 126, y: 115 },
-            { x: 126, y: 280 },
-            { x: 560, y: 455 }
-        ];
 
-        this.powerUps = [
-            'avena',
-            'basura',
-            'pluma'
-        ];
     }
 
     #region //Preloads, hago region para simplificar el buscar las cosas y que no sea todo tan extenso
@@ -130,10 +115,12 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'background');
 
-        const roleText = this.playerRole === 'player1' ? 'You are Palomon' : 'You are Dovenando';
+        const roleText = this.playerRole === 'player1' ? 'You are Dovenando' : 'You are Palomon';
         this.add.text(480, 20, roleText, {
             fontSize: '24px',
-            color: '#000000'
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 6
         }).setOrigin(0.5);
 
         //Musica de fondo
@@ -187,31 +174,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerSprites, this.playerSprites);
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-
-        //Cada 5 segundos intentar generar un churro
-        this.time.addEvent({
-            delay: 5000,
-            loop: true,
-            callback: () => {
-                if (this.churro === null) {
-                    this.spawnItem("churro");
-                }
-            }
-        });
-
-        //Cada 7 segundos intentar generar un churro
-        this.time.addEvent({
-            delay: 7000,
-            loop: true,
-            callback: () => {
-                if (this.powerUp === null) {
-                    this.spawnItem(Phaser.Utils.Array.GetRandom(this.powerUps));
-                }
-            }
-        })
-
-        this.events.on('shutdown', this.shutdown, this);
-        this.events.on('destroy', this.shutdown, this);
 
     }
 
@@ -410,6 +372,24 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 break;
             }
 
+            case 'itemSpawn':
+                this.spawnItemFromServer(data.item);
+                break;
+
+            case 'itemDespawn': {
+                if (data.itemType === 'churro' && this.churro) {
+                    this.churro.destroy();
+                    this.churro = null;
+                }
+
+                if (data.itemType === 'powerUp' && this.powerUp) {
+                    this.powerUp.destroy();
+                    this.powerUp = null;
+                }
+                break;
+            }
+
+
 
             case 'gameOver':
                 this.endGame(data.winner, data.player1Score, data.player2Score);
@@ -454,85 +434,49 @@ export class MultiplayerGameScene extends Phaser.Scene {
             });
     }
 
-    //Generar un objeto en una posición aleatoria disponible
-    spawnItem(type) {
+    spawnItemFromServer(itemData) {
 
-        let refName = null;
+        const { type, x, y } = itemData;
+
         let ItemClass = null;
+        let refName = null;
 
-        //Decidir qué clase instanciar y qué referencia usar
         switch (type) {
-            case "churro":
-                refName = "churro";
+            case 'churro':
                 ItemClass = Churro;
+                refName = 'churro';
                 break;
-
-            case "avena":
-                refName = "powerUp";
+            case 'avena':
                 ItemClass = Avena;
+                refName = 'powerUp';
                 break;
-
-            case "pluma":
-                refName = "powerUp";
+            case 'pluma':
                 ItemClass = Pluma;
+                refName = 'powerUp';
                 break;
-
-            case "basura":
-                refName = "powerUp";
+            case 'basura':
                 ItemClass = Basura;
+                refName = 'powerUp';
                 break;
-
             default:
-                console.warn("Tipo desconocido:", type);
                 return;
         }
 
-        const availablePositions = this.itemSpawnPositions.filter(pos => {
+        const item = new ItemClass(this, x, y);
+        this[refName] = item;
 
-            //Evitar posición donde hay churro
-            if (this.churro && this.churro.sprite.x === pos.x && this.churro.sprite.y === pos.y) {
-                return false;
-            }
-
-            // Evitar posición donde hay power-up
-            if (this.powerUp && this.powerUp.sprite.x === pos.x && this.powerUp.sprite.y === pos.y) {
-                return false;
-            }
-
-            return true;
-        });
-
-        //Elegir una posición al azar
-        const pos = Phaser.Utils.Array.GetRandom(availablePositions);
-
-        const item = new ItemClass(this, pos.x, pos.y);
-        this[refName] = (item);
-
-        //Activar overlap con ambos jugadores
+        // Overlap local (solo para detectar el "touch", no resolver)
         this.players.forEach(pigeon => {
             this.physics.add.overlap(
                 pigeon.sprite,
                 item.sprite,
-                this.onItemPickup,
+                () => this.onLocalItemTouch(type),
                 null,
-                this);
+                this
+            );
         });
-
-
-        if (refName === "powerUp") {
-
-            //Tiempo de vida del power-up 
-            const lifetime = 9000;
-
-            //Guardar el timer en el propio objeto para poder cancelarlo si hace falta
-            item.expireTimer = this.time.delayedCall(lifetime, () => {
-
-                if (this.powerUp === item) {
-                    this.deleteItem(item);
-                }
-            });
-        }
     }
+
 
     //Manejo de recogida de objetos
     onItemPickup(pigeonSprite, itemSprite) {

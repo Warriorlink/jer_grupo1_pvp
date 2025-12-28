@@ -5,6 +5,23 @@ export function createGameRoomService() {
   const rooms = new Map(); // roomId -> room data
   let nextRoomId = 1;
 
+  //Posiciones de aparición de objetos y churros
+  const itemSpawnPositions = [
+    { x: 560, y: 45 },
+    { x: 415, y: 200 },
+    { x: 790, y: 115 },
+    { x: 790, y: 280 },
+    { x: 126, y: 115 },
+    { x: 126, y: 280 },
+    { x: 560, y: 455 }
+  ];
+
+  const powerUps = [
+    'avena',
+    'basura',
+    'pluma'
+  ];
+
   /**
    * Create a new game room with two players
    * @param {WebSocket} player1Ws - Player 1's WebSocket
@@ -25,6 +42,12 @@ export function createGameRoomService() {
         score: 0
       },
       active: true,
+
+      churro: null,
+      powerUp: null,
+      itemTimers: [],
+
+
       ballActive: true // Track if ball is in play (prevents duplicate goals)
     };
 
@@ -33,6 +56,7 @@ export function createGameRoomService() {
     // Store room ID on WebSocket for quick lookup
     player1Ws.roomId = roomId;
     player2Ws.roomId = roomId;
+    startItemTimers(room);
 
     return roomId;
   }
@@ -64,6 +88,101 @@ export function createGameRoomService() {
 
     }
   }
+
+  function spawnItem(room, type) {
+
+    const ref = type === 'churro' ? 'churro' : 'powerUp';
+
+    if (room[ref]) return; // Ya existe
+
+    const availablePositions = getAvailablePositions(room);
+    if (availablePositions.length === 0) return;
+
+    const pos = availablePositions[
+      Math.floor(Math.random() * availablePositions.length)
+    ];
+
+    const item = {
+      id: Date.now(),
+      type,
+      x: pos.x,
+      y: pos.y
+    };
+
+    room[ref] = item;
+
+    if (ref === 'powerUp') {
+      setTimeout(() => {
+        if (room.active && room.powerUp?.id === item.id) {
+          despawnItem(room, 'powerUp');
+        }
+      }, 9000);
+    }
+
+
+    const msg = {
+      type: 'itemSpawn',
+      item
+    };
+
+    room.player1.ws.send(JSON.stringify(msg));
+    room.player2.ws.send(JSON.stringify(msg));
+  }
+
+
+  function startItemTimers(room) {
+
+    const churroTimer = setInterval(() => {
+      if (!room.active || room.churro) return;
+      spawnItem(room, 'churro');
+    }, 5000);
+
+    const powerUpTimer = setInterval(() => {
+      if (!room.active || room.powerUp) return;
+      const type = powerUps[Math.floor(Math.random() * powerUps.length)];
+      spawnItem(room, type);
+    }, 7000);
+
+    room.itemTimers.push(churroTimer, powerUpTimer);
+  }
+
+  function despawnItem(room, ref) {
+
+    const item = room[ref];
+    if (!item) return;
+
+    const msg = {
+      type: 'itemDespawn',
+      itemId: item.id,
+      itemType: ref
+    };
+
+    room.player1.ws.send(JSON.stringify(msg));
+    room.player2.ws.send(JSON.stringify(msg));
+
+    room[ref] = null;
+  }
+
+
+  function getAvailablePositions(room) {
+    return itemSpawnPositions.filter(pos => {
+
+      if (room.churro &&
+        room.churro.x === pos.x &&
+        room.churro.y === pos.y) {
+        return false;
+      }
+
+      if (room.powerUp &&
+        room.powerUp.x === pos.x &&
+        room.powerUp.y === pos.y) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
 
   /**
    * Handle attack from a player
@@ -204,6 +323,9 @@ export function createGameRoomService() {
 
     // Clean up room
     room.active = false;
+    if (room.itemTimers) {
+      room.itemTimers.forEach(timer => clearInterval(timer));
+    }
     rooms.delete(roomId);
   }
 
@@ -220,6 +342,10 @@ export function createGameRoomService() {
     handlePaddleMove,
     handleAttack,
     handleGoal,
+    spawnItem,
+    despawnItem,
+    getAvailablePositions,
+    startItemTimers,
     handleDisconnect,
     getActiveRoomCount
   };
