@@ -39,6 +39,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
         /** @type {{ up: Phaser.Input.Keyboard.Key, left: Phaser.Input.Keyboard.Key, right: Phaser.Input.Keyboard.Key, attack: Phaser.Input.Keyboard.Key }} */
         this.keys;
 
+        this.churroOverlap = null;
+        this.powerUpOverlap = null;
+
+
+
 
 
 
@@ -102,8 +107,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
-        // Set up WebSocket listeners
-        this.setupWebSocketListeners();
 
         this.cameras.main.setAlpha(0);
 
@@ -138,7 +141,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         });
         this.createPlatforms();
 
-        this.setUpPlayers();
+
 
         this.pigeonIndicators = {
             player1: this.add.image(10, 60, 'Icon_d').setVisible(false).setDepth(999),
@@ -165,6 +168,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         });
 
         this.playerSprites = this.physics.add.group();
+        this.setUpPlayers();
         this.players.forEach(pigeon => {
             this.playerSprites.add(pigeon.sprite);
         });
@@ -174,6 +178,10 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerSprites, this.playerSprites);
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
+        // Set up WebSocket listeners
+        this.setupWebSocketListeners();
+
 
     }
 
@@ -376,18 +384,27 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 this.spawnItemFromServer(data.item);
                 break;
 
-            case 'itemDespawn': {
+            case 'itemDespawn':
                 if (data.itemType === 'churro' && this.churro) {
+                    if (this.churroOverlap) {
+                        this.physics.world.removeCollider(this.churroOverlap);
+                        this.churroOverlap = null;
+                    }
                     this.churro.destroy();
                     this.churro = null;
                 }
 
                 if (data.itemType === 'powerUp' && this.powerUp) {
+                    if (this.powerUpOverlap) {
+                        this.powerUpOverlap.destroy();
+                        this.powerUpOverlap = null;
+                    }
                     this.powerUp.destroy();
                     this.powerUp = null;
                 }
                 break;
-            }
+
+
 
 
 
@@ -465,80 +482,106 @@ export class MultiplayerGameScene extends Phaser.Scene {
         const item = new ItemClass(this, x, y);
         this[refName] = item;
 
-        // Overlap local (solo para detectar el "touch", no resolver)
-        this.players.forEach(pigeon => {
-            this.physics.add.overlap(
-                pigeon.sprite,
-                item.sprite,
-                () => this.onLocalItemTouch(type),
-                null,
-                this
-            );
-        });
+        if (refName === 'churro' && this.churroOverlap) {
+            this.churroOverlap.destroy();
+            this.churroOverlap = null;
+        }
+
+        if (refName === 'powerUp' && this.powerUpOverlap) {
+            this.powerUpOverlap.destroy();
+            this.powerUpOverlap = null;
+        }
+
+        // CREAR overlap nuevo
+        const overlap = this.physics.add.overlap(
+            this.playerSprites,
+            item.sprite,
+            (playerSprite) => {
+                console.log('OVERLAP DETECTED');
+                this.sendMessage({
+                    type: 'itemTouch',
+                    itemId: itemData.id
+                });
+            },
+            null,
+            this
+        );
+
+        // GUARDAR referencia
+        if (refName === 'churro') {
+            this.churroOverlap = overlap;
+        } else {
+            this.powerUpOverlap = overlap;
+        }
     }
 
-
-    //Manejo de recogida de objetos
-    onItemPickup(pigeonSprite, itemSprite) {
-
-        let playerId = null;
-
-        this.players.forEach((pigeon, id) => {
-            if (pigeon.sprite === pigeonSprite) {
-                playerId = id;
-            }
-        });
-
-        if (!playerId) return;
-
-        const pigeon = this.players.get(playerId);
-        const item = this.getItemBySprite(itemSprite);
-
-        item.applyEffect(pigeon);
-
-        //Actualizar puntuaciones
-        this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
-        this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
-
-        this.deleteItem(item);
-        if (pigeon.score >= 5) {
-
-            this.cameras.main.setAlpha(1);
-
-            //Transición a EndGameScene
-            this.scene.transition({
-                target: 'EndGameScene',
-                duration: 1000,
-                moveBelow: true,
-                data: { winnerId: playerId },
-
-                //Fade-out progresivo
-                onUpdate: (progress) => {
-                    this.cameras.main.setAlpha(1 - progress);
+    /*
+        //Manejo de recogida de objetos
+        onItemPickup(pigeonSprite, itemSprite) {
+    
+            let playerId = null;
+    
+            this.players.forEach((pigeon, id) => {
+                if (pigeon.sprite === pigeonSprite) {
+                    playerId = id;
                 }
             });
+    
+            if (!playerId) return;
+    
+            const pigeon = this.players.get(playerId);
+            const item = this.getItemBySprite(itemSprite);
+    
+            item.applyEffect(pigeon);
+    
+            //Actualizar puntuaciones
+            this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
+            this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
+    
+            this.deleteItem(item);
+            if (pigeon.score >= 5) {
+    
+                this.cameras.main.setAlpha(1);
+    
+                //Transición a EndGameScene
+                this.scene.transition({
+                    target: 'EndGameScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: { winnerId: playerId },
+    
+                    //Fade-out progresivo
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    }
+                });
+            }
         }
-    }
+            */
 
-    //Devuelve el objeto al que pertenece un sprite
-    getItemBySprite(sprite) {
-        if (this.churro && this.churro.sprite === sprite) return this.churro;
-        if (this.powerUp && this.powerUp.sprite === sprite) return this.powerUp;
-        return null;
-    }
+    /*
+//Devuelve el objeto al que pertenece un sprite
+getItemBySprite(sprite) {
+    if (this.churro && this.churro.sprite === sprite) return this.churro;
+    if (this.powerUp && this.powerUp.sprite === sprite) return this.powerUp;
+    return null;
+}
+    */
+    /*
 
-    //Elimina de la escena un objeto dado
-    deleteItem(item) {
-        if (item === this.churro) {
-            this.churro.destroy();
-            this.churro = null;
-        }
+ //Elimina de la escena un objeto dado
+ deleteItem(item) {
+     if (item === this.churro) {
+         this.churro.destroy();
+         this.churro = null;
+     }
 
-        if (item === this.powerUp) {
-            this.powerUp.destroy();
-            this.powerUp = null;
-        }
-    }
+     if (item === this.powerUp) {
+         this.powerUp.destroy();
+         this.powerUp = null;
+     }
+ }
+     */
 
     //Establece el estado de pausa del juego
     setPauseState(isPaused) {

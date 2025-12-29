@@ -146,6 +146,27 @@ export function createGameRoomService() {
     room.itemTimers.push(churroTimer, powerUpTimer);
   }
 
+  //Manejar la recogida de objetos
+  function handleItemTouch(ws, data) {
+    const room = rooms.get(ws.roomId);
+    if (!room || !room.active) return;
+
+    const item =
+      room.churro?.id === data.itemId ? room.churro :
+        room.powerUp?.id === data.itemId ? room.powerUp :
+          null;
+
+    if (!item) return;
+
+    const playerId = room.player1.ws === ws ? 'player1' : 'player2';
+
+    // Resolver efecto aquí (score, buffs, etc.)
+    // TODO: aplicar lógica de efecto
+
+    despawnItem(room, item.type === 'churro' ? 'churro' : 'powerUp');
+  }
+
+
   function despawnItem(room, ref) {
 
     const item = room[ref];
@@ -347,6 +368,7 @@ export function createGameRoomService() {
     getAvailablePositions,
     startItemTimers,
     handleDisconnect,
-    getActiveRoomCount
+    getActiveRoomCount,
+    handleItemTouch
   };
 }

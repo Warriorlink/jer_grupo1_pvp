@@ -144,6 +144,11 @@ wss.on('connection', (ws) => {
           gameRoomService.handleAttack(ws, data);
           break;
 
+        case 'itemTouch':
+          gameRoomService.handleItemTouch(ws, data);
+          break;
+
+
         case 'goal':
           gameRoomService.handleGoal(ws, data.side);
           break;
