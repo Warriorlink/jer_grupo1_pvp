@@ -404,17 +404,47 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 }
                 break;
 
-
-
-
-
             case 'gameOver':
+                this.gameEnded = true;
                 this.endGame(data.winner, data.player1Score, data.player2Score);
                 break;
+
 
             case 'playerDisconnected':
                 this.handleDisconnection();
                 break;
+
+            case 'itemCollected': {
+                const pigeon = data.playerId === this.localPaloma.id ? this.localPaloma : this.remotePaloma;
+
+                if (data.itemType === 'churro') {
+                    pigeon.addScore(1);
+
+                    // Actualizar textos de puntuación
+                    this.scoreTextP1.setText(`Dovenando: ${this.playerRole === 'player1' ? this.localPaloma.score : this.remotePaloma.score}`);
+                    this.scoreTextP2.setText(`Palomón: ${this.playerRole === 'player1' ? this.remotePaloma.score : this.localPaloma.score}`);
+
+                } else {
+                    // Aplicar efectos según power-up
+                    switch (data.itemType) {
+                        case 'avena': // más fuerza
+                            pigeon.stunForce += 500;
+                            pigeon.attackForce += 200;
+                            this.time.delayedCall(5000, () => {
+                                pigeon.stunForce -= 500;
+                                pigeon.attackForce -= 200;
+                            });
+                            break;
+                        case 'pluma': // velocidad
+                            pigeon.applyModifier('speed', 150, 5000);
+                            break;
+                        case 'basura': // ralentiza
+                            pigeon.applyModifier('speed', -150, 5000);
+                            break;
+                    }
+                }
+                break;
+            }
 
             default:
                 console.log('Unknown message type:', data.type);
@@ -452,31 +482,17 @@ export class MultiplayerGameScene extends Phaser.Scene {
     }
 
     spawnItemFromServer(itemData) {
-
         const { type, x, y } = itemData;
 
         let ItemClass = null;
         let refName = null;
 
         switch (type) {
-            case 'churro':
-                ItemClass = Churro;
-                refName = 'churro';
-                break;
-            case 'avena':
-                ItemClass = Avena;
-                refName = 'powerUp';
-                break;
-            case 'pluma':
-                ItemClass = Pluma;
-                refName = 'powerUp';
-                break;
-            case 'basura':
-                ItemClass = Basura;
-                refName = 'powerUp';
-                break;
-            default:
-                return;
+            case 'churro': ItemClass = Churro; refName = 'churro'; break;
+            case 'avena': ItemClass = Avena; refName = 'powerUp'; break;
+            case 'pluma': ItemClass = Pluma; refName = 'powerUp'; break;
+            case 'basura': ItemClass = Basura; refName = 'powerUp'; break;
+            default: return;
         }
 
         const item = new ItemClass(this, x, y);
@@ -486,34 +502,27 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.churroOverlap.destroy();
             this.churroOverlap = null;
         }
-
         if (refName === 'powerUp' && this.powerUpOverlap) {
             this.powerUpOverlap.destroy();
             this.powerUpOverlap = null;
         }
 
-        // CREAR overlap nuevo
+        // overlap → solo envía al servidor
         const overlap = this.physics.add.overlap(
             this.playerSprites,
             item.sprite,
             (playerSprite) => {
-                console.log('OVERLAP DETECTED');
-                this.sendMessage({
-                    type: 'itemTouch',
-                    itemId: itemData.id
-                });
+                const playerId = this.localPaloma.sprite === playerSprite ? this.localPaloma.id : this.remotePaloma.id;
+                this.sendMessage({ type: 'itemTouch', itemId: itemData.id, playerId });
             },
             null,
             this
         );
 
-        // GUARDAR referencia
-        if (refName === 'churro') {
-            this.churroOverlap = overlap;
-        } else {
-            this.powerUpOverlap = overlap;
-        }
+        if (refName === 'churro') this.churroOverlap = overlap;
+        else this.powerUpOverlap = overlap;
     }
+
 
     /*
         //Manejo de recogida de objetos
@@ -610,6 +619,28 @@ getItemBySprite(sprite) {
             this.ws.send(JSON.stringify(message));
         }
     }
+
+    endGame(winnerId, player1Score, player2Score) {
+        this.bgMusic.stop();
+        this.bgMusic.destroy();
+        this.bgMusic = null;
+        this.scene.transition({
+            target: 'EndGameScene',
+            duration: 1000,
+            moveBelow: true,
+            data: {
+                winnerId,
+                localPlayerId: this.playerRole, // <- este es el jugador local
+                player1Score,
+                player2Score
+            },
+            onUpdate: (progress) => {
+                this.cameras.main.setAlpha(1 - progress);
+            }
+        });
+    }
+
+
 
     update() {
 

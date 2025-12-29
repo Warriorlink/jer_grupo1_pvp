@@ -4,6 +4,7 @@ export class EndGameScene extends Phaser.Scene {
     constructor() {
         super('EndGameScene');
     }
+
     preload() {
         this.load.audio('SweetVictory', 'assets/sounds/SweetVictory.mp3');
         this.load.image('DovenandoVictory', 'assets/sprites/pantalla victoria dovenando.png');
@@ -15,34 +16,43 @@ export class EndGameScene extends Phaser.Scene {
     create(data) {
         this.cameras.main.setAlpha(0);
 
+        // Identificar ganador y jugador local
         const winnerIsP1 = data.winnerId === 'player1';
-        const bgKey = winnerIsP1 ? 'DovenandoVictory' : 'PalomonVictory';
+        const playerIsP1 = data.localPlayerId === 'player1';
+        const playerWon = winnerIsP1 === playerIsP1;
 
+        // Imagen de victoria según el ganador
+        const bgKey = winnerIsP1 ? 'DovenandoVictory' : 'PalomonVictory';
         this.add.image(480, 270, bgKey);
 
+        // Fade-in de cámara
         this.tweens.add({
             targets: this.cameras.main,
             alpha: 1,
             duration: 800
         });
 
-        //Textos de victoria
-        this.add.text(480, 250, 'SUPREME VICTORY', {
-            fontSize: '100px',
-            color: '#4444ff',
+        // Texto principal
+        const mainText = playerWon ? 'SUPREME VICTORY!' : 'CRUSHING DEFEAT';
+        const mainColor = playerWon ? '#ffffffff' : '#ffffffff';
+        this.add.text(480, 200, mainText, {
+            fontSize: '104px',
+            color: mainColor,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 10
-        }).setOrigin(0.5);
-        const winnerText = data.winnerId === 'player1' ? 'Dovenando Wins!' : 'Palomón Wins!';
-        this.add.text(480, 350, winnerText, {
-            fontSize: '64px',
-            color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        //Música de fondo
+        // Texto secundario
+        const winnerText = winnerIsP1 ? 'Dovenando Wins!' : 'Palomón Wins!';
+        this.add.text(480, 300, winnerText, {
+            fontSize: '60px',
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5);
+
+        // Música de fondo
         this.bgMusic = this.sound.add('SweetVictory', {
             loop: true,
             volume: 0.6
@@ -52,35 +62,28 @@ export class EndGameScene extends Phaser.Scene {
         this.events.on('shutdown', this.onShutdown, this);
         this.events.on('destroy', this.onShutdown, this);
 
-        //Botón para volver al menú
+        // Botón para volver al menú
         const menuBtnSprite = this.add.image(480, 460, 'boton')
             .setInteractive({ useHandCursor: true });
         const menuBtnText = this.add.text(480, 460, 'Return to menu', {
             fontSize: '24px',
             color: 'ffffff'
-        }).setOrigin(0.5).setDepth(10)
+        }).setOrigin(0.5).setDepth(10);
 
-        menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'))
-        menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'))
-            .on('pointerdown', () => {
-
-                this.cameras.main.setAlpha(1);
-                //Transición a MenuScene
-                this.scene.transition({
-                    target: 'MenuScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: {},
-
-                    //Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    }
-                });
+        menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'));
+        menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'));
+        menuBtnSprite.on('pointerdown', () => {
+            this.cameras.main.setAlpha(1);
+            this.scene.transition({
+                target: 'MenuScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+                onUpdate: (progress) => this.cameras.main.setAlpha(1 - progress)
             });
+        });
     }
 
-    //Parar la música al salir de la escena
     onShutdown() {
         if (this.bgMusic) {
             this.bgMusic.stop();
@@ -88,5 +91,4 @@ export class EndGameScene extends Phaser.Scene {
             this.bgMusic = null;
         }
     }
-
 }

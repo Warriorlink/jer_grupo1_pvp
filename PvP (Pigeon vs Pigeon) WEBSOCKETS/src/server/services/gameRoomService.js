@@ -159,11 +159,49 @@ export function createGameRoomService() {
     if (!item) return;
 
     const playerId = room.player1.ws === ws ? 'player1' : 'player2';
+    const player = room[playerId];
 
-    // Resolver efecto aquí (score, buffs, etc.)
-    // TODO: aplicar lógica de efecto
+    let effectData = {};
 
+    if (item.type === 'churro') {
+      player.score++;
+      effectData = { score: player.score };
+
+      // Chequear si alguien ha llegado a 5 churros
+      if (player.score >= 5) {
+        const winnerMsg = {
+          type: 'gameOver',
+          winner: playerId,
+          player1Score: room.player1.score,
+          player2Score: room.player2.score
+        };
+
+        room.player1.ws.send(JSON.stringify(winnerMsg));
+        room.player2.ws.send(JSON.stringify(winnerMsg));
+
+        // Desactivar la sala para que no sigan apareciendo objetos
+        room.active = false;
+        room.itemTimers.forEach(timer => clearInterval(timer));
+        return; // No procesar más
+      }
+    }
+    else {
+      player.activePowerUp = item.type;
+      effectData = { powerUp: item.type };
+    }
+
+    // Eliminar item
     despawnItem(room, item.type === 'churro' ? 'churro' : 'powerUp');
+
+    // Notificar a ambos clientes quién lo recogió
+    const msg = {
+      type: 'itemCollected',
+      playerId,
+      itemType: item.type,
+      ...effectData
+    };
+    room.player1.ws.send(JSON.stringify(msg));
+    room.player2.ws.send(JSON.stringify(msg));
   }
 
 
@@ -236,90 +274,6 @@ export function createGameRoomService() {
 
 
   /**
-   * Handle goal event from a player
-   * @param {WebSocket} ws - Player's WebSocket
-   * @param {string} side - Which side scored ('left' or 'right')
-   */
-  function handleGoal(ws, side) {
-    const roomId = ws.roomId;
-    if (!roomId) return;
-
-    const room = rooms.get(roomId);
-    if (!room || !room.active) return;
-
-    // Prevent duplicate goal detection (both clients send goal event)
-    // Only process goal if ball is active
-    if (!room.ballActive) {
-      return; // Ball not in play, ignore goal
-    }
-    room.ballActive = false; // Mark ball as inactive until relaunched
-
-    // Update scores
-    // When ball hits LEFT goal (x=0), player2 scores (player1 missed)
-    // When ball hits RIGHT goal (x=800), player1 scores (player2 missed)
-    if (side === 'left') {
-      room.player2.score++;
-    } else if (side === 'right') {
-      room.player1.score++;
-    }
-
-    // Broadcast score update to both players
-    const scoreUpdate = {
-      type: 'scoreUpdate',
-      player1Score: room.player1.score,
-      player2Score: room.player2.score
-    };
-
-    room.player1.ws.send(JSON.stringify(scoreUpdate));
-    room.player2.ws.send(JSON.stringify(scoreUpdate));
-
-    // Check win condition (first to 2)
-    if (room.player1.score >= 2 || room.player2.score >= 2) {
-      const winner = room.player1.score >= 2 ? 'player1' : 'player2';
-
-      const gameOverMsg = {
-        type: 'gameOver',
-        winner,
-        player1Score: room.player1.score,
-        player2Score: room.player2.score
-      };
-
-      room.player1.ws.send(JSON.stringify(gameOverMsg));
-      room.player2.ws.send(JSON.stringify(gameOverMsg));
-
-      // Mark room as inactive
-      room.active = false;
-    } else {
-      // Relaunch ball after 1 second delay
-      setTimeout(() => {
-        if (room.active) {
-          // Generate new ball direction
-          const angle = (Math.random() * 60 - 30) * (Math.PI / 180); // -30 to 30 degrees
-          const speed = 300;
-          const ballData = {
-            x: 400,
-            y: 300,
-            vx: speed * Math.cos(angle),
-            vy: speed * Math.sin(angle)
-          };
-
-          // Send ball relaunch to both players
-          const relaunchMsg = {
-            type: 'ballRelaunch',
-            ball: ballData
-          };
-
-          room.player1.ws.send(JSON.stringify(relaunchMsg));
-          room.player2.ws.send(JSON.stringify(relaunchMsg));
-
-          // Mark ball as active again
-          room.ballActive = true;
-        }
-      }, 1000);
-    }
-  }
-
-  /**
    * Handle player disconnection
    * @param {WebSocket} ws - Disconnected player's WebSocket
    */
@@ -362,7 +316,6 @@ export function createGameRoomService() {
     createRoom,
     handlePaddleMove,
     handleAttack,
-    handleGoal,
     spawnItem,
     despawnItem,
     getAvailablePositions,
