@@ -432,9 +432,10 @@ export class MultiplayerGameScene extends Phaser.Scene {
                     // Aplicar efectos según power-up
                     switch (data.itemType) {
                         case 'avena': // más fuerza
-                            this.sound.play('SonidoAlpiste', {
+                            this.sound.play('SonidoAvena', {
                                 volume: 0.5
                             });
+                            this.showItemIcon(pigeon, 'iconAvena', 5000);
                             pigeon.stunForce += 500;
                             pigeon.attackForce += 200;
                             this.time.delayedCall(5000, () => {
@@ -446,12 +447,14 @@ export class MultiplayerGameScene extends Phaser.Scene {
                         this.sound.play('SonidoPluma', {
                                 volume: 0.5
                             });
+                            this.showItemIcon(pigeon, 'iconPluma', 5000);
                             pigeon.applyModifier('speed', 150, 5000);
                             break;
                         case 'basura': // ralentiza
                         this.sound.play('SonidoBasura', {
                                 volume: 0.5
                             });
+                            this.showItemIcon(pigeon, 'iconBasura', 5000);
                             pigeon.applyModifier('speed', -150, 5000);
                             break;
                     }
@@ -559,6 +562,46 @@ export class MultiplayerGameScene extends Phaser.Scene {
         if (refName === 'churro') this.churroOverlap = overlap;
         else this.powerUpOverlap = overlap;
     }
+
+    showItemIcon(pigeon, iconKey, duration) {
+
+    // Limpiar icono previo
+    if (pigeon.activeIconSprite) {
+        pigeon.activeIconSprite.destroy();
+        pigeon.activeIconSprite = null;
+    }
+
+    if (pigeon.activeIconTimer) {
+        pigeon.activeIconTimer.remove();
+        pigeon.activeIconTimer = null;
+    }
+
+    let iconX;
+    const iconY = 85;
+
+    if (this.scoreTextP1 && this.scoreTextP2) {
+        iconX = pigeon.id === 'player1'
+            ? this.scoreTextP1.x + 25
+            : this.scoreTextP2.x + 175;
+    } else {
+        iconX = pigeon.id === 'player1' ? 40 : 850;
+    }
+
+    pigeon.activeIconSprite = this.add.image(iconX, iconY, iconKey)
+        .setDisplaySize(50, 50)
+        .setDepth(1000);
+
+    pigeon.activeIconTimer = this.time.addEvent({
+        delay: duration,
+        callback: () => {
+            if (pigeon.activeIconSprite) {
+                pigeon.activeIconSprite.destroy();
+                pigeon.activeIconSprite = null;
+            }
+            pigeon.activeIconTimer = null;
+        }
+    });
+}
 
 
     /*
