@@ -66,6 +66,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.load.image('iconAvena', 'assets/sprites/Icon_strong.png');
         this.load.image('Icon_p', 'assets/sprites/Icon_Palomon.png');
         this.load.image('Icon_d', 'assets/sprites/Icon_Dovenando.png');
+        this.load.image('Desconexion', 'assets/sprites/desconexion.png');
 
         //Música y sonidos
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');
@@ -456,6 +457,8 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.localPaloma.sprite.setVelocity(0, 0);
         this.remotePaloma.sprite.setVelocity(0, 0);
         this.physics.pause();
+
+        this.add.image(480, 270, 'Desconexion');
 
         this.add.text(480, 250, 'Opponent Disconnected', {
             fontSize: '48px',
