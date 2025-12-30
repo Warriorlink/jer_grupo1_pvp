@@ -106,17 +106,7 @@ export class MenuScene extends Phaser.Scene {
             this.cameras.main.setAlpha(1);
 
             //Transición a GameScene
-            this.scene.transition({
-                target: 'LobbyScene',
-                duration: 1000,
-                moveBelow: true,
-                data: {},
-
-                //Fade-out progresivo
-                onUpdate: (progress) => {
-                    this.cameras.main.setAlpha(1 - progress);
-                }
-            });
+            this.scene.start('LobbyScene');
         });
 
         //Botón de creditos

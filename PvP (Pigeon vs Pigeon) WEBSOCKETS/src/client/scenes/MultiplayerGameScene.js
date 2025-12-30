@@ -654,19 +654,13 @@ export class MultiplayerGameScene extends Phaser.Scene {
         console.log('[MultiplayerGameScene] WS state at endGame:',
             this.ws ? this.ws.readyState : 'NO WS'
         );
-        this.scene.transition({
-            target: 'EndGameScene',
-            duration: 1000,
-            moveBelow: true,
+        this.scene.start('EndGameScene', {
             data: {
                 winnerId,
                 localPlayerId: this.playerRole, // <- este es el jugador local
                 player1Score,
                 player2Score,
                 ws: this.ws
-            },
-            onUpdate: (progress) => {
-                this.cameras.main.setAlpha(1 - progress);
             }
         });
     }

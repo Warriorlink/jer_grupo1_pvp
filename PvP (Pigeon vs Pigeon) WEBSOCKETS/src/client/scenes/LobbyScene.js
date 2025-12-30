@@ -77,15 +77,7 @@ export default class LobbyScene extends Phaser.Scene {
       this.bgMusic = null;
       this.cameras.main.setAlpha(1);
 
-      this.scene.transition({
-        target: 'MenuScene',
-        duration: 1000,
-        moveBelow: true,
-        data: {},
-        onUpdate: (progress) => {
-          this.cameras.main.setAlpha(1 - progress);
-        }
-      });
+      this.scene.start('MenuScene');
     });
 
     // Connect to WebSocket server

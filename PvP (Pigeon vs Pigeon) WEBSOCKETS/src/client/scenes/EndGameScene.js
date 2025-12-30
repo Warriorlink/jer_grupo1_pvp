@@ -93,13 +93,7 @@ export class EndGameScene extends Phaser.Scene {
                 this.ws.close();
             }
             this.cameras.main.setAlpha(1);
-            this.scene.transition({
-                target: 'MenuScene',
-                duration: 1000,
-                moveBelow: true,
-                data: {},
-                onUpdate: (progress) => this.cameras.main.setAlpha(1 - progress)
-            });
+            this.scene.start('MenuScene');
         });
     }
 
