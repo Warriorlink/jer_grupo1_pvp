@@ -528,15 +528,18 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         // overlap → solo envía al servidor
         const overlap = this.physics.add.overlap(
-            this.playerSprites,
+            this.localPaloma.sprite,
             item.sprite,
-            (playerSprite) => {
-                const playerId = this.localPaloma.sprite === playerSprite ? this.localPaloma.id : this.remotePaloma.id;
-                this.sendMessage({ type: 'itemTouch', itemId: itemData.id, playerId });
+            () => {
+                this.sendMessage({
+                    type: 'itemTouch',
+                    itemId: itemData.id
+                });
             },
             null,
             this
         );
+
 
         if (refName === 'churro') this.churroOverlap = overlap;
         else this.powerUpOverlap = overlap;
@@ -651,7 +654,8 @@ getItemBySprite(sprite) {
                 winnerId,
                 localPlayerId: this.playerRole, // <- este es el jugador local
                 player1Score,
-                player2Score
+                player2Score,
+                ws: this.ws
             },
             onUpdate: (progress) => {
                 this.cameras.main.setAlpha(1 - progress);

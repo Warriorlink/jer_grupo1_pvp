@@ -1,8 +1,13 @@
 import Phaser from 'phaser';
+import { connectionManager } from '../services/ConnectionManager.js';
 
 export class EndGameScene extends Phaser.Scene {
     constructor() {
         super('EndGameScene');
+    }
+
+    init(data) {
+        this.ws = data.ws;
     }
 
     preload() {
@@ -73,6 +78,9 @@ export class EndGameScene extends Phaser.Scene {
         menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'));
         menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'));
         menuBtnSprite.on('pointerdown', () => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.close();
+            }
             this.cameras.main.setAlpha(1);
             this.scene.transition({
                 target: 'MenuScene',
