@@ -150,9 +150,6 @@ export default class LobbyScene extends Phaser.Scene {
           ws: this.ws,
           playerRole: data.role,
           roomId: data.roomId,
-          initialBall: data.ball
-
-
         });
         break;
 

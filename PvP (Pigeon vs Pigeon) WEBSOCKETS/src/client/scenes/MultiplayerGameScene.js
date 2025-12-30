@@ -419,6 +419,9 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 const pigeon = data.playerId === this.localPaloma.id ? this.localPaloma : this.remotePaloma;
 
                 if (data.itemType === 'churro') {
+                    this.sound.play('SonidoChurro', {
+                                volume: 0.5
+                            });
                     pigeon.addScore(1);
 
                     // Actualizar textos de puntuación
@@ -429,6 +432,9 @@ export class MultiplayerGameScene extends Phaser.Scene {
                     // Aplicar efectos según power-up
                     switch (data.itemType) {
                         case 'avena': // más fuerza
+                            this.sound.play('SonidoAlpiste', {
+                                volume: 0.5
+                            });
                             pigeon.stunForce += 500;
                             pigeon.attackForce += 200;
                             this.time.delayedCall(5000, () => {
@@ -437,9 +443,15 @@ export class MultiplayerGameScene extends Phaser.Scene {
                             });
                             break;
                         case 'pluma': // velocidad
+                        this.sound.play('SonidoPluma', {
+                                volume: 0.5
+                            });
                             pigeon.applyModifier('speed', 150, 5000);
                             break;
                         case 'basura': // ralentiza
+                        this.sound.play('SonidoBasura', {
+                                volume: 0.5
+                            });
                             pigeon.applyModifier('speed', -150, 5000);
                             break;
                     }
@@ -755,10 +767,6 @@ getItemBySprite(sprite) {
         // Remover el listener
         if (this.connectionListener) {
             connectionManager.removeListener(this.connectionListener);
-        }
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.close();
         }
 
         if (this.bgMusic) {
