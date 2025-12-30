@@ -406,7 +406,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 break;
 
             case 'gameOver':
-                this.gameEnded = true;
                 this.endGame(data.winner, data.player1Score, data.player2Score);
                 break;
 
@@ -701,6 +700,7 @@ getItemBySprite(sprite) {
     }
 
     endGame(winnerId, player1Score, player2Score) {
+        this.gameEnded = true;
         this.bgMusic.stop();
         this.bgMusic.destroy();
         this.bgMusic = null;

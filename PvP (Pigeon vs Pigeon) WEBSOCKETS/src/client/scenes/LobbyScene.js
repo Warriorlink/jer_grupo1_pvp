@@ -144,6 +144,8 @@ export default class LobbyScene extends Phaser.Scene {
       case 'gameStart':
         console.log('Game starting!', data);
         this.bgMusic.stop();
+        this.bgMusic.destroy();
+        this.bgMusic = null;
 
         // Store game data and transition to multiplayer game scene
         this.scene.start('MultiplayerGameScene', {
