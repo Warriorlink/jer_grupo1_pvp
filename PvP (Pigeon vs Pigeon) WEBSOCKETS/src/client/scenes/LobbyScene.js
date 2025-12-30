@@ -12,6 +12,7 @@ export default class LobbyScene extends Phaser.Scene {
     this.load.image('Fondo', 'assets/sprites/pantalla inicio.png');
   }
   create() {
+    console.log('[LobbyScene] create() called');
     this.cameras.main.setAlpha(0);
 
     this.tweens.add({
@@ -93,10 +94,13 @@ export default class LobbyScene extends Phaser.Scene {
 
   connectToServer() {
     try {
+      console.log('[LobbyScene] connectToServer()');
       // Connect to WebSocket server (same host as web server)
       const wsUrl = `ws://${window.location.host}`;
+      console.log('[LobbyScene] WS URL:', wsUrl);
 
       this.ws = new WebSocket(wsUrl);
+      console.log('[LobbyScene] WS instance created', this.ws);
 
       this.ws.onopen = () => {
         console.log('Connected to WebSocket server');

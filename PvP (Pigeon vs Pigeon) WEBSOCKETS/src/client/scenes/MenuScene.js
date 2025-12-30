@@ -95,14 +95,14 @@ export class MenuScene extends Phaser.Scene {
         onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
         onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
         onlineBtnSprite.on('pointerdown', () => {
-
+            console.log('[MenuScene] Online button clicked');
             //Apagar música
             if (this.bgMusic) {
                 this.bgMusic.stop();
                 this.bgMusic.destroy();
                 this.bgMusic = null;
             }
-
+            this.scene.stop('LobbyScene');
             this.cameras.main.setAlpha(1);
 
             //Transición a GameScene

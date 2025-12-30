@@ -108,6 +108,13 @@ export class MultiplayerGameScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
+        this.events.on('shutdown', () => {
+            console.log('[MultiplayerGameScene] SHUTDOWN event fired');
+        }, this);
+
+        this.events.on('destroy', () => {
+            console.log('[MultiplayerGameScene] DESTROY event fired');
+        }, this);
 
         this.cameras.main.setAlpha(0);
 
@@ -419,8 +426,8 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
                 if (data.itemType === 'churro') {
                     this.sound.play('SonidoChurro', {
-                                volume: 0.5
-                            });
+                        volume: 0.5
+                    });
                     pigeon.addScore(1);
 
                     // Actualizar textos de puntuación
@@ -443,14 +450,14 @@ export class MultiplayerGameScene extends Phaser.Scene {
                             });
                             break;
                         case 'pluma': // velocidad
-                        this.sound.play('SonidoPluma', {
+                            this.sound.play('SonidoPluma', {
                                 volume: 0.5
                             });
                             this.showItemIcon(pigeon, 'iconPluma', 5000);
                             pigeon.applyModifier('speed', 150, 5000);
                             break;
                         case 'basura': // ralentiza
-                        this.sound.play('SonidoBasura', {
+                            this.sound.play('SonidoBasura', {
                                 volume: 0.5
                             });
                             this.showItemIcon(pigeon, 'iconBasura', 5000);
@@ -500,6 +507,13 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.bgMusic.stop();
             this.bgMusic.destroy();
             this.bgMusic = null;
+            console.log('[MultiplayerGameScene] Return to Menu clicked');
+
+            if (this.ws) {
+                console.log(
+                    '[MultiplayerGameScene] Closing WS from Return button'
+                );
+            }
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.close();
             }
@@ -564,112 +578,43 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     showItemIcon(pigeon, iconKey, duration) {
 
-    // Limpiar icono previo
-    if (pigeon.activeIconSprite) {
-        pigeon.activeIconSprite.destroy();
-        pigeon.activeIconSprite = null;
-    }
+        // Limpiar icono previo
+        if (pigeon.activeIconSprite) {
+            pigeon.activeIconSprite.destroy();
+            pigeon.activeIconSprite = null;
+        }
 
-    if (pigeon.activeIconTimer) {
-        pigeon.activeIconTimer.remove();
-        pigeon.activeIconTimer = null;
-    }
-
-    let iconX;
-    const iconY = 85;
-
-    if (this.scoreTextP1 && this.scoreTextP2) {
-        iconX = pigeon.id === 'player1'
-            ? this.scoreTextP1.x + 25
-            : this.scoreTextP2.x + 175;
-    } else {
-        iconX = pigeon.id === 'player1' ? 40 : 850;
-    }
-
-    pigeon.activeIconSprite = this.add.image(iconX, iconY, iconKey)
-        .setDisplaySize(50, 50)
-        .setDepth(1000);
-
-    pigeon.activeIconTimer = this.time.addEvent({
-        delay: duration,
-        callback: () => {
-            if (pigeon.activeIconSprite) {
-                pigeon.activeIconSprite.destroy();
-                pigeon.activeIconSprite = null;
-            }
+        if (pigeon.activeIconTimer) {
+            pigeon.activeIconTimer.remove();
             pigeon.activeIconTimer = null;
         }
-    });
-}
 
+        let iconX;
+        const iconY = 85;
 
-    /*
-        //Manejo de recogida de objetos
-        onItemPickup(pigeonSprite, itemSprite) {
-    
-            let playerId = null;
-    
-            this.players.forEach((pigeon, id) => {
-                if (pigeon.sprite === pigeonSprite) {
-                    playerId = id;
-                }
-            });
-    
-            if (!playerId) return;
-    
-            const pigeon = this.players.get(playerId);
-            const item = this.getItemBySprite(itemSprite);
-    
-            item.applyEffect(pigeon);
-    
-            //Actualizar puntuaciones
-            this.scoreTextP1.setText('Dovenando: ' + this.players.get('player1').score);
-            this.scoreTextP2.setText('Palomón: ' + this.players.get('player2').score);
-    
-            this.deleteItem(item);
-            if (pigeon.score >= 5) {
-    
-                this.cameras.main.setAlpha(1);
-    
-                //Transición a EndGameScene
-                this.scene.transition({
-                    target: 'EndGameScene',
-                    duration: 1000,
-                    moveBelow: true,
-                    data: { winnerId: playerId },
-    
-                    //Fade-out progresivo
-                    onUpdate: (progress) => {
-                        this.cameras.main.setAlpha(1 - progress);
-                    }
-                });
-            }
+        if (this.scoreTextP1 && this.scoreTextP2) {
+            iconX = pigeon.id === 'player1'
+                ? this.scoreTextP1.x + 25
+                : this.scoreTextP2.x + 175;
+        } else {
+            iconX = pigeon.id === 'player1' ? 40 : 850;
         }
-            */
 
-    /*
-//Devuelve el objeto al que pertenece un sprite
-getItemBySprite(sprite) {
-    if (this.churro && this.churro.sprite === sprite) return this.churro;
-    if (this.powerUp && this.powerUp.sprite === sprite) return this.powerUp;
-    return null;
-}
-    */
-    /*
+        pigeon.activeIconSprite = this.add.image(iconX, iconY, iconKey)
+            .setDisplaySize(50, 50)
+            .setDepth(1000);
 
- //Elimina de la escena un objeto dado
- deleteItem(item) {
-     if (item === this.churro) {
-         this.churro.destroy();
-         this.churro = null;
-     }
-
-     if (item === this.powerUp) {
-         this.powerUp.destroy();
-         this.powerUp = null;
-     }
- }
-     */
+        pigeon.activeIconTimer = this.time.addEvent({
+            delay: duration,
+            callback: () => {
+                if (pigeon.activeIconSprite) {
+                    pigeon.activeIconSprite.destroy();
+                    pigeon.activeIconSprite = null;
+                }
+                pigeon.activeIconTimer = null;
+            }
+        });
+    }
 
     //Establece el estado de pausa del juego
     setPauseState(isPaused) {
@@ -704,6 +649,11 @@ getItemBySprite(sprite) {
         this.bgMusic.stop();
         this.bgMusic.destroy();
         this.bgMusic = null;
+        console.log('[MultiplayerGameScene] endGame called, winner:', winnerId);
+
+        console.log('[MultiplayerGameScene] WS state at endGame:',
+            this.ws ? this.ws.readyState : 'NO WS'
+        );
         this.scene.transition({
             target: 'EndGameScene',
             duration: 1000,
@@ -807,6 +757,15 @@ getItemBySprite(sprite) {
 
     //Eliminar música al cerrar la escena y cerrrar listeners
     shutdown() {
+        console.log('[MultiplayerGameScene] shutdown called');
+        console.log(
+            '[MultiplayerGameScene] WS state on shutdown:',
+            this.ws.readyState
+        );
+
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.close();
+        }
         // Remover el listener
         if (this.connectionListener) {
             connectionManager.removeListener(this.connectionListener);
@@ -818,6 +777,4 @@ getItemBySprite(sprite) {
             this.bgMusic = null;
         }
     }
-
-
 }

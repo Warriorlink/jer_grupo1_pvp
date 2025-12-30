@@ -19,7 +19,17 @@ export class EndGameScene extends Phaser.Scene {
     }
 
     create(data) {
+        console.log('[EndGameScene] create called, data:', data);
         this.cameras.main.setAlpha(0);
+
+        this.events.on('shutdown', () => {
+            console.log('[EndGameScene] SHUTDOWN');
+        }, this);
+
+        this.events.on('destroy', () => {
+            console.log('[EndGameScene] DESTROY');
+        }, this);
+
 
         // Identificar ganador y jugador local
         const winnerIsP1 = data.winnerId === 'player1';
@@ -78,6 +88,7 @@ export class EndGameScene extends Phaser.Scene {
         menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'));
         menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'));
         menuBtnSprite.on('pointerdown', () => {
+            console.log('[EndGameScene] Return to menu clicked');
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.close();
             }

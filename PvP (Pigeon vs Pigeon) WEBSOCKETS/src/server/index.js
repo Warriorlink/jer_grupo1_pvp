@@ -125,6 +125,7 @@ wss.on('connection', (ws) => {
 
       switch (data.type) {
         case 'joinQueue':
+          console.log('[SERVER] joinQueue from WS', ws.roomId);
           matchmakingService.joinQueue(ws);
           break;
 
@@ -162,7 +163,7 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    console.log('Cliente WebSocket desconectado');
+    console.log('[SERVER] WS closed, roomId:', ws.roomId);
     matchmakingService.leaveQueue(ws);
     gameRoomService.handleDisconnect(ws);
   });
