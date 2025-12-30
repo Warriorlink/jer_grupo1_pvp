@@ -18,26 +18,32 @@ export class ConnectionLostScene extends Phaser.Scene {
 
     create() {
         // Fondo semi-transparente
-        this.add.rectangle(400, 300, 800, 600, 0x000000, 0.8);
+        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
 
         // Título
-        this.add.text(400, 200, 'CONEXIÓN PERDIDA', {
-            fontSize: '48px',
-            color: '#ff0000',
-            fontStyle: 'bold'
+        this.add.text(480, 200, 'CONNECTION LOST', {
+            fontSize: '64px',
+            color: '#ff0000ff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 8
         }).setOrigin(0.5);
 
         // Mensaje
-        this.statusText = this.add.text(400, 300, 'Intentando reconectar...', {
+        this.statusText = this.add.text(480, 300, 'Attempting to reconnect...', {
             fontSize: '24px',
-            color: '#ffff00'
+            color: '#ffffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
         }).setOrigin(0.5);
 
         // Contador de intentos
         this.attemptCount = 0;
-        this.attemptText = this.add.text(400, 350, 'Intentos: 0', {
+        this.attemptText = this.add.text(480, 350, 'Attempts: 0', {
             fontSize: '18px',
-            color: '#ffffff'
+            color: '#ffffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
         }).setOrigin(0.5);
 
         // Indicador parpadeante
@@ -47,7 +53,7 @@ export class ConnectionLostScene extends Phaser.Scene {
             callback: () => {
                 this.dotCount = (this.dotCount + 1) % 4;
                 const dots = '.'.repeat(this.dotCount);
-                this.statusText.setText(`Intentando reconectar${dots}`);
+                this.statusText.setText(`Attempting to reconnect${dots}`);
             },
             loop: true
         });
@@ -71,7 +77,7 @@ export class ConnectionLostScene extends Phaser.Scene {
 
     async attemptReconnect() {
         this.attemptCount++;
-        this.attemptText.setText(`Intentos: ${this.attemptCount}`);
+        this.attemptText.setText(`Attempts: ${this.attemptCount}`);
         await connectionManager.checkConnection();
     }
 
@@ -85,7 +91,7 @@ export class ConnectionLostScene extends Phaser.Scene {
         connectionManager.removeListener(this.connectionListener);
 
         // Mensaje de éxito
-        this.statusText.setText('¡Conexión restablecida!');
+        this.statusText.setText('Connection restored!');
         this.statusText.setColor('#00ff00');
 
         // Volver a la escena anterior

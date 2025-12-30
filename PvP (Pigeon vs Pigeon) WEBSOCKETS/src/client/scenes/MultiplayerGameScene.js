@@ -457,28 +457,47 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.remotePaloma.sprite.setVelocity(0, 0);
         this.physics.pause();
 
-        this.add.text(400, 250, 'Opponent Disconnected', {
+        this.add.text(480, 250, 'Opponent Disconnected', {
             fontSize: '48px',
-            color: '#ff0000'
+            color: '#ff0000ff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
         }).setOrigin(0.5);
 
         this.createMenuButton();
     }
 
     createMenuButton() {
-        const menuBtn = this.add.text(400, 400, 'Return to Main Menu', {
-            fontSize: '32px',
-            color: '#ffffff',
-        }).setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => menuBtn.setColor('#cccccc'))
-            .on('pointerout', () => menuBtn.setColor('#ffffff'))
-            .on('pointerdown', () => {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.close();
+        const backBtnSprite = this.add.image(480, 450, 'boton')
+            .setInteractive({ useHandCursor: true });
+
+        const backButtonText = this.add.text(480, 450, 'Return to Menu', {
+            fontSize: '24px',
+            color: '#000000',
+        }).setOrigin(0.5);
+
+        backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'));
+        backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'));
+        backBtnSprite.on('pointerdown', () => {
+            this.bgMusic.stop();
+            this.bgMusic.destroy();
+            this.bgMusic = null;
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.close();
+            }
+            this.cameras.main.setAlpha(1);
+
+            this.scene.transition({
+                target: 'MenuScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
                 }
-                this.scene.start('MenuScene');
             });
+        });
     }
 
     spawnItemFromServer(itemData) {
