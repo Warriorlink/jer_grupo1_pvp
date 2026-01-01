@@ -29,12 +29,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.powerUp = null;
 
         this.playerRole = data.playerRole;        //'player1' o 'player2'
-        this.roleText = null;     //texto temporal en pantalla para saber quien eres
         this.localPaloma = null;
         this.remotePaloma = null;
         this.localScore = 0;
         this.remoteScore = 0;
-        //Para que deje de dar por culo
+        //Keys para los controles
         /** @type {{ up: Phaser.Input.Keyboard.Key, left: Phaser.Input.Keyboard.Key, right: Phaser.Input.Keyboard.Key, attack: Phaser.Input.Keyboard.Key }} */
         this.keys;
 
@@ -48,7 +47,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     }
 
-    #region //Preloads, hago region para simplificar el buscar las cosas y que no sea todo tan extenso
+    #region //Preloads
     preload() {
         //Sprites e imágenes de fondo
         this.load.image('background', 'assets/sprites/background.png');
@@ -149,7 +148,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.createAnimations();
 
-        //Puntuacione
+        //Puntuaciones
         this.scoreTextP1 = this.add.text(10, 20, 'Dovenando: 0', {
             fontSize: '32px',
             color: '#ffffff',
@@ -166,7 +165,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
             strokeThickness: 6
         });
 
-        // Label to indicate the local player next to their score
+        //Indicador de que paloma es el jugador local
         this.youLabel = this.add.text(0, 0, 'You', {
             fontSize: '20px',
             color: '#ffffffff',
@@ -174,7 +173,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
             strokeThickness: 4
         });
 
-        // Position the label according to the local player's role
+        //Posicion del "You"
         this.updateYouLabel();
 
         this.playerSprites = this.physics.add.group();
@@ -202,17 +201,15 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     updateYouLabel() {
         if (!this.youLabel) return;
-
-        // Ensure text is visible and positioned next to the correct score
         this.youLabel.setVisible(true);
 
         if (this.playerRole === 'player1') {
-            // place to the right of P1 score
+            //Dovenando
             const x = this.scoreTextP1.x + (this.scoreTextP1.width || this.scoreTextP1.getBounds().width) + 5;
             const y = this.scoreTextP1.y + 5;
             this.youLabel.setPosition(x, y);
         } else {
-            // place to the left of P2 score
+            //Palomón
             const x = this.scoreTextP2.x - (this.youLabel.width || this.youLabel.getBounds().width) - 5;
             const y = this.scoreTextP2.y + 5;
             this.youLabel.setPosition(x, y);
@@ -367,18 +364,15 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     handleServerMessage(data) {
         switch (data.type) {
-            case 'paddleUpdate':
+            case 'pigeonUpdate':
                 const p = this.remotePaloma;
 
-                // Posición
                 p.sprite.x = data.x;
                 p.sprite.y = data.y;
 
-                // Dirección
                 p.facing = data.facing;
                 p.sprite.flipX = data.facing === 'left' ? !p.invertFlipForMovement : p.invertFlipForMovement;
 
-                // Animación
                 const animKey = p.character === 'palomon' ? `palomon_${data.anim}` : `dovenando_${data.anim}`;
 
                 if (!p.sprite.anims.isPlaying ||
@@ -388,17 +382,13 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 break;
 
             case 'scoreUpdate':
-                // Update scores from server
                 this.localScore = this.playerRole === 'player1' ? data.player1Score : data.player2Score;
                 this.remoteScore = this.playerRole === 'player1' ? data.player2Score : data.player1Score;
 
-                // Keep label + score for clarity
                 this.scoreTextP1.setText(`Dovenando: ${data.player1Score}`);
                 this.scoreTextP2.setText(`Palomón: ${data.player2Score}`);
 
-                // Reposition 'You' label after updating scores
                 this.updateYouLabel();
-
                 break;
 
             case 'attackResolve': {
@@ -455,14 +445,14 @@ export class MultiplayerGameScene extends Phaser.Scene {
                     });
                     pigeon.addScore(1);
 
-                    // Actualizar textos de puntuación
+                    //Actualizar textos de puntuación
                     this.scoreTextP1.setText(`Dovenando: ${this.playerRole === 'player1' ? this.localPaloma.score : this.remotePaloma.score}`);
                     this.scoreTextP2.setText(`Palomón: ${this.playerRole === 'player1' ? this.remotePaloma.score : this.localPaloma.score}`);
 
                 } else {
-                    // Aplicar efectos según power-up
+                    //Aplicar efectos según power-up
                     switch (data.itemType) {
-                        case 'avena': // más fuerza
+                        case 'avena':
                             this.sound.play('SonidoAvena', {
                                 volume: 0.5
                             });
@@ -474,14 +464,14 @@ export class MultiplayerGameScene extends Phaser.Scene {
                                 pigeon.attackForce -= 200;
                             });
                             break;
-                        case 'pluma': // velocidad
+                        case 'pluma':
                             this.sound.play('SonidoPluma', {
                                 volume: 0.5
                             });
                             this.showItemIcon(pigeon, 'iconPluma', 5000);
                             pigeon.applyModifier('speed', 150, 5000);
                             break;
-                        case 'basura': // ralentiza
+                        case 'basura':
                             this.sound.play('SonidoBasura', {
                                 volume: 0.5
                             });
@@ -532,13 +522,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.bgMusic.stop();
             this.bgMusic.destroy();
             this.bgMusic = null;
-            console.log('[MultiplayerGameScene] Return to Menu clicked');
 
-            if (this.ws) {
-                console.log(
-                    '[MultiplayerGameScene] Closing WS from Return button'
-                );
-            }
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.close();
             }
@@ -582,7 +566,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.powerUpOverlap = null;
         }
 
-        // overlap → solo envía al servidor
         const overlap = this.physics.add.overlap(
             this.localPaloma.sprite,
             item.sprite,
@@ -603,7 +586,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
     showItemIcon(pigeon, iconKey, duration) {
 
-        // Limpiar icono previo
         if (pigeon.activeIconSprite) {
             pigeon.activeIconSprite.destroy();
             pigeon.activeIconSprite = null;
@@ -652,14 +634,10 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.bgMusic.stop();
         this.bgMusic.destroy();
         this.bgMusic = null;
-        console.log('[MultiplayerGameScene] endGame called, winner:', winnerId);
 
-        console.log('[MultiplayerGameScene] WS state at endGame:',
-            this.ws ? this.ws.readyState : 'NO WS'
-        );
         this.scene.start('EndGameScene', {
                 winnerId,
-                localPlayerId: this.playerRole, // <- este es el jugador local
+                localPlayerId: this.playerRole,
                 player1Score,
                 player2Score,
                 ws: this.ws
@@ -675,7 +653,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         const pigeon = this.localPaloma;
         if (!pigeon) return;
 
-        //Si la paloma está stunada no puede hacer nada: detener movimiento horizontal
+        //Si la paloma está stuneada no puede hacer nada: detener movimiento horizontal
         if (pigeon.stunned) {
             //Permitir knockback durante un corto periodo tras recibir el golpe
             if (!pigeon.knockbackExpire || this.time.now > pigeon.knockbackExpire) {
@@ -705,17 +683,16 @@ export class MultiplayerGameScene extends Phaser.Scene {
         let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
         this.processor.process(moveCommand);
 
-        // Send paddle position to server
+        //Mandar posición al server
         this.sendMessage({
-            type: 'paddleMove',
+            type: 'pigeonMove',
             x: this.localPaloma.sprite.x,
             y: this.localPaloma.sprite.y,
             anim: this.localPaloma.currentAnim,
             facing: this.localPaloma.facing
         });
 
-        //Ataque
-        // Ataque (F)
+        //Ataque (F)
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
             this.sendMessage({
                 type: 'attackRequest',
@@ -746,7 +723,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
 
 
-    //Eliminar música al cerrar la escena y cerrrar listeners
+    //Eliminar música al cerrar la escena y cerrar listeners
     shutdown() {
         console.log('[MultiplayerGameScene] shutdown called');
         console.log(

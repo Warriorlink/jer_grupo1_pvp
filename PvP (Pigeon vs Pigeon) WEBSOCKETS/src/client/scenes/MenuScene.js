@@ -48,7 +48,7 @@ export class MenuScene extends Phaser.Scene {
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        //Botón para jugar local
+        //Botón para jugar local (deshabilitado)
         this.localBtnSprite = this.add.image(250, 360, 'botonEncima')
             .setInteractive({ useHandCursor: true });
 
@@ -57,7 +57,7 @@ export class MenuScene extends Phaser.Scene {
             color: 'ffffff',
         }).setOrigin(0.5).setDepth(10);
 
-        //Botón para jugar online (no funciona)
+        //Botón para jugar online
         this.onlineBtnSprite = this.add.image(700, 360, 'boton')
             .setInteractive({ useHandCursor: true });
         this.onlineBtnText = this.add.text(700, 360, 'Online', {
@@ -70,7 +70,6 @@ export class MenuScene extends Phaser.Scene {
         this.onlineBtnSprite.on('pointerdown', () => {
             if (!this.onlineBtnSprite.input || !this.onlineBtnSprite.input.enabled) return;
 
-            console.log('[MenuScene] Online button clicked');
             //Apagar música
             if (this.bgMusic) {
                 this.bgMusic.stop();
@@ -80,7 +79,7 @@ export class MenuScene extends Phaser.Scene {
             this.scene.stop('LobbyScene');
             this.cameras.main.setAlpha(1);
 
-            //Transición a GameScene
+            //Start a LobbyScene
             this.scene.start('LobbyScene');
         });
 
@@ -157,7 +156,7 @@ export class MenuScene extends Phaser.Scene {
 
             this.cameras.main.setAlpha(1);
 
-            // ransición a ControlsScene
+            //Transición a ControlsScene
             this.scene.transition({
                 target: 'ControlsScene',
                 duration: 1000,
@@ -200,7 +199,7 @@ export class MenuScene extends Phaser.Scene {
             });
         });
 
-        // Agrupar botones para manipularlos fácilmente
+        //Array de botones para habilitar/deshabilitar
         this.buttons = [
             this.localBtnSprite,
             this.onlineBtnSprite,
@@ -210,7 +209,7 @@ export class MenuScene extends Phaser.Scene {
             this.storyBtnSprite
         ];
 
-        // Establecer estado inicial según conexión
+        //Establecer estado inicial según conexión
         this.setButtonsEnabled(connectionManager.getStatus().isConnected);
 
 
@@ -245,6 +244,7 @@ export class MenuScene extends Phaser.Scene {
         }
     }
 
+    //Función para habilitar o deshabilitar todos los botones del menú si el servidor está desconectado
     setButtonsEnabled(enabled) {
         if (!this.buttons || !Array.isArray(this.buttons)) return;
 

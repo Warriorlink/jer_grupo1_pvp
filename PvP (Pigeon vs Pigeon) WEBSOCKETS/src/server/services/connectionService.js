@@ -5,9 +5,9 @@ export function createConnectionService() {
   // Map para almacenar sesiones conectadas: sessionId -> timestamp de última conexión
   const connectedSessions = new Map();
 
-  // Configuración de timeout (5 segundos sin actividad = desconectado)
-  const CONNECTION_TIMEOUT = 3000; // 5 segundos en milisegundos
-  const CLEANUP_INTERVAL = 1000;    // Limpiar cada 2 segundos
+  // Configuración de timeout (3 segundos sin actividad = desconectado)
+  const CONNECTION_TIMEOUT = 3000; // 3 segundos en milisegundos
+  const CLEANUP_INTERVAL = 1000;    // Limpiar cada segundo
 
   // Limpiar sesiones inactivas periódicamente
   const cleanupInterval = setInterval(() => {

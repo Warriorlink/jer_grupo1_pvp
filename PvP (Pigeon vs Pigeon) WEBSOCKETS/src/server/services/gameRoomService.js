@@ -46,9 +46,6 @@ export function createGameRoomService() {
       churro: null,
       powerUp: null,
       itemTimers: [],
-
-
-      ballActive: true // Track if ball is in play (prevents duplicate goals)
     };
 
     rooms.set(roomId, room);
@@ -61,13 +58,8 @@ export function createGameRoomService() {
     return roomId;
   }
 
-
-  /**
-   * Handle paddle movement from a player
-   * @param {WebSocket} ws - Player's WebSocket
-   * @param {number} y - Paddle Y position
-   */
-  function handlePaddleMove(ws, data) {
+  //Manejar movimiento de palomas
+  function handlePigeonMove(ws, data) {
     const roomId = ws.roomId;
     if (!roomId) return;
 
@@ -79,7 +71,7 @@ export function createGameRoomService() {
 
     if (opponent.readyState === 1) { // WebSocket.OPEN
       opponent.send(JSON.stringify({
-        type: 'paddleUpdate',
+        type: 'pigeonUpdate',
         x: data.x,
         y: data.y,
         anim: data.anim,
@@ -89,11 +81,12 @@ export function createGameRoomService() {
     }
   }
 
+  //Manejar la aparición de objetos
   function spawnItem(room, type) {
 
     const ref = type === 'churro' ? 'churro' : 'powerUp';
 
-    if (room[ref]) return; // Ya existe
+    if (room[ref]) return;
 
     const availablePositions = getAvailablePositions(room);
     if (availablePositions.length === 0) return;
@@ -119,7 +112,6 @@ export function createGameRoomService() {
       }, 9000);
     }
 
-
     const msg = {
       type: 'itemSpawn',
       item
@@ -130,6 +122,7 @@ export function createGameRoomService() {
   }
 
 
+  //Iniciar los timers de los objetos
   function startItemTimers(room) {
 
     const churroTimer = setInterval(() => {
@@ -167,7 +160,7 @@ export function createGameRoomService() {
       player.score++;
       effectData = { score: player.score };
 
-      // Chequear si alguien ha llegado a 5 churros
+      //Condición de victoria (5 churros)
       if (player.score >= 5) {
         const winnerMsg = {
           type: 'gameOver',
@@ -179,10 +172,10 @@ export function createGameRoomService() {
         room.player1.ws.send(JSON.stringify(winnerMsg));
         room.player2.ws.send(JSON.stringify(winnerMsg));
 
-        // Desactivar la sala para que no sigan apareciendo objetos
+        //Desactivar la sala para que no sigan apareciendo objetos
         room.active = false;
         room.itemTimers.forEach(timer => clearInterval(timer));
-        return; // No procesar más
+        return;
       }
     }
     else {
@@ -190,10 +183,9 @@ export function createGameRoomService() {
       effectData = { powerUp: item.type };
     }
 
-    // Eliminar item
+    //Eliminar item
     despawnItem(room, item.type === 'churro' ? 'churro' : 'powerUp');
 
-    // Notificar a ambos clientes quién lo recogió
     const msg = {
       type: 'itemCollected',
       playerId,
@@ -205,6 +197,7 @@ export function createGameRoomService() {
   }
 
 
+  //Eliminar objeto tras ser recogido o expirar
   function despawnItem(room, ref) {
 
     const item = room[ref];
@@ -223,6 +216,7 @@ export function createGameRoomService() {
   }
 
 
+  //Obtener posiciones disponibles para aparición de objetos
   function getAvailablePositions(room) {
     return itemSpawnPositions.filter(pos => {
 
@@ -242,12 +236,7 @@ export function createGameRoomService() {
     });
   }
 
-
-  /**
-   * Handle attack from a player
-   * @param {WebSocket} ws - Player's WebSocket
-   * @param {number} y - Paddle Y position
-   */
+  //Manejar ataque entre jugadores
   function handleAttack(ws, data) {
     const roomId = ws.roomId;
     if (!roomId) return;
@@ -258,7 +247,6 @@ export function createGameRoomService() {
     const attackerId = room.player1.ws === ws ? 'player1' : 'player2';
     const defenderId = attackerId === 'player1' ? 'player2' : 'player1';
 
-    // Broadcast a AMBOS
     const msg = {
       type: 'attackResolve',
       attackerId,
@@ -314,7 +302,7 @@ export function createGameRoomService() {
 
   return {
     createRoom,
-    handlePaddleMove,
+    handlePigeonMove,
     handleAttack,
     spawnItem,
     despawnItem,

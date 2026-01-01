@@ -125,7 +125,6 @@ wss.on('connection', (ws) => {
 
       switch (data.type) {
         case 'joinQueue':
-          console.log('[SERVER] joinQueue from WS', ws.roomId);
           matchmakingService.joinQueue(ws);
           break;
 
@@ -133,8 +132,8 @@ wss.on('connection', (ws) => {
           matchmakingService.leaveQueue(ws);
           break;
 
-        case 'paddleMove':
-          gameRoomService.handlePaddleMove(ws, data);
+        case 'pigeonMove':
+          gameRoomService.handlePigeonMove(ws, data);
           break;
 
         case 'attackRequest':
@@ -163,7 +162,7 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    console.log('[SERVER] WS closed, roomId:', ws.roomId);
+    console.log('Se cerró la conexión del cliente:', ws.id);
     matchmakingService.leaveQueue(ws);
     gameRoomService.handleDisconnect(ws);
   });

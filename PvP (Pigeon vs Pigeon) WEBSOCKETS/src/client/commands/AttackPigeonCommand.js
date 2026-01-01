@@ -9,18 +9,18 @@ export class AttackPigeonCommand extends Command {
     execute() {
         const scene = this.pigeon.scene;
 
-        // Animación y feedback (el servidor ya validó)
+        //Animación y sonido
         this.pigeon.currentAnim = 'attack';
         this.pigeon.startAttackAnimation();
         this.pigeon.showAttackSprite(250);
         scene.sound.play('SonidoAtaque', { volume: 0.7 });
 
-        // Dirección del ataque
+        //Dirección del ataque
         const dir = this.pigeon.facing === 'right' ? 1 : -1;
         const x = this.pigeon.sprite.x + dir * this.pigeon.attackRange;
         const y = this.pigeon.sprite.y;
 
-        // Hitbox temporal
+        //Hitbox temporal
         const hitbox = scene.physics.add.sprite(x, y, null);
         hitbox.setVisible(false);
         hitbox.body.setAllowGravity(false);

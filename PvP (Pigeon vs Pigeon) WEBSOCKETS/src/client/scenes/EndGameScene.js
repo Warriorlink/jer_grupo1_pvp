@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { connectionManager } from '../services/ConnectionManager.js';
 
 export class EndGameScene extends Phaser.Scene {
     constructor() {
@@ -19,35 +18,23 @@ export class EndGameScene extends Phaser.Scene {
     }
 
     create(data) {
-        console.log('[EndGameScene] create called, data:', data);
-        this.cameras.main.setAlpha(0);
 
-        this.events.on('shutdown', () => {
-            console.log('[EndGameScene] SHUTDOWN');
-        }, this);
-
-        this.events.on('destroy', () => {
-            console.log('[EndGameScene] DESTROY');
-        }, this);
-
-
-        // Identificar ganador y jugador local
+        //Identificar ganador y jugador local
         const winnerIsP1 = data.winnerId === 'player1';
         const playerIsP1 = data.localPlayerId === 'player1';
         const playerWon = winnerIsP1 === playerIsP1;
 
-        // Imagen de victoria según el ganador
+        //Imagen de victoria según el ganador
         const bgKey = winnerIsP1 ? 'DovenandoVictory' : 'PalomonVictory';
         this.add.image(480, 270, bgKey);
 
-        // Fade-in de cámara
         this.tweens.add({
             targets: this.cameras.main,
             alpha: 1,
             duration: 800
         });
 
-        // Texto principal
+        //Texto principal
         const mainText = playerWon ? 'SUPREME VICTORY!' : 'CRUSHING DEFEAT';
         const mainColor = playerWon ? '#ffffffff' : '#ffffffff';
         this.add.text(480, 200, mainText, {
@@ -58,7 +45,7 @@ export class EndGameScene extends Phaser.Scene {
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        // Texto secundario
+        //Texto del ganador
         const winnerText = winnerIsP1 ? 'Dovenando Wins!' : 'Palomón Wins!';
         this.add.text(480, 300, winnerText, {
             fontSize: '60px',
@@ -67,7 +54,7 @@ export class EndGameScene extends Phaser.Scene {
             strokeThickness: 6
         }).setOrigin(0.5);
 
-        // Música de fondo
+        //Música de fondo
         this.bgMusic = this.sound.add('SweetVictory', {
             loop: true,
             volume: 0.6
@@ -77,7 +64,7 @@ export class EndGameScene extends Phaser.Scene {
         this.events.on('shutdown', this.onShutdown, this);
         this.events.on('destroy', this.onShutdown, this);
 
-        // Botón para volver al menú
+        //Botón para volver al menú
         const menuBtnSprite = this.add.image(480, 460, 'boton')
             .setInteractive({ useHandCursor: true });
         const menuBtnText = this.add.text(480, 460, 'Return to menu', {
@@ -88,7 +75,6 @@ export class EndGameScene extends Phaser.Scene {
         menuBtnSprite.on('pointerover', () => menuBtnSprite.setTexture('botonEncima'));
         menuBtnSprite.on('pointerout', () => menuBtnSprite.setTexture('boton'));
         menuBtnSprite.on('pointerdown', () => {
-            console.log('[EndGameScene] Return to menu clicked');
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.close();
             }

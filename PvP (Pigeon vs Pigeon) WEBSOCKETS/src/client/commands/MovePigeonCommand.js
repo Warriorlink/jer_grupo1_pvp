@@ -13,7 +13,7 @@ export class MovePigeonCommand extends Command {
         const pigeon = this.pigeon;
         const sprite = pigeon.sprite;
 
-        //Si está stunado no permite moverse ni reproducir caminata
+        //Si está stuneado no permite moverse ni reproducir caminata
         if (pigeon.stunned) {
             sprite.setVelocityX(0);
             pigeon.playAnimation('idle');
