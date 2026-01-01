@@ -58,7 +58,7 @@ Por tanto se trata de un juego de pelea satírica de partidas cortas y entreteni
 # **1. Descripción general**
 **PvP (Pigeon vs Pigeon)** es un videojuego de plataformas 2D competitivo (PvP, de ahí la analogía con el título del juego) en el que dos jugadores controlan palomas que compiten por recoger churros en un entorno urbano cerca de unos contenedores de basura.  
 Se trata de un título ligero y divertido, pensado para partidas rápidas en las que predomine la acción y la rivalidad directa.
-Es un juego dirigido a todos los públicos, ya que no hay contenido ofensivo ni violencia explícita. El proyecto se desarrollará para poder ser jugado en un navegador web, tanto en modo local (dos jugadores en un mismo ordenador) como a través de una red privada.  
+Es un juego dirigido a todos los públicos, ya que no hay contenido ofensivo ni violencia explícita. El proyecto se desarrollará para poder ser jugado en un navegador web, tanto en modo local (dos jugadores en un mismo ordenador) como a través de una red privada utilizando la tecnología de Websockets para sincronizar las partidas de ambos jugadores en dos dispositivos, pudiendo crearse varias salas de juego incluso para soportar varias partidas de dos jugadores cada una.  
 En su fase final de desarrollo se publicará en plataformas web populares como **Newgrounds o Itch.io**.
 
 A continuación, se presenta un boceto de la pantalla de inicio del juego y la pantalla final implementada en el juego:
@@ -165,6 +165,7 @@ Algunos elementos, como los churros o los potenciadores, tendrán colores más v
 ## **Aspectos técnicos**
 El juego será realizado para una visualización en 2D, como ya se ha mencionado con anterioridad. 
 La escena de juego contendrá el escenario de juego entero con un encuadre horizontal, estando la cámara siempre estática en la misma posición por simplicidad y facilidad al jugar. Además, los jugadores podrán saltar por encima del límite superior del mapa, siempre sin poder salirse de los límites laterales del mismo.
+A nivel de juego en red, se utiliza una arquitectura cliente-servidor en la cual se utiliza la tecnología de Websockets. Se gestionan las desconexiones tanto de uno de los jugadores como del cierre del servidor. Todos los aspectos de recogida y spawn de items son gestionados en el servidor, además, este se encarga de enviar mensajes entre clientes para sincronizar los movimientos de las palomas y las puntuaciones y condiciones de victoria.
 
 ## **Estilo visual**
 El juego combinará el estilo cartoon con el pixel art. Los menús y otras interfaces utilizarán un arte más detallado de tipo cartoon, ya que este estará más enfocado en el marketing y promoción del juego. 
