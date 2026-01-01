@@ -137,14 +137,6 @@ wss.on('connection', (ws) => {
           gameRoomService.handlePaddleMove(ws, data);
           break;
 
-        case 'jump':
-          gameRoomService.handleJump(ws, data);
-          break;
-
-        case 'posSync':
-          gameRoomService.handlePosSync(ws, data);
-          break;
-
         case 'attackRequest':
           gameRoomService.handleAttack(ws, data);
           break;

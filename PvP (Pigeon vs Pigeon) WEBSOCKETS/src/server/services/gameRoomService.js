@@ -74,52 +74,18 @@ export function createGameRoomService() {
     const room = rooms.get(roomId);
     if (!room || !room.active) return;
 
-    // Relay to the other player (send only X/anim/facing; avoid Y to let physics control vertical movement)
+    // Relay to the other player
     const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
 
     if (opponent.readyState === 1) { // WebSocket.OPEN
       opponent.send(JSON.stringify({
         type: 'paddleUpdate',
         x: data.x,
+        y: data.y,
         anim: data.anim,
         facing: data.facing
       }));
 
-    }
-  }
-
-  function handleJump(ws, data) {
-    const roomId = ws.roomId;
-    if (!roomId) return;
-
-    const room = rooms.get(roomId);
-    if (!room || !room.active) return;
-
-    const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
-
-    if (opponent.readyState === 1) {
-      opponent.send(JSON.stringify({
-        type: 'jump',
-        facing: data.facing
-      }));
-    }
-  }
-
-  function handlePosSync(ws, data) {
-    const roomId = ws.roomId;
-    if (!roomId) return;
-
-    const room = rooms.get(roomId);
-    if (!room || !room.active) return;
-
-    const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
-
-    if (opponent.readyState === 1) {
-      opponent.send(JSON.stringify({
-        type: 'posSync',
-        x: data.x,
-        y: data.y
-      }));
     }
   }
 
@@ -349,8 +315,6 @@ export function createGameRoomService() {
   return {
     createRoom,
     handlePaddleMove,
-    handlePosSync,
-    handleJump,
     handleAttack,
     spawnItem,
     despawnItem,
