@@ -658,13 +658,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.ws ? this.ws.readyState : 'NO WS'
         );
         this.scene.start('EndGameScene', {
-            data: {
                 winnerId,
                 localPlayerId: this.playerRole, // <- este es el jugador local
                 player1Score,
                 player2Score,
                 ws: this.ws
-            }
         });
     }
 
