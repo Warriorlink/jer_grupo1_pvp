@@ -9,7 +9,6 @@ import { Avena } from '../entities/Avena.js';
 import { Pluma } from '../entities/Pluma.js';
 import { Basura } from '../entities/Basura.js';
 
-import { connectionManager } from '../services/ConnectionManager.js';
 
 export class MultiplayerGameScene extends Phaser.Scene {
 
@@ -106,7 +105,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 this.onConnectionLost();
             }
         };
-        connectionManager.addListener(this.connectionListener);
+
 
         this.events.on('shutdown', () => {
             console.log('[MultiplayerGameScene] SHUTDOWN event fired');
@@ -760,10 +759,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.close();
         }
-        // Remover el listener
-        if (this.connectionListener) {
-            connectionManager.removeListener(this.connectionListener);
-        }
+        
 
         if (this.bgMusic) {
             this.bgMusic.stop();
