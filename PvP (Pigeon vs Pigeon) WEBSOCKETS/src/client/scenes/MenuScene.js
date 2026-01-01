@@ -49,25 +49,27 @@ export class MenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         //Botón para jugar local
-        const localBtnSprite = this.add.image(250, 360, 'botonEncima')
+        this.localBtnSprite = this.add.image(250, 360, 'botonEncima')
             .setInteractive({ useHandCursor: true });
 
-        const localBtnText = this.add.text(250, 360, 'Local (Not Available)', {
+        this.localBtnText = this.add.text(250, 360, 'Local (Not Available)', {
             fontSize: '24px',
             color: 'ffffff',
         }).setOrigin(0.5).setDepth(10);
 
         //Botón para jugar online (no funciona)
-        const onlineBtnSprite = this.add.image(700, 360, 'boton')
+        this.onlineBtnSprite = this.add.image(700, 360, 'boton')
             .setInteractive({ useHandCursor: true });
-        const onlineBtnText = this.add.text(700, 360, 'Online', {
+        this.onlineBtnText = this.add.text(700, 360, 'Online', {
             fontSize: '24px',
             color: '#000000ff'
         }).setOrigin(0.5).setDepth(10)
 
-        onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
-        onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
-        onlineBtnSprite.on('pointerdown', () => {
+        this.onlineBtnSprite.on('pointerover', () => this.onlineBtnSprite.setTexture('botonEncima'))
+        this.onlineBtnSprite.on('pointerout', () => this.onlineBtnSprite.setTexture('boton'))
+        this.onlineBtnSprite.on('pointerdown', () => {
+            if (!this.onlineBtnSprite.input || !this.onlineBtnSprite.input.enabled) return;
+
             console.log('[MenuScene] Online button clicked');
             //Apagar música
             if (this.bgMusic) {
@@ -83,16 +85,17 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de creditos
-        const creditsBtnSprite = this.add.image(250, 500, 'boton')
+        this.creditsBtnSprite = this.add.image(250, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const creditsBtnText = this.add.text(250, 500, 'Credits', {
+        this.creditsBtnText = this.add.text(250, 500, 'Credits', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
 
-        creditsBtnSprite.on('pointerover', () => creditsBtnSprite.setTexture('botonEncima'))
-        creditsBtnSprite.on('pointerout', () => creditsBtnSprite.setTexture('boton'))
-        creditsBtnSprite.on('pointerdown', () => {
+        this.creditsBtnSprite.on('pointerover', () => this.creditsBtnSprite.setTexture('botonEncima'))
+        this.creditsBtnSprite.on('pointerout', () => this.creditsBtnSprite.setTexture('boton'))
+        this.creditsBtnSprite.on('pointerdown', () => {
+            if (!this.creditsBtnSprite.input || !this.creditsBtnSprite.input.enabled) return;
 
             this.cameras.main.setAlpha(1);
 
@@ -111,16 +114,17 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de opciones
-        const optionsBtnSprite = this.add.image(700, 500, 'boton')
+        this.optionsBtnSprite = this.add.image(700, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const optionsBtnText = this.add.text(700, 500, 'Options', {
+        this.optionsBtnText = this.add.text(700, 500, 'Options', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
 
-        optionsBtnSprite.on('pointerover', () => optionsBtnSprite.setTexture('botonEncima'))
-        optionsBtnSprite.on('pointerout', () => optionsBtnSprite.setTexture('boton'))
-        optionsBtnSprite.on('pointerdown', () => {
+        this.optionsBtnSprite.on('pointerover', () => this.optionsBtnSprite.setTexture('botonEncima'))
+        this.optionsBtnSprite.on('pointerout', () => this.optionsBtnSprite.setTexture('boton'))
+        this.optionsBtnSprite.on('pointerdown', () => {
+            if (!this.optionsBtnSprite.input || !this.optionsBtnSprite.input.enabled) return;
 
             this.cameras.main.setAlpha(1);
 
@@ -139,16 +143,17 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de controles
-        const controlsBtnSprite = this.add.image(700, 430, 'boton')
+        this.controlsBtnSprite = this.add.image(700, 430, 'boton')
             .setInteractive({ useHandCursor: true });
-        const controlsBtnText = this.add.text(700, 430, 'Controls', {
+        this.controlsBtnText = this.add.text(700, 430, 'Controls', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
 
-        controlsBtnSprite.on('pointerover', () => controlsBtnSprite.setTexture('botonEncima'))
-        controlsBtnSprite.on('pointerout', () => controlsBtnSprite.setTexture('boton'))
-        controlsBtnSprite.on('pointerdown', () => {
+        this.controlsBtnSprite.on('pointerover', () => this.controlsBtnSprite.setTexture('botonEncima'))
+        this.controlsBtnSprite.on('pointerout', () => this.controlsBtnSprite.setTexture('boton'))
+        this.controlsBtnSprite.on('pointerdown', () => {
+            if (!this.controlsBtnSprite.input || !this.controlsBtnSprite.input.enabled) return;
 
             this.cameras.main.setAlpha(1);
 
@@ -167,16 +172,17 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de historia
-        const storyBtnSprite = this.add.image(250, 430, 'boton')
+        this.storyBtnSprite = this.add.image(250, 430, 'boton')
             .setInteractive({ useHandCursor: true });
-        const storyBtnText = this.add.text(250, 430, 'Story', {
+        this.storyBtnText = this.add.text(250, 430, 'Story', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
 
-        storyBtnSprite.on('pointerover', () => storyBtnSprite.setTexture('botonEncima'))
-        storyBtnSprite.on('pointerout', () => storyBtnSprite.setTexture('boton'))
-        storyBtnSprite.on('pointerdown', () => {
+        this.storyBtnSprite.on('pointerover', () => this.storyBtnSprite.setTexture('botonEncima'))
+        this.storyBtnSprite.on('pointerout', () => this.storyBtnSprite.setTexture('boton'))
+        this.storyBtnSprite.on('pointerdown', () => {
+            if (!this.storyBtnSprite.input || !this.storyBtnSprite.input.enabled) return;
 
             this.cameras.main.setAlpha(1);
 
@@ -193,6 +199,20 @@ export class MenuScene extends Phaser.Scene {
                 }
             });
         });
+
+        // Agrupar botones para manipularlos fácilmente
+        this.buttons = [
+            this.localBtnSprite,
+            this.onlineBtnSprite,
+            this.creditsBtnSprite,
+            this.optionsBtnSprite,
+            this.controlsBtnSprite,
+            this.storyBtnSprite
+        ];
+
+        // Establecer estado inicial según conexión
+        this.setButtonsEnabled(connectionManager.getStatus().isConnected);
+
 
 
         this.connectionListener = (data) => {
@@ -212,12 +232,41 @@ export class MenuScene extends Phaser.Scene {
             if (data.connected) {
                 this.connectionText.setText(`Server: ${data.count} user(s) connected`);
                 this.connectionText.setColor('#ffffffff');
+                // Rehabilitar botones si la conexión vuelve
+                this.setButtonsEnabled(true);
             } else {
                 this.connectionText.setText('Server: Disconnected');
                 this.connectionText.setColor('#ff0000ff');
+                // Deshabilitar todos los botones al perder la conexión
+                this.setButtonsEnabled(false);
             }
         } catch (error) {
             console.error('[MenuScene] Error updating connection display:', error);
+        }
+    }
+
+    setButtonsEnabled(enabled) {
+        if (!this.buttons || !Array.isArray(this.buttons)) return;
+
+        const alpha = enabled ? 1 : 0.5;
+
+        for (const btn of this.buttons) {
+            if (!btn) continue;
+
+            if (enabled) {
+                if (!btn.input || !btn.input.enabled) {
+                    btn.setInteractive({ useHandCursor: true });
+                }
+                btn.clearTint();
+            } else {
+                if (btn.input && btn.input.enabled) {
+                    btn.disableInteractive();
+                }
+                btn.setTexture('boton');
+                btn.setTint(0x888888);
+            }
+
+            btn.setAlpha(alpha);
         }
     }
 

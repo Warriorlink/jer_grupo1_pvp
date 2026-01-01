@@ -125,14 +125,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'background');
 
-        const roleText = this.playerRole === 'player1' ? 'You are Dovenando' : 'You are Palomon';
-        this.add.text(480, 20, roleText, {
-            fontSize: '24px',
-            color: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 6
-        }).setOrigin(0.5);
-
         //Musica de fondo
         this.bgMusic = this.sound.add('Numb', {
             loop: true,
@@ -174,6 +166,17 @@ export class MultiplayerGameScene extends Phaser.Scene {
             strokeThickness: 6
         });
 
+        // Label to indicate the local player next to their score
+        this.youLabel = this.add.text(0, 0, 'You', {
+            fontSize: '20px',
+            color: '#ffffffff',
+            stroke: '#000000ff',
+            strokeThickness: 4
+        });
+
+        // Position the label according to the local player's role
+        this.updateYouLabel();
+
         this.playerSprites = this.physics.add.group();
         this.setUpPlayers();
         this.players.forEach(pigeon => {
@@ -195,6 +198,25 @@ export class MultiplayerGameScene extends Phaser.Scene {
     onConnectionLost() {
         this.scene.pause();
         this.scene.launch('ConnectionLostScene', { previousScene: 'GameScene' });
+    }
+
+    updateYouLabel() {
+        if (!this.youLabel) return;
+
+        // Ensure text is visible and positioned next to the correct score
+        this.youLabel.setVisible(true);
+
+        if (this.playerRole === 'player1') {
+            // place to the right of P1 score
+            const x = this.scoreTextP1.x + (this.scoreTextP1.width || this.scoreTextP1.getBounds().width) + 5;
+            const y = this.scoreTextP1.y + 5;
+            this.youLabel.setPosition(x, y);
+        } else {
+            // place to the left of P2 score
+            const x = this.scoreTextP2.x - (this.youLabel.width || this.youLabel.getBounds().width) - 5;
+            const y = this.scoreTextP2.y + 5;
+            this.youLabel.setPosition(x, y);
+        }
     }
 
     createAnimations() {
@@ -331,7 +353,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.ws.onclose = () => {
             console.log('WebSocket connection closed');
             if (!this.gameEnded) {
-                this.handleDisconnection();
+                this.handleDisconnection('Server closed the connection');
             }
         };
 
@@ -370,8 +392,12 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 this.localScore = this.playerRole === 'player1' ? data.player1Score : data.player2Score;
                 this.remoteScore = this.playerRole === 'player1' ? data.player2Score : data.player1Score;
 
-                this.scoreTextP1.setText(data.player1Score.toString());
-                this.scoreTextP2.setText(data.player2Score.toString());
+                // Keep label + score for clarity
+                this.scoreTextP1.setText(`Dovenando: ${data.player1Score}`);
+                this.scoreTextP2.setText(`Palomón: ${data.player2Score}`);
+
+                // Reposition 'You' label after updating scores
+                this.updateYouLabel();
 
                 break;
 
@@ -417,7 +443,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
 
             case 'playerDisconnected':
-                this.handleDisconnection();
+                this.handleDisconnection('Opponent Disconnected');
                 break;
 
             case 'itemCollected': {
@@ -472,7 +498,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         }
     }
 
-    handleDisconnection() {
+    handleDisconnection(reason) {
         this.gameEnded = true;
         this.localPaloma.sprite.setVelocity(0, 0);
         this.remotePaloma.sprite.setVelocity(0, 0);
@@ -480,7 +506,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.add.image(480, 270, 'Desconexion');
 
-        this.add.text(480, 250, 'Opponent Disconnected', {
+        this.add.text(480, 250, `${reason}`, {
             fontSize: '48px',
             color: '#ff0000ff',
             fontStyle: 'bold',
@@ -615,28 +641,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
         });
     }
 
-    //Establece el estado de pausa del juego
-    setPauseState(isPaused) {
-        this.isPaused = isPaused;
-        if (isPaused) {
-            this.scene.launch('PauseScene', { originalScene: 'GameScene' });
-            this.scene.pause();
-        }
-    }
-
-    resume() {
-        this.isPaused = false;
-    }
-
-    togglePause() {
-        if (!this.gameEnded) {
-            const newPausedState = !this.isPaused;
-            this.processor.process(
-                new PauseCommand(this, newPausedState)
-            );
-        }
-    }
-
     sendMessage(message) {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(message));
@@ -669,10 +673,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
     update() {
 
         if (this.gameEnded) return;
-
-        if (this.escKey.isDown && !this.escWasDown) {
-            this.togglePause();
-        }
 
         const pigeon = this.localPaloma;
         if (!pigeon) return;
