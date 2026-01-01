@@ -8,11 +8,16 @@ import { EndGameScene } from './scenes/EndGameScene.js';
 import { StoryScene } from './scenes/StoryScene.js';
 import { OptionsScene } from './scenes/OptionsScene.js';
 import { ConnectionLostScene } from './scenes/ConnectionLostScene.js';
+import { LoginScene } from './scenes/LoginScene.js'; 
 const config = {
   type: Phaser.AUTO,
   width: 960,
   height: 540,
   parent: 'game-container',
+  dom: {
+    createContainer: true
+  },
+
   physics: {
     default: 'arcade',
     arcade: {
@@ -20,7 +25,7 @@ const config = {
       debug: false
     }
   },
-  scene: [MenuScene, GameScene, PauseScene, CreditsScene, ControlsScene, EndGameScene, StoryScene, OptionsScene, ConnectionLostScene],
+  scene: [LoginScene, MenuScene, GameScene, PauseScene, CreditsScene, ControlsScene, EndGameScene, StoryScene, OptionsScene, ConnectionLostScene],
   backgroundColor: '#1a2a2e',
 }
 

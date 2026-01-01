@@ -11,23 +11,22 @@ export function createUserService() {
 
   /**
    * Crea un nuevo usuario
-   * @param {Object} userData - {email, name, avatar, level}
+   * @param {Object} userData - {name, player1Win, player2Win}
    * @returns {Object} Usuario creado
    */
   function createUser(userData) {
-    // 1. Validar que el email no exista ya
-    const existingUser = users.find(u => u.email === userData.email);
+    // 1. Validar que el nombre no exista ya
+    const existingUser = users.find(u => u.name === userData.name);
     if (existingUser) {
-      throw new Error('El email ya está registrado');
+      throw new Error('Ya hay un usuario con ese nombre');
     }
 
     // 2. Crear objeto usuario con id único y createdAt
     const newUser = {
       id: String(nextId),
-      email: userData.email,
       name: userData.name,
-      avatar: userData.avatar || '',
-      level: userData.level || 1,
+      player1Win: userData.player1Win || 0,
+      player2Win: userData.player2Win || 0,
       createdAt: new Date().toISOString()
     };
 
@@ -62,15 +61,15 @@ export function createUserService() {
   }
 
   /**
-   * Busca un usuario por email
-   * @param {string} email - Email del usuario
+   * Busca un usuario por nombre
+   * @param {string} name - Nombre del usuario
    * @returns {Object|null} Usuario encontrado o null
    */
-  function getUserByEmail(email) {
+  function getUserByName(name) {
     // TODO: Implementar
-    // Buscar y retornar el usuario por email, o null si no existe
-    // IMPORTANTE: Esta función será usada por el chat para verificar emails
-    const user = users.find(u => u.email === email);
+    // Buscar y retornar el usuario por name, o null si no existe
+    // IMPORTANTE: Esta función será usada por el chat para verificar name
+    const user = users.find(u => u.name === name);
     return user || null;
   }
 
@@ -84,7 +83,7 @@ export function createUserService() {
     // TODO: Implementar
     // 1. Buscar el usuario por id
     // 2. Si no existe, retornar null
-    // 3. Actualizar solo los campos permitidos (name, avatar, level)
+    // 3. Actualizar solo los campos permitidos (player1Win, player2Win)
     // 4. NO permitir actualizar id, email, o createdAt
     // 5. Retornar el usuario actualizado
     const userIndex = users.findIndex(u => u.id === id);
@@ -94,9 +93,8 @@ export function createUserService() {
     const user = users[userIndex];
     const updatedUser = {
       ...user,
-      name: updates.name || user.name,
-      avatar: updates.avatar || user.avatar,
-      level: updates.level || user.level
+      player1Win: updates.player1Win || user.player1Win,
+      player2Win: updates.player2Win || user.player2Win
     };
     users[userIndex] = updatedUser;
     return updatedUser;
@@ -125,7 +123,7 @@ export function createUserService() {
     createUser,
     getAllUsers,
     getUserById,
-    getUserByEmail,
+    getUserByName,
     updateUser,
     deleteUser
   };

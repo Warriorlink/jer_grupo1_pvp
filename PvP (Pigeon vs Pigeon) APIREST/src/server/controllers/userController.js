@@ -12,24 +12,24 @@ export function createUserController(userService) {
    */
   async function create(req, res, next) {
     try {
-      // 1. Extraer datos del body: email, name, avatar, level
-      const { email, name, avatar, level } = req.body;
+      // 1. Extraer datos del body: name, player1Win, player2Win
+      const { name, player1Win, player2Win } = req.body;
 
-      // 2. Validar que los campos requeridos estén presentes (email, name)
-      if (!email || !name) {
+      // 2. Validar que los campos requeridos estén presentes (name)
+      if (!name) {
         return res.status(400).json({
-          error: 'Los campos email y name son obligatorios'
+          error: 'El campo name es obligatorio'
         });
       }
 
       // 3. Llamar a userService.createUser()
-      const newUser = userService.createUser({ email, name, avatar, level });
+      const newUser = userService.createUser({ name, player1Win, player2Win });
 
       // 4. Retornar 201 con el usuario creado
       res.status(201).json(newUser);
     } catch (error) {
       // 5. Si hay error (ej: email duplicado), retornar 400
-      if (error.message === 'El email ya está registrado') {
+      if (error.message === 'Ya hay un usuario con ese nombre') {
         return res.status(400).json({ error: error.message });
       }
       next(error);
