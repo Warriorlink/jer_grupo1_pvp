@@ -19,6 +19,7 @@ export class EndGameScene extends Phaser.Scene {
     }
 
     create(data) {
+        if (data && data.data) data = data.data;
         console.log('[EndGameScene] create called, data:', data);
         this.cameras.main.setAlpha(0);
 

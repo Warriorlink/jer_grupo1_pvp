@@ -109,10 +109,18 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.events.on('shutdown', () => {
             console.log('[MultiplayerGameScene] SHUTDOWN event fired');
+            if (this.posSyncInterval) {
+                clearInterval(this.posSyncInterval);
+                this.posSyncInterval = null;
+            }
         }, this);
 
         this.events.on('destroy', () => {
             console.log('[MultiplayerGameScene] DESTROY event fired');
+            if (this.posSyncInterval) {
+                clearInterval(this.posSyncInterval);
+                this.posSyncInterval = null;
+            }
         }, this);
 
         this.cameras.main.setAlpha(0);
@@ -192,6 +200,24 @@ export class MultiplayerGameScene extends Phaser.Scene {
         // Set up WebSocket listeners
         this.setupWebSocketListeners();
 
+        // Periodic authoritative position sync to correct divergences (every 1s)
+        // Only send when the local pigeon is NOT jumping (on ground), to avoid wiping vertical velocity
+        this.posSyncInterval = setInterval(() => {
+            if (!this.localPaloma || !this.localPaloma.sprite || !this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+
+            const body = this.localPaloma.sprite.body;
+            const onGround = body && (typeof body.onFloor === 'function'
+                ? body.onFloor()
+                : ((body.blocked && body.blocked.down) || (body.touching && body.touching.down)));
+
+            if (!onGround) return; // skip posSync while jumping/falling
+
+            this.sendMessage({
+                type: 'posSync',
+                x: this.localPaloma.sprite.x,
+                y: this.localPaloma.sprite.y
+            });
+        }, 100);
 
     }
 
@@ -370,9 +396,8 @@ export class MultiplayerGameScene extends Phaser.Scene {
             case 'paddleUpdate':
                 const p = this.remotePaloma;
 
-                // Posición
+                // Posición: solo actualizar X para no sobrescribir la posición Y controlada por física
                 p.sprite.x = data.x;
-                p.sprite.y = data.y;
 
                 // Dirección
                 p.facing = data.facing;
@@ -410,6 +435,48 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
                 const cmd = new AttackPigeonCommand(attacker);
                 this.processor.process(cmd);
+                break;
+            }
+
+            case 'jump': {
+                // El oponente saltó: ejecutar salto en la paloma remota usando física
+                const p = this.remotePaloma;
+                if (!p) break;
+
+                const cmd = new MovePigeonCommand(p, 0, true);
+                this.processor.process(cmd);
+                break;
+            }
+
+            case 'posSync': {
+                // Corrección periódica de posición enviada por el oponente
+                const p = this.remotePaloma;
+                if (!p) break;
+
+                try {
+                    // Aplicar corrección de posición (x e y)
+                    p.sprite.x = data.x;
+                    p.sprite.y = data.y;
+
+                    // Asegurar que el body físico esté actualizado si existe
+                    if (p.sprite.body) {
+                        // Algunas versiones de Phaser usan body.position
+                        if (typeof p.sprite.body.reset === 'function') {
+                            // Arcade Physics: reset si está disponible
+                            try { p.sprite.body.reset(data.x, data.y); } catch (e) { /* ignore */ }
+                        } else {
+                            p.sprite.body.x = data.x;
+                            p.sprite.body.y = data.y;
+                            if (p.sprite.body.position) {
+                                p.sprite.body.position.x = data.x;
+                                p.sprite.body.position.y = data.y;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('[MultiplayerGameScene] Error applying posSync:', err);
+                }
+
                 break;
             }
 
@@ -658,13 +725,11 @@ export class MultiplayerGameScene extends Phaser.Scene {
             this.ws ? this.ws.readyState : 'NO WS'
         );
         this.scene.start('EndGameScene', {
-            data: {
-                winnerId,
-                localPlayerId: this.playerRole, // <- este es el jugador local
-                player1Score,
-                player2Score,
-                ws: this.ws
-            }
+            winnerId,
+            localPlayerId: this.playerRole, // <- este es el jugador local
+            player1Score,
+            player2Score,
+            ws: this.ws
         });
     }
 
@@ -707,11 +772,18 @@ export class MultiplayerGameScene extends Phaser.Scene {
         let moveCommand = new MovePigeonCommand(pigeon, moveX, jump);
         this.processor.process(moveCommand);
 
-        // Send paddle position to server
+        // Si saltó, notificar al servidor para que el oponente lo reproduzca con física
+        if (jump) {
+            this.sendMessage({
+                type: 'jump',
+                facing: this.localPaloma.facing
+            });
+        }
+
+        // Send paddle position to server (no enviamos Y para no sobrescribir la física remota)
         this.sendMessage({
             type: 'paddleMove',
             x: this.localPaloma.sprite.x,
-            y: this.localPaloma.sprite.y,
             anim: this.localPaloma.currentAnim,
             facing: this.localPaloma.facing
         });
