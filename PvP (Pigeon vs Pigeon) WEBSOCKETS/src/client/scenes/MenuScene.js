@@ -49,40 +49,13 @@ export class MenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         //Botón para jugar local
-        const localBtnSprite = this.add.image(250, 360, 'boton')
+        const localBtnSprite = this.add.image(250, 360, 'botonEncima')
             .setInteractive({ useHandCursor: true });
 
-        const localBtnText = this.add.text(250, 360, 'Local 2 Players', {
+        const localBtnText = this.add.text(250, 360, 'Local (Not Available)', {
             fontSize: '24px',
             color: 'ffffff',
-        }).setOrigin(0.5).setDepth(10)
-
-        localBtnSprite.on('pointerover', () => localBtnSprite.setTexture('botonEncima'))
-        localBtnSprite.on('pointerout', () => localBtnSprite.setTexture('boton'))
-        localBtnSprite.on('pointerdown', () => {
-
-            //Apagar música
-            if (this.bgMusic) {
-                this.bgMusic.stop();
-                this.bgMusic.destroy();
-                this.bgMusic = null;
-            }
-
-            this.cameras.main.setAlpha(1);
-
-            //Transición a GameScene
-            this.scene.transition({
-                target: 'GameScene',
-                duration: 1000,
-                moveBelow: true,
-                data: {},
-
-                //Fade-out progresivo
-                onUpdate: (progress) => {
-                    this.cameras.main.setAlpha(1 - progress);
-                }
-            });
-        });
+        }).setOrigin(0.5).setDepth(10);
 
         //Botón para jugar online (no funciona)
         const onlineBtnSprite = this.add.image(700, 360, 'boton')
