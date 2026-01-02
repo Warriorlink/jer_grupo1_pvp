@@ -33,7 +33,7 @@ export default class LobbyScene extends Phaser.Scene {
       this.bgMusic.play();
     }
 
-    // Title
+    //Title
     this.add.text(width / 2, 100, 'Online Multiplayer', {
       fontSize: '64px',
       color: '#ffffffff',
@@ -41,7 +41,7 @@ export default class LobbyScene extends Phaser.Scene {
       strokeThickness: 8
     }).setOrigin(0.5);
 
-    // Status text
+    //Status text
     this.statusText = this.add.text(480, 200, 'Connecting to server...', {
       fontSize: '32px',
       color: '#ffffff',
@@ -49,7 +49,7 @@ export default class LobbyScene extends Phaser.Scene {
       strokeThickness: 6
     }).setOrigin(0.5);
 
-    // Player count text
+    //Player count text
     this.playerCountText = this.add.text(480, 300, '', {
       fontSize: '32px',
       color: '#ffffff',
@@ -57,7 +57,7 @@ export default class LobbyScene extends Phaser.Scene {
       strokeThickness: 6
     }).setOrigin(0.5);
 
-    // Cancel button
+    //Cancel button
     const backBtnSprite = this.add.image(480, 450, 'boton')
       .setInteractive({ useHandCursor: true });
 
@@ -79,13 +79,13 @@ export default class LobbyScene extends Phaser.Scene {
       this.scene.start('MenuScene');
     });
 
-    // Connect to WebSocket server
+    //Connect to WebSocket server
     this.connectToServer();
   }
 
   connectToServer() {
     try {
-      // Connect to WebSocket server (same host as web server)
+      //Connect to WebSocket server (same host as web server)
       const wsUrl = `ws://${window.location.host}`;
 
       this.ws = new WebSocket(wsUrl);
@@ -94,7 +94,7 @@ export default class LobbyScene extends Phaser.Scene {
         console.log('Connected to WebSocket server');
         this.statusText.setText('Waiting for opponent...');
 
-        // Join matchmaking queue
+        //Join matchmaking queue
         this.ws.send(JSON.stringify({ type: 'joinQueue' }));
       };
 
@@ -140,7 +140,7 @@ export default class LobbyScene extends Phaser.Scene {
         this.bgMusic.destroy();
         this.bgMusic = null;
 }
-        // Store game data and transition to multiplayer game scene
+        //Store game data and transition to multiplayer game scene
         this.scene.start('MultiplayerGameScene', {
           ws: this.ws,
           playerRole: data.role,

@@ -50,7 +50,7 @@ export function createGameRoomService() {
 
     rooms.set(roomId, room);
 
-    // Store room ID on WebSocket for quick lookup
+    //Store room ID on WebSocket for quick lookup
     player1Ws.roomId = roomId;
     player2Ws.roomId = roomId;
     startItemTimers(room);
@@ -66,10 +66,10 @@ export function createGameRoomService() {
     const room = rooms.get(roomId);
     if (!room || !room.active) return;
 
-    // Relay to the other player
+    //Relay to the other player
     const opponent = room.player1.ws === ws ? room.player2.ws : room.player1.ws;
 
-    if (opponent.readyState === 1) { // WebSocket.OPEN
+    if (opponent.readyState === 1) { //WebSocket.OPEN
       opponent.send(JSON.stringify({
         type: 'pigeonUpdate',
         x: data.x,

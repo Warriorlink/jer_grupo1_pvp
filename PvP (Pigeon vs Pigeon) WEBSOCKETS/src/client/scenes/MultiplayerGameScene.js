@@ -28,7 +28,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
         this.churro = null;
         this.powerUp = null;
 
-        this.playerRole = data.playerRole;        //'player1' o 'player2'
+        this.playerRole = data.playerRole;
         this.localPaloma = null;
         this.remotePaloma = null;
         this.localScore = 0;
@@ -188,7 +188,7 @@ export class MultiplayerGameScene extends Phaser.Scene {
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
-        // Set up WebSocket listeners
+        //Set up WebSocket listeners
         this.setupWebSocketListeners();
 
 
@@ -643,8 +643,6 @@ export class MultiplayerGameScene extends Phaser.Scene {
                 ws: this.ws
         });
     }
-
-
 
     update() {
 

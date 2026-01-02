@@ -46,7 +46,7 @@ export class ConnectionManager {
         this.isConnected = true;
         this.lastCheckTime = Date.now();
 
-        // Notificar a los listeners
+        //Notificar a los listeners
         this.notifyListeners({ connected: true, count: this.connectedCount });
 
         return { connected: this.connectedCount, success: true };
@@ -137,5 +137,5 @@ export class ConnectionManager {
   }
 }
 
-// Crear instancia singleton
+//Crear instancia singleton
 export const connectionManager = new ConnectionManager();

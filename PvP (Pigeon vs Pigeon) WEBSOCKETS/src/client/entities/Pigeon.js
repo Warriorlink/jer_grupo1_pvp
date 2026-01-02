@@ -116,7 +116,6 @@ export class Pigeon {
         this.stunned = false;
         this.sprite.clearTint();
 
-        // 🔓 Restaurar físicas normales
         this.sprite.setDamping(false);
         this.sprite.setDragX(0);
 
@@ -140,7 +139,7 @@ export class Pigeon {
         this.sprite.setFlipX(this.facing === "left" ? !this.invertFlipForMovement : this.invertFlipForMovement);
 
         //Volver a animación normal tras el ataque
-        this.scene.time.delayedCall(250, () => {   // Duración aproximada del ataque
+        this.scene.time.delayedCall(250, () => {
             this.endAttackAnimation();
         });
     }

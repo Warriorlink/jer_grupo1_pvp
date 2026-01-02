@@ -271,7 +271,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     shutdown() {
-        // Remover el listener
+        //Quitar el listener
         if (this.connectionListener) {
             connectionManager.removeListener(this.connectionListener);
         }

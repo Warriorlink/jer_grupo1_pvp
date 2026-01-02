@@ -12,15 +12,15 @@ export class ConnectionLostScene extends Phaser.Scene {
     }
 
     init(data) {
-        // Guardar la escena que estaba activa cuando se perdió la conexión
+        //Guardar la escena que estaba activa cuando se perdió la conexión
         this.previousScene = data.previousScene;
     }
 
     create() {
-        // Fondo semi-transparente
+        //Fondo semi-transparente
         this.add.rectangle(480, 270, 960, 540, 0x000000, 0.7);
 
-        // Título
+        //Título
         this.add.text(480, 200, 'CONNECTION LOST', {
             fontSize: '64px',
             color: '#ff0000ff',
@@ -29,7 +29,7 @@ export class ConnectionLostScene extends Phaser.Scene {
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        // Mensaje
+        //Mensaje
         this.statusText = this.add.text(480, 300, 'Attempting to reconnect...', {
             fontSize: '24px',
             color: '#ffffffff',
@@ -37,7 +37,7 @@ export class ConnectionLostScene extends Phaser.Scene {
             stroke: '#000000',
         }).setOrigin(0.5);
 
-        // Contador de intentos
+        //Contador de intentos
         this.attemptCount = 0;
         this.attemptText = this.add.text(480, 350, 'Attempts: 0', {
             fontSize: '18px',
@@ -46,7 +46,7 @@ export class ConnectionLostScene extends Phaser.Scene {
             stroke: '#000000',
         }).setOrigin(0.5);
 
-        // Indicador parpadeante
+        //Indicador parpadeante
         this.dotCount = 0;
         this.time.addEvent({
             delay: 2000,
@@ -58,7 +58,7 @@ export class ConnectionLostScene extends Phaser.Scene {
             loop: true
         });
 
-        // Listener para cambios de conexión
+        //Listener para cambios de conexión
         this.connectionListener = (data) => {
             if (data.connected) {
                 this.onReconnected();
@@ -66,12 +66,12 @@ export class ConnectionLostScene extends Phaser.Scene {
         };
         connectionManager.addListener(this.connectionListener);
 
-        // Intentar reconectar cada 2 segundos
+        //Intentar reconectar cada 2 segundos
         this.reconnectCheckInterval = setInterval(() => {
             this.attemptReconnect();
         }, 2000);
 
-        // Primer intento inmediato
+        //Primer intento inmediato
         this.attemptReconnect();
     }
 
@@ -82,19 +82,19 @@ export class ConnectionLostScene extends Phaser.Scene {
     }
 
     onReconnected() {
-        // Limpiar interval
+        //Limpiar interval
         if (this.reconnectCheckInterval) {
             clearInterval(this.reconnectCheckInterval);
         }
 
-        // Remover listener
+        //Remover listener
         connectionManager.removeListener(this.connectionListener);
 
-        // Mensaje de éxito
+        //Mensaje de éxito
         this.statusText.setText('Connection restored!');
         this.statusText.setColor('#00ff00');
 
-        // Volver a la escena anterior
+        //Volver a la escena anterior
         this.time.delayedCall(1000, () => {
             this.scene.stop();
             if (this.previousScene) {
@@ -104,11 +104,11 @@ export class ConnectionLostScene extends Phaser.Scene {
     }
 
     shutdown() {
-        // Limpiar el interval al cerrar la escena
+        //Limpiar el interval al cerrar la escena
         if (this.reconnectCheckInterval) {
             clearInterval(this.reconnectCheckInterval);
         }
-        // Remover el listener
+        //Quitar el listener
         if (this.connectionListener) {
             connectionManager.removeListener(this.connectionListener);
         }
