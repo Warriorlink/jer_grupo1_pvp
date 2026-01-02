@@ -51,8 +51,9 @@ Por tanto se trata de un juego de pelea satírica de partidas cortas y entreteni
    - [Música](#música)  
    - [Efectos sonoros](#efectos-sonoros)  
 8. [Comunicación y marketing](#8-comunicación-y-marketing)  
-9. [Diagrama de flujo del juego](#9-diagrama-de-flujo-del-juego)  
-10. [Referencias](#10-referencias)
+9. [Diagrama de flujo del juego](#9-diagrama-de-flujo-del-juego)
+10. [Sitios web de publicación](#10-sitios-web-de-publicación)
+11. [Referencias](#10-referencias)
 
 
 # **1. Descripción general**
@@ -255,7 +256,17 @@ Durante el transcurso del juego, se ejecutan tres procesos paralelos:
 
 **3.** Condición de victoria o derrota y fin de juego: El flujo de juego comprueba que ninguno de los dos jugadores ha alcanzado los 10 churros. Si es así, se activa el nodo "Fin del juego", mostrando una pantalla con los resultados y la posibilidad de volver al menú principal del juego o salir de él.
 
-# **10. Referencias**
+
+# **10. Sitios web de publicación**
+Durante la fase 5 del proyecto, se publicó el proyecto en 4 servicios de publicación de proyectos diferentes, entre los que se encuentran: Newgrounds, Itch.io, Github Pages y Netlify:
+
+Newgrounds: https://www.newgrounds.com/portal/view/1013034
+itch.ioo: https://mmmigu.itch.io/pvp-pigeon-vs-pigeon
+Github pages: https://miguel548.github.io/PvP-Pigeon-vs-Pigeon-/
+Netlify: https://69579ab95870431f88c04a6b--pvp-pigeonvspigeon.netlify.app/
+
+
+# **11. Referencias**
 [Vídeo original que parodia el juego](https://youtu.be/EhVB22S1Zqk?si=W59jPvH9SiqjDxNN)
 
 [Modo Mario vs Luigi - New Super Mario Bros](https://www.guiasnintendo.com/0_NINTENDO_DS/new_super_mario_bros_DS/new_super_mario_bros_DS_sp/multijugador.html)
