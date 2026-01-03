@@ -56,45 +56,40 @@ export class LoginScene extends Phaser.Scene {
             const username = el.value.trim();
 
             if (!username) {
-                alert('El nombre no puede estar vacío');
+                alert('Introduce un nombre de usuario');
                 return;
             }
 
             try {
-                let user;
+                // 1. Obtener lista de usuarios
+                const usersRes = await fetch('/api/users');
+                if (!usersRes.ok) throw new Error('Error al obtener usuarios');
 
-                // 1. Intentar obtener el usuario por nombre
-                const getRes = await fetch(`/api/users?name=${encodeURIComponent(username)}`);
+                const users = await usersRes.json();
 
-                if (getRes.ok) {
-                    // Usuario existe
-                    user = await getRes.json();
-                }
-                else if (getRes.status === 404) {
-                    // 2. Usuario NO existe → crearlo
+                // 2. Buscar usuario por nombre
+                let user = users.find(u => u.name === username);
+
+                // 3. Si no existe, lo creamos
+                if (!user) {
                     const createRes = await fetch('/api/users', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name: username })
                     });
 
-                    if (!createRes.ok) {
-                        throw new Error('Error al crear el usuario');
-                    }
+                    if (!createRes.ok) throw new Error('Error al crear usuario');
 
                     user = await createRes.json();
                 }
-                else {
-                    // Error inesperado
-                    throw new Error('Error al buscar el usuario');
-                }
 
-                // 3. Guardar datos en el registry
-                this.registry.set('player1Win', user.player1Win);
-                this.registry.set('player2Win', user.player2Win);
+                // 4. Guardar datos en el registry
+                this.registry.set('player1Win', user.player1Win ?? 0);
+                this.registry.set('player2Win', user.player2Win ?? 0);
                 this.registry.set('name', user.name);
+                this.registry.set('userId', user.id);
 
-                // 4. Transición a MenuScene
+                // 5. Transición a MenuScene
                 this.cameras.main.setAlpha(1);
 
                 this.scene.transition({
@@ -110,7 +105,14 @@ export class LoginScene extends Phaser.Scene {
 
             } catch (error) {
                 console.error(error);
-                alert('No se pudo conectar con el servidor');
+
+                // 6. Error inesperado → NO cambiar de escena
+                this.add.text(480, 360, 'Error al conectar con el servidor', {
+                    fontSize: '20px',
+                    color: '#ff0000',
+                    stroke: '#000000',
+                    strokeThickness: 4
+                }).setOrigin(0.5);
             }
         });
 

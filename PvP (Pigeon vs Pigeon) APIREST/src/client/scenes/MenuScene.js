@@ -38,7 +38,7 @@ export class MenuScene extends Phaser.Scene {
             color: '#ffffffff'
         }).setOrigin(0.5);
         
-        this.usernameText = this.add.text(250,200, `Bienvenido, ${this.registry.get('name')}`)
+        this.usernameText = this.add.text(250,200, `Bienvenido, ${this.registry.get('name')} ${this.registry.get('userId')}, con ${this.registry.get('player1Win')} victorias para Dovenando y ${this.registry.get('player2Win')} para Palomón`)
 
         if (!this.bgMusic) {
             this.bgMusic = this.sound.add('AveMaria', {

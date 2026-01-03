@@ -15,6 +15,8 @@ export class EndGameScene extends Phaser.Scene {
     create(data) {
         this.cameras.main.setAlpha(0);
 
+        this.updateWins(data.winnerId);
+
         const winnerIsP1 = data.winnerId === 'player1';
         const bgKey = winnerIsP1 ? 'DovenandoVictory' : 'PalomonVictory';
 
@@ -88,5 +90,38 @@ export class EndGameScene extends Phaser.Scene {
             this.bgMusic = null;
         }
     }
+
+    //Para actualizar las victorias en el server y en local
+    async updateWins(winnerId) {
+    const userId = this.registry.get('userId');
+
+    let player1Win = this.registry.get('player1Win');
+    let player2Win = this.registry.get('player2Win');
+
+    if (winnerId === 'player1') {
+        player1Win++;
+        this.registry.set('player1Win', player1Win);
+    } else {
+        player2Win++;
+        this.registry.set('player2Win', player2Win);
+    }
+
+    if (!userId) {
+        console.log("no hay usuario")
+        return}; // Invitado → no guardar¡
+        
+    try {
+        await fetch(`/api/users/${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                player1Win,
+                player2Win
+            })
+        });
+    } catch (error) {
+        console.error('Error actualizando victorias:', error);
+    }
+}
 
 }
