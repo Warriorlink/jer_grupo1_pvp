@@ -33,6 +33,13 @@ export class MenuScene extends Phaser.Scene {
             strokeThickness: 8
         }).setOrigin(0.5);
 
+        this.connectionText = this.add.text(400, 150, 'Servidor: Comprobando...', {
+            fontSize: '20px',
+            color: '#ffffffff'
+        }).setOrigin(0.5);
+        
+        this.usernameText = this.add.text(250,200, `Bienvenido, ${this.registry.get('name')}`)
+
         if (!this.bgMusic) {
             this.bgMusic = this.sound.add('AveMaria', {
                 loop: true,
@@ -41,10 +48,7 @@ export class MenuScene extends Phaser.Scene {
             this.bgMusic.play();
         }
 
-        this.connectionText = this.add.text(400, 150, 'Servidor: Comprobando...', {
-            fontSize: '20px',
-            color: '#ffffffff'
-        }).setOrigin(0.5);
+        
 
         //Botón para jugar local
         const localBtnSprite = this.add.image(250, 360, 'boton')

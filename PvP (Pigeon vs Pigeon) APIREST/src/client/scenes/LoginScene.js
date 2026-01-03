@@ -52,20 +52,55 @@ export class LoginScene extends Phaser.Scene {
         loginBtnSprite.on('pointerover', () => loginBtnSprite.setTexture('botonEncima'))
         loginBtnSprite.on('pointerout', () => loginBtnSprite.setTexture('boton'))
         loginBtnSprite.on('pointerdown', () => {
-             console.log("Usuario:", el.value); // Aquí lees el valor
+
+            console.log("Usuario:", el.value); // Aquí lees el valor
+            // MÉTODO AL HACER CLICK EN LOGIN
+            /*
+            Hacer que al darle haga una petición GET buscando el usuario indicado
+            Si ese usuario no existe, se crea
+
+            Al obtener o crear el objeto del usuario, copiar sus parámetros player1Win, player2Win y name al registro:
+            this.registry.set('player1Win', valor);
+            this.registry.set('player2Win', valor);
+            this.registry.set('name', valor);
+
+            Después, si no se ha producido un error inesperado, pasar a la pantalla principal:
+            this.cameras.main.setAlpha(1);
+
+            //Transición a MenuScene
+            this.scene.transition({
+                target: 'MenuScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+
+                //Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
+            });
+
+            Si se produce un error que no sea intentar coger un usuario que no existe, mostrar mensaje de error en pantalla y no cambiar de escena 
+
+            */
+
             });
        
             
         //Botón para volver al menú
         const backBtnSprite = this.add.image(480, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const backButtonText = this.add.text(480, 500, 'Back to Menu', {
+        const backButtonText = this.add.text(480, 500, 'Play as guest', {
             fontSize: '24px',
             color: '#000000',
         }).setOrigin(0.5);
         backBtnSprite.on('pointerover', () => backBtnSprite.setTexture('botonEncima'))
         backBtnSprite.on('pointerout', () => backBtnSprite.setTexture('boton'))
         backBtnSprite.on('pointerdown', () => {
+            //Pasar datos por defecto al iniciar como invitado.
+            this.registry.set('player1Win', 0);
+            this.registry.set('player2Win', 0);
+            this.registry.set('name', 'Invitado');
             //Asegurar que la cámara está totalmente visible antes de empezar el fade-out
             this.cameras.main.setAlpha(1);
 
