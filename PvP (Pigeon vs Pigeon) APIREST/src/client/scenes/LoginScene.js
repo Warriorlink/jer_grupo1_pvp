@@ -35,7 +35,7 @@ export class LoginScene extends Phaser.Scene {
 
         el.placeholder = "Usuario"; // Funcionará sin problemas
         el.type = "text";
-        
+
         // Estilos rápidos
         el.style.width = '250px';
         el.style.height = '40px';
@@ -51,42 +51,70 @@ export class LoginScene extends Phaser.Scene {
 
         loginBtnSprite.on('pointerover', () => loginBtnSprite.setTexture('botonEncima'))
         loginBtnSprite.on('pointerout', () => loginBtnSprite.setTexture('boton'))
-        loginBtnSprite.on('pointerdown', () => {
+        loginBtnSprite.on('pointerdown', async () => {
 
-            console.log("Usuario:", el.value); // Aquí lees el valor
-            // MÉTODO AL HACER CLICK EN LOGIN
-            /*
-            Hacer que al darle haga una petición GET buscando el usuario indicado
-            Si ese usuario no existe, se crea
+            const username = el.value.trim();
 
-            Al obtener o crear el objeto del usuario, copiar sus parámetros player1Win, player2Win y name al registro:
-            this.registry.set('player1Win', valor);
-            this.registry.set('player2Win', valor);
-            this.registry.set('name', valor);
+            if (!username) {
+                alert('El nombre no puede estar vacío');
+                return;
+            }
 
-            Después, si no se ha producido un error inesperado, pasar a la pantalla principal:
-            this.cameras.main.setAlpha(1);
+            try {
+                let user;
 
-            //Transición a MenuScene
-            this.scene.transition({
-                target: 'MenuScene',
-                duration: 1000,
-                moveBelow: true,
-                data: {},
+                // 1. Intentar obtener el usuario por nombre
+                const getRes = await fetch(`/api/users?name=${encodeURIComponent(username)}`);
 
-                //Fade-out progresivo
-                onUpdate: (progress) => {
-                    this.cameras.main.setAlpha(1 - progress);
+                if (getRes.ok) {
+                    // Usuario existe
+                    user = await getRes.json();
                 }
-            });
+                else if (getRes.status === 404) {
+                    // 2. Usuario NO existe → crearlo
+                    const createRes = await fetch('/api/users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: username })
+                    });
 
-            Si se produce un error que no sea intentar coger un usuario que no existe, mostrar mensaje de error en pantalla y no cambiar de escena 
+                    if (!createRes.ok) {
+                        throw new Error('Error al crear el usuario');
+                    }
 
-            */
+                    user = await createRes.json();
+                }
+                else {
+                    // Error inesperado
+                    throw new Error('Error al buscar el usuario');
+                }
 
-            });
-       
-            
+                // 3. Guardar datos en el registry
+                this.registry.set('player1Win', user.player1Win);
+                this.registry.set('player2Win', user.player2Win);
+                this.registry.set('name', user.name);
+
+                // 4. Transición a MenuScene
+                this.cameras.main.setAlpha(1);
+
+                this.scene.transition({
+                    target: 'MenuScene',
+                    duration: 1000,
+                    moveBelow: true,
+                    data: {},
+
+                    onUpdate: (progress) => {
+                        this.cameras.main.setAlpha(1 - progress);
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo conectar con el servidor');
+            }
+        });
+
+
         //Botón para volver al menú
         const backBtnSprite = this.add.image(480, 500, 'boton')
             .setInteractive({ useHandCursor: true });
@@ -119,5 +147,5 @@ export class LoginScene extends Phaser.Scene {
         });
     }
     // Función auxiliar para no repetir estilos CSS
-    
+
 }
