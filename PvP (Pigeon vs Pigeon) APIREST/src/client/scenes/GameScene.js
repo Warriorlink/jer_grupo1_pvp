@@ -63,6 +63,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('iconAvena', 'assets/sprites/Icon_strong.png');
         this.load.image('Icon_p', 'assets/sprites/Icon_Palomon.png');
         this.load.image('Icon_d', 'assets/sprites/Icon_Dovenando.png');
+        this.load.image('fondoDesc', 'assets/sprites/desconexion.png');
 
         //Música y sonidos
         this.load.audio('Numb', 'assets/sounds/Numb.mp3');

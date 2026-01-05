@@ -115,6 +115,72 @@ export class LoginScene extends Phaser.Scene {
             }
         });
 
+        const deleteBtnSprite = this.add.image(center, 380, 'boton')
+            .setInteractive({ useHandCursor: true });
+        const deleteButtonText = this.add.text(center, 380, 'Delete user', {
+            fontSize: '24px',
+            color: '#000000',
+        }).setOrigin(0.5);
+
+        deleteBtnSprite.on('pointerover', () => deleteBtnSprite.setTexture('botonEncima'))
+        deleteBtnSprite.on('pointerout', () => deleteBtnSprite.setTexture('boton'))
+        deleteBtnSprite.on('pointerdown', async () => {
+
+            const username = el.value.trim();
+
+            if (!username) {
+                alert('Introduce un nombre de usuario para borrar');
+                return;
+            }
+
+            try {
+                // 1. Obtener lista de usuarios
+                const usersRes = await fetch('/api/users');
+                if (!usersRes.ok) throw new Error('Error al obtener usuarios');
+
+                const users = await usersRes.json();
+
+                // 2. Buscar usuario por nombre
+                let user = users.find(u => u.name === username);
+
+                // 3. Si no existe, lo creamos
+                if (!user) {
+                    // Error específico: El usuario no existe en la base de datos
+                    throw new Error('EL_USUARIO_NO_EXISTE');
+                }
+
+                // 4. Guardar datos en el registry
+                const deleteRes = await fetch(`/api/users/${user.id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!deleteRes.ok) throw new Error('Error al eliminar el usuario');
+
+                // 5. Éxito: Feedback visual y limpiar input
+                console.log(`Usuario ${username} eliminado`);
+                el.value = ''; // Limpiar el input
+                alert(`Usuario "${username}" eliminado correctamente`);
+
+            } catch (error) {
+                console.error(error);
+
+                console.error(error);
+        
+                // 6. Diferenciar entre "No existe" y "Error de servidor"
+                let mensajeError = 'Error inesperado en el servidor';
+        
+                if (error.message === 'EL_USUARIO_NO_EXISTE') {
+                 mensajeError = `El usuario "${username}" no existe`;
+                }
+
+                this.add.text(480, 400, mensajeError, {
+                    fontSize: '20px',
+                    color: '#ff0000',
+                    stroke: '#000000',
+                    strokeThickness: 4
+                }).setOrigin(0.5);
+            }
+        });
 
         //Botón para volver al menú
         const backBtnSprite = this.add.image(center, 500, 'boton')
@@ -130,6 +196,7 @@ export class LoginScene extends Phaser.Scene {
             this.registry.set('player1Win', 0);
             this.registry.set('player2Win', 0);
             this.registry.set('name', 'Invitado');
+            this.registry.set('userId',0)
             //Asegurar que la cámara está totalmente visible antes de empezar el fade-out
             this.cameras.main.setAlpha(1);
 

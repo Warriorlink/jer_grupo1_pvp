@@ -16,28 +16,33 @@ export class ConnectionLostScene extends Phaser.Scene {
         this.previousScene = data.previousScene;
     }
 
+    
+
     create() {
         // Fondo semi-transparente
-        this.add.rectangle(400, 300, 800, 600, 0x000000, 0.8);
+        let center = this.cameras.main.width/2;
+        this.add.image(480, 270, 'fondoDesc');
 
         // Título
-        this.add.text(400, 200, 'CONEXIÓN PERDIDA', {
-            fontSize: '48px',
+        this.add.text(center, 200, 'CONEXIÓN PERDIDA', {
+            fontSize: '54px',
             color: '#ff0000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
         // Mensaje
-        this.statusText = this.add.text(400, 300, 'Intentando reconectar...', {
+        this.statusText = this.add.text(center, 300, 'Intentando reconectar...', {
             fontSize: '24px',
-            color: '#ffff00'
+            color: '#000000',
+            fontStyle: 'bold'
         }).setOrigin(0.5);
 
         // Contador de intentos
         this.attemptCount = 0;
-        this.attemptText = this.add.text(400, 350, 'Intentos: 0', {
-            fontSize: '18px',
-            color: '#ffffff'
+        this.attemptText = this.add.text(center, 350, 'Intentos: 0', {
+            fontSize: '20px',
+            color: '#000000',
+            
         }).setOrigin(0.5);
 
         // Indicador parpadeante

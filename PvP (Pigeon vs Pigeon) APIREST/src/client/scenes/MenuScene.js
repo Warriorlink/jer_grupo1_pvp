@@ -226,16 +226,41 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón para jugar online (no funciona)
-        const onlineBtnSprite = this.add.image(right, 360, 'boton')
+        const loginBtnSprite = this.add.image(right, 360, 'boton')
             .setInteractive({ useHandCursor: true });
-        const onlineBtnText = this.add.text(right, 360, 'Online (Not available)', {
+        const loginBtnText = this.add.text(right, 360, 'Return to login', {
             fontSize: '24px',
             color: '#7a2eacff'
         }).setOrigin(0.5)
 
-        onlineBtnSprite.on('pointerover', () => onlineBtnSprite.setTexture('botonEncima'))
-        onlineBtnSprite.on('pointerout', () => onlineBtnSprite.setTexture('boton'))
-    
+        loginBtnSprite.on('pointerover', () => loginBtnSprite.setTexture('botonEncima'))
+        loginBtnSprite.on('pointerout', () => loginBtnSprite.setTexture('boton'))
+        loginBtnSprite.on('pointerdown', () => {
+
+            //Apagar música
+            if (this.bgMusic) {
+                this.bgMusic.stop();
+                this.bgMusic.destroy();
+                this.bgMusic = null;
+            }
+
+            this.cameras.main.setAlpha(1);
+
+            //Transición a StoryScene
+            this.scene.transition({
+                target: 'LoginScene',
+                duration: 1000,
+                moveBelow: true,
+                data: {},
+
+                //Fade-out progresivo
+                onUpdate: (progress) => {
+                    this.cameras.main.setAlpha(1 - progress);
+                }
+            });
+        });
+
+
         this.connectionListener = (data) => {
             this.updateConnectionDisplay(data);
         };

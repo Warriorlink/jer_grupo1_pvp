@@ -111,6 +111,7 @@ export function createUserController(userService) {
       // 2. Llamar a userService.deleteUser()
       // 3. Si no existía, retornar 404
       // 4. Si se eliminó, retornar 204 (No Content)
+      const { id } = req.params;
       const deleted = userService.deleteUser(id);
       if (!deleted) {
         return res.status(404).json({
