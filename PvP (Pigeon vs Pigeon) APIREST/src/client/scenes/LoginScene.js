@@ -26,14 +26,13 @@ export class LoginScene extends Phaser.Scene {
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        // 1. Creamos el objeto DOM en Phaser
-        const userInput = this.add.dom(400, 200).createElement('input');
+        // Creamos el objeto DOM en Phaser
+        let center = this.cameras.main.width/2;
+        const userInput = this.add.dom(435, 200).createElement('input');
 
-        // 2. Accedemos directamente a la propiedad 'node'
-        // En JS no necesitas decir qué tipo de elemento es
         const el = userInput.node;
 
-        el.placeholder = "Usuario"; // Funcionará sin problemas
+        el.placeholder = "Usuario"; 
         el.type = "text";
 
         // Estilos rápidos
@@ -42,9 +41,9 @@ export class LoginScene extends Phaser.Scene {
         el.style.fontSize = '20px';
 
         // 3. Para el botón de enviar
-        const loginBtnSprite = this.add.image(480, 300, 'boton')
+        const loginBtnSprite = this.add.image(center, 300, 'boton')
             .setInteractive({ useHandCursor: true });
-        const loginButtonText = this.add.text(480, 300, 'Login', {
+        const loginButtonText = this.add.text(center, 300, 'Login', {
             fontSize: '24px',
             color: '#000000',
         }).setOrigin(0.5);
@@ -118,9 +117,9 @@ export class LoginScene extends Phaser.Scene {
 
 
         //Botón para volver al menú
-        const backBtnSprite = this.add.image(480, 500, 'boton')
+        const backBtnSprite = this.add.image(center, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const backButtonText = this.add.text(480, 500, 'Play as guest', {
+        const backButtonText = this.add.text(center, 500, 'Play as guest', {
             fontSize: '24px',
             color: '#000000',
         }).setOrigin(0.5);

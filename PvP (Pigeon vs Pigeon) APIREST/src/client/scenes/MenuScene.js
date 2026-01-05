@@ -14,6 +14,9 @@ export class MenuScene extends Phaser.Scene {
     }
 
     create() {
+        let center = this.cameras.main.width/2;
+        let left = center/2;
+        let right = center*1.5;
         this.cameras.main.setAlpha(0);
 
         this.add.image(480, 270, 'Fondo');
@@ -26,20 +29,44 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Textos de la escena
-        this.add.text(480, 100, 'PvP', {
+        this.add.text(center, 100, 'PvP', {
             fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
         }).setOrigin(0.5);
 
-        this.connectionText = this.add.text(400, 150, 'Servidor: Comprobando...', {
+        this.connectionText = this.add.text(center, 150, 'Servidor: Comprobando...', {
             fontSize: '20px',
-            color: '#ffffffff'
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 4
         }).setOrigin(0.5);
         
-        this.usernameText = this.add.text(250,200, `Bienvenido, ${this.registry.get('name')} ${this.registry.get('userId')}, con ${this.registry.get('player1Win')} victorias para Dovenando y ${this.registry.get('player2Win')} para Palomón`)
+        this.usernameText = this.add.text(center,230, `Bienvenido, ${this.registry.get('name')}`, {
+            fontSize: '25px',
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
 
+        this.player1Text = this.add.text(left,280, `Victorias Dovenardo: ${this.registry.get('player1Win')}`, {
+            fontSize: '25px',
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
+
+        this.player2Text = this.add.text(right,280, `Victorias Palomón: ${this.registry.get('player2Win')}`, {
+            fontSize: '25px',
+            color: '#ffffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
+
+
+
+            //, con ${this.registry.get('player1Win')} victorias para Dovenando y ${this.registry.get('player2Win')} para Palomón
         if (!this.bgMusic) {
             this.bgMusic = this.sound.add('AveMaria', {
                 loop: true,
@@ -51,10 +78,10 @@ export class MenuScene extends Phaser.Scene {
         
 
         //Botón para jugar local
-        const localBtnSprite = this.add.image(250, 360, 'boton')
+        const localBtnSprite = this.add.image(left, 360, 'boton')
             .setInteractive({ useHandCursor: true });
 
-        const localBtnText = this.add.text(250, 360, 'Local 2 Players', {
+        const localBtnText = this.add.text(left, 360, 'Local 2 Players', {
             fontSize: '24px',
             color: 'ffffff',
         }).setOrigin(0.5).setDepth(10)
@@ -87,9 +114,9 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de creditos
-        const creditsBtnSprite = this.add.image(250, 500, 'boton')
+        const creditsBtnSprite = this.add.image(left, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const creditsBtnText = this.add.text(250, 500, 'Credits', {
+        const creditsBtnText = this.add.text(left, 500, 'Credits', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
@@ -115,9 +142,9 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de opciones
-        const optionsBtnSprite = this.add.image(700, 500, 'boton')
+        const optionsBtnSprite = this.add.image(right, 500, 'boton')
             .setInteractive({ useHandCursor: true });
-        const optionsBtnText = this.add.text(700, 500, 'Options', {
+        const optionsBtnText = this.add.text(right, 500, 'Options', {
             fontSize: '24px',
             color: 'ffffff'
         }).setOrigin(0.5).setDepth(10)
@@ -143,9 +170,9 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de controles
-        const controlsBtnSprite = this.add.image(700, 430, 'boton')
+        const controlsBtnSprite = this.add.image(right, 430, 'boton')
             .setInteractive({ useHandCursor: true });
-        const controlsBtnText = this.add.text(700, 430, 'Controls', {
+        const controlsBtnText = this.add.text(right, 430, 'Controls', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
@@ -171,9 +198,9 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón de historia
-        const storyBtnSprite = this.add.image(250, 430, 'boton')
+        const storyBtnSprite = this.add.image(left, 430, 'boton')
             .setInteractive({ useHandCursor: true });
-        const storyBtnText = this.add.text(250, 430, 'Story', {
+        const storyBtnText = this.add.text(left, 430, 'Story', {
             fontSize: '24px',
             color: '#000000'
         }).setOrigin(0.5).setDepth(10)
@@ -199,9 +226,9 @@ export class MenuScene extends Phaser.Scene {
         });
 
         //Botón para jugar online (no funciona)
-        const onlineBtnSprite = this.add.image(700, 360, 'boton')
+        const onlineBtnSprite = this.add.image(right, 360, 'boton')
             .setInteractive({ useHandCursor: true });
-        const onlineBtnText = this.add.text(700, 360, 'Online (Not available)', {
+        const onlineBtnText = this.add.text(right, 360, 'Online (Not available)', {
             fontSize: '24px',
             color: '#7a2eacff'
         }).setOrigin(0.5)
@@ -229,6 +256,7 @@ export class MenuScene extends Phaser.Scene {
             } else {
                 this.connectionText.setText('Servidor: Desconectado');
                 this.connectionText.setColor('#000000ff');
+                this.connectionText.setStroke('#ffffff',4);
             }
         } catch (error) {
             console.error('[MenuScene] Error updating connection display:', error);
