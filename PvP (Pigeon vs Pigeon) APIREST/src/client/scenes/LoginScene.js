@@ -11,7 +11,7 @@ export class LoginScene extends Phaser.Scene {
     }
     create() {
         this.cameras.main.setAlpha(0);
-
+        let center = this.cameras.main.width/2;
         this.tweens.add({
             targets: this.cameras.main,
             alpha: 1,
@@ -19,15 +19,22 @@ export class LoginScene extends Phaser.Scene {
         });
         this.add.image(480, 270, 'fondo');
 
-        this.add.text(480, 50, 'Login', {
+        this.add.text(center, 50, 'Login', {
             fontSize: '64px',
             color: '#ffffffff',
             stroke: '#000000',
             strokeThickness: 8
         }).setOrigin(0.5);
 
+        const errorText = this.add.text(center, 160, 'Error al conectar con el servidor', {
+                            fontSize: '20px',
+                            color: '#ff0000',
+                            stroke: '#000000',
+                            strokeThickness: 4
+                        }).setOrigin(0.5).setVisible(false);
+
         // Creamos el objeto DOM en Phaser
-        let center = this.cameras.main.width/2;
+        
         const userInput = this.add.dom(435, 200).createElement('input');
 
         const el = userInput.node;
@@ -55,7 +62,8 @@ export class LoginScene extends Phaser.Scene {
             const username = el.value.trim();
 
             if (!username) {
-                alert('Introduce un nombre de usuario');
+                errorText.setText('Introduce un nombre de usuario');
+                errorText.setVisible(true);
                 return;
             }
 
@@ -106,12 +114,9 @@ export class LoginScene extends Phaser.Scene {
                 console.error(error);
 
                 // 6. Error inesperado → NO cambiar de escena
-                this.add.text(480, 360, 'Error al conectar con el servidor', {
-                    fontSize: '20px',
-                    color: '#ff0000',
-                    stroke: '#000000',
-                    strokeThickness: 4
-                }).setOrigin(0.5);
+                errorText.setText('Error al conectar con el servidor');
+                errorText.setVisible(true);
+                
             }
         });
 
@@ -129,7 +134,8 @@ export class LoginScene extends Phaser.Scene {
             const username = el.value.trim();
 
             if (!username) {
-                alert('Introduce un nombre de usuario para borrar');
+                errorText.setText('Introduce un nombre de usuario para borrar');
+                errorText.setVisible(true);
                 return;
             }
 
@@ -159,7 +165,8 @@ export class LoginScene extends Phaser.Scene {
                 // 5. Éxito: Feedback visual y limpiar input
                 console.log(`Usuario ${username} eliminado`);
                 el.value = ''; // Limpiar el input
-                alert(`Usuario "${username}" eliminado correctamente`);
+                errorText.setText(`Usuario "${username}" eliminado correctamente`);
+                errorText.setVisible(true);
 
             } catch (error) {
                 console.error(error);
@@ -170,15 +177,13 @@ export class LoginScene extends Phaser.Scene {
                 let mensajeError = 'Error inesperado en el servidor';
         
                 if (error.message === 'EL_USUARIO_NO_EXISTE') {
-                 mensajeError = `El usuario "${username}" no existe`;
+                 errorText.setText(`El usuario "${username}" no existe`);
+                } else {
+                    errorText.setText('Error inesperado en el servidor');
                 }
+                errorText.setVisible(true);
 
-                this.add.text(480, 400, mensajeError, {
-                    fontSize: '20px',
-                    color: '#ff0000',
-                    stroke: '#000000',
-                    strokeThickness: 4
-                }).setOrigin(0.5);
+               
             }
         });
 
@@ -214,6 +219,5 @@ export class LoginScene extends Phaser.Scene {
             });
         });
     }
-    // Función auxiliar para no repetir estilos CSS
 
 }

@@ -278,10 +278,11 @@ export class MenuScene extends Phaser.Scene {
             if (data.connected) {
                 this.connectionText.setText(`Servidor: ${data.count} usuario(s) conectado(s)`);
                 this.connectionText.setColor('#ffffffff');
+                this.connectionText.setStroke('#000000',4);
             } else {
                 this.connectionText.setText('Servidor: Desconectado');
                 this.connectionText.setColor('#000000ff');
-                this.connectionText.setStroke('#ffffff',4);
+                this.connectionText.setStroke('#ffffff',3);
             }
         } catch (error) {
             console.error('[MenuScene] Error updating connection display:', error);
