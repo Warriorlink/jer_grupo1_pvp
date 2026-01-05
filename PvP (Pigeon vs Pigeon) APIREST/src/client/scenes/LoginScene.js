@@ -28,7 +28,7 @@ export class LoginScene extends Phaser.Scene {
 
         const errorText = this.add.text(center, 160, 'Error al conectar con el servidor', {
                             fontSize: '20px',
-                            color: '#ff0000',
+                            color: '#ff0000ff',
                             stroke: '#000000',
                             strokeThickness: 4
                         }).setOrigin(0.5).setVisible(false);
@@ -63,6 +63,7 @@ export class LoginScene extends Phaser.Scene {
 
             if (!username) {
                 errorText.setText('Introduce un nombre de usuario');
+                errorText.setColor('#ff0000ff');
                 errorText.setVisible(true);
                 return;
             }
@@ -115,6 +116,7 @@ export class LoginScene extends Phaser.Scene {
 
                 // 6. Error inesperado → NO cambiar de escena
                 errorText.setText('Error al conectar con el servidor');
+                errorText.setColor('#ff0000ff');
                 errorText.setVisible(true);
                 
             }
@@ -135,6 +137,7 @@ export class LoginScene extends Phaser.Scene {
 
             if (!username) {
                 errorText.setText('Introduce un nombre de usuario para borrar');
+                errorText.setColor('#ff0000ff');
                 errorText.setVisible(true);
                 return;
             }
@@ -166,6 +169,7 @@ export class LoginScene extends Phaser.Scene {
                 console.log(`Usuario ${username} eliminado`);
                 el.value = ''; // Limpiar el input
                 errorText.setText(`Usuario "${username}" eliminado correctamente`);
+                errorText.setColor('#00ff00ff');
                 errorText.setVisible(true);
 
             } catch (error) {
@@ -181,6 +185,7 @@ export class LoginScene extends Phaser.Scene {
                 } else {
                     errorText.setText('Error inesperado en el servidor');
                 }
+                errorText.setColor('#ff0000ff');
                 errorText.setVisible(true);
 
                

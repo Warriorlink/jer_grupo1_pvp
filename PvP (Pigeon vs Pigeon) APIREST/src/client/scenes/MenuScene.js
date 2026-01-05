@@ -230,7 +230,7 @@ export class MenuScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
         const loginBtnText = this.add.text(right, 360, 'Return to login', {
             fontSize: '24px',
-            color: '#7a2eacff'
+            color: '#000000'
         }).setOrigin(0.5)
 
         loginBtnSprite.on('pointerover', () => loginBtnSprite.setTexture('botonEncima'))
