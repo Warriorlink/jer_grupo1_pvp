@@ -166,6 +166,7 @@ Algunos elementos, como los churros o los potenciadores, tendrán colores más v
 ## **Aspectos técnicos**
 El juego será realizado para una visualización en 2D, como ya se ha mencionado con anterioridad. 
 La escena de juego contendrá el escenario de juego entero con un encuadre horizontal, estando la cámara siempre estática en la misma posición por simplicidad y facilidad al jugar. Además, los jugadores podrán saltar por encima del límite superior del mapa, siempre sin poder salirse de los límites laterales del mismo.
+El juego incluye un servidor que se maneja con API-REST fuera de las partidas. Este permite al usuario tener un nickname y guardar las partidas ganadas con cada paloma. Así como gestionar la cantidad de usuarios conectados y las desconexiones de los mismos.
 A nivel de juego en red, se utiliza una arquitectura cliente-servidor en la cual se utiliza la tecnología de Websockets. Se gestionan las desconexiones tanto de uno de los jugadores como del cierre del servidor. Todos los aspectos de recogida y spawn de items son gestionados en el servidor, además, este se encarga de enviar mensajes entre clientes para sincronizar los movimientos de las palomas y las puntuaciones y condiciones de victoria.
 
 ## **Estilo visual**

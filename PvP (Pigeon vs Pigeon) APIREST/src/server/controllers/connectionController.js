@@ -9,6 +9,7 @@ export function createConnectionController(connectionService) {
      */
     handleConnected(req, res) {
       const { sessionId } = req.body;
+      
 
       // Validar que se envió un sessionId
       if (!sessionId) {

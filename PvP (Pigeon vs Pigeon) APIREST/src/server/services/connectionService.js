@@ -16,6 +16,7 @@ export function createConnectionService() {
     for (const [sessionId, lastConnection] of connectedSessions.entries()) {
       if (now - lastConnection > CONNECTION_TIMEOUT) {
         connectedSessions.delete(sessionId);
+        console.log(`Usuario ${sessionId} desconectado`);
       }
     }
   }, CLEANUP_INTERVAL);
@@ -29,6 +30,7 @@ export function createConnectionService() {
     updateConnection(sessionId) {
       connectedSessions.set(sessionId, Date.now());
       //Consolo.log del usuario conectado
+      console.log(`Usuario ${sessionId} conectado`);
       return connectedSessions.size;
     },
 
