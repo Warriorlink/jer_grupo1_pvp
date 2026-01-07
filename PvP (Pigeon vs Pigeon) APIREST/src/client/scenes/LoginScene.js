@@ -10,6 +10,8 @@ export class LoginScene extends Phaser.Scene {
         this.load.image('boton', 'assets/sprites/boton.png');
     }
     create() {
+        this.input.keyboard.clearCaptures();
+        this.input.keyboard.enabled = false;
         this.cameras.main.setAlpha(0);
         let center = this.cameras.main.width/2;
         this.tweens.add({

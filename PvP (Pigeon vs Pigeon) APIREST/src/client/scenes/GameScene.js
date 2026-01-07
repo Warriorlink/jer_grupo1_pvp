@@ -96,7 +96,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-
         this.connectionListener = (data) => {
             if (!data.connected && this.scene.isActive()) {
                 this.onConnectionLost();
@@ -333,6 +332,8 @@ export class GameScene extends Phaser.Scene {
             };
         });
     }
+
+
 
     //Generar un objeto en una posición aleatoria disponible
     spawnItem(type) {
