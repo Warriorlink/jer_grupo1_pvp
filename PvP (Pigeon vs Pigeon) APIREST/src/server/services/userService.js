@@ -4,10 +4,42 @@
  * y proporciona métodos para realizar operaciones CRUD
  */
 
+import fs from 'fs';
+import path from 'path';
+
+const DATA_FILE = path.resolve('users.json');
+
+function loadUsersFromDisk() {
+  try {
+    if (!fs.existsSync(DATA_FILE)) {
+      return { users: [], nextId: 1 };
+    }
+
+    const raw = fs.readFileSync(DATA_FILE, 'utf-8');
+    const data = JSON.parse(raw);
+
+    return {
+      users: data.users || [],
+      nextId: data.nextId || 1
+    };
+  } catch (err) {
+    console.error('Error cargando usuarios:', err);
+    return { users: [], nextId: 1 };
+  }
+}
+
+function saveUsersToDisk(users, nextId) {
+  const data = {
+    users,
+    nextId
+  };
+
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
 export function createUserService() {
   // Estado privado: almacén de usuarios
-  let users = [];
-  let nextId = 1;
+  let { users, nextId } = loadUsersFromDisk();
 
   /**
    * Crea un nuevo usuario
@@ -30,13 +62,10 @@ export function createUserService() {
       createdAt: new Date().toISOString()
     };
 
-    // 3. Agregar a la lista de usuarios
     users.push(newUser);
-
-    // 4. Incrementar nextId
     nextId++;
 
-    // 5. Retornar el usuario creado
+    saveUsersToDisk(users, nextId);
     return newUser;
   }
 
@@ -97,6 +126,7 @@ export function createUserService() {
       player2Win: updates.player2Win || user.player2Win
     };
     users[userIndex] = updatedUser;
+    saveUsersToDisk(users, nextId);
     return updatedUser;
   }
 
@@ -115,6 +145,7 @@ export function createUserService() {
       return false;
     }
     users.splice(userIndex, 1);
+    saveUsersToDisk(users, nextId);
     return true;
   }
 

@@ -1,0 +1,19 @@
+{
+  "nextId": 4,
+  "users": [
+    {
+      "id": "1",
+      "name": "Paca Garte",
+      "player1Win": 3,
+      "player2Win": 1,
+      "createdAt": "2025-01-02T18:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Bob",
+      "player1Win": 0,
+      "player2Win": 2,
+      "createdAt": "2025-01-03T12:10:00.000Z"
+    }
+  ]
+}
